@@ -1,0 +1,10 @@
+{
+	"name" : "devskyfly/yii-module-iit-uc",
+	"license" : "MIT",
+	"authors" : [{
+			"name" : "Ivan",
+			"email" : "devskyfly@gmail.com"
+		}
+	],
+	"type" : "module"
+}
