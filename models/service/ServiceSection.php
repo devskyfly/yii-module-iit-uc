@@ -17,6 +17,6 @@ class ServiceSection extends AbstractSection
      */
     public static function selectListRoute()
     {
-        return "iit-uc/services/section-select-list";
+        return "/iit-uc/services/section-select-list";
     }
 }

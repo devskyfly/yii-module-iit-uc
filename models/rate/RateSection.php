@@ -17,6 +17,6 @@ class RateSection extends AbstractSection
      */
     public static function selectListRoute()
     {
-        return "iit-uc/rates/section-select-list";
+        return "/iit-uc/rates/section-select-list";
     }
 }

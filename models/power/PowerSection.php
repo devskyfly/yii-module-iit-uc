@@ -17,6 +17,6 @@ class PowerSection extends AbstractSection
      */
     public static function selectListRoute()
     {
-        return "iit-uc/powers/section-select-list";
+        return "/iit-uc/powers/section-select-list";
     }
 }

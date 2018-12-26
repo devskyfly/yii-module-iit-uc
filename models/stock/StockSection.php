@@ -17,6 +17,6 @@ class StockSection extends AbstractSection
      */
     public static function selectListRoute()
     {
-        return "iit-uc/stocs/section-select-list";
+        return "/iit-uc/stocks/section-select-list";
     }
 }

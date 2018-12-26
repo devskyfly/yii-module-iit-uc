@@ -17,6 +17,6 @@ class SiteSection extends AbstractSection
      */
     public static function selectListRoute()
     {
-        return "iit-uc/sites/section-select-list";
+        return "/iit-uc/sites/section-select-list";
     }
 }

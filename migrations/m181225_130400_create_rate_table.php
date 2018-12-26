@@ -1,6 +1,7 @@
 <?php
 
 use yii\db\Migration;
+use yii\helpers\ArrayHelper;
 use devskyfly\yiiModuleAdminPanel\migrations\helpers\contentPanel\EntityMigrationHelper;
 
 /**
@@ -13,9 +14,15 @@ class m181225_130400_create_rate_table extends EntityMigrationHelper
      */
     public function safeUp()
     {
-        $this->createTable('iit_uc_rate', [
-            'id' => $this->primaryKey(),
+
+        $fileds=ArrayHelper::merge($this->getFieldsDefinition(), [
+            "__id"=>$this->integer(11),
+            "price"=>$this->string(11),
+            "_stock__id"=>$this->integer(11),
+            "slx_id"=>$this->string(20),
         ]);
+        
+        $this->createTable('iit_uc_rate', $fileds);
     }
 
     /**

@@ -23,11 +23,23 @@ class Power extends AbstractEntity
      */
     public static function selectListRoute()
     {
-        return "iit-uc/powers/entity-select-list";
+        return "/iit-uc/powers/entity-select-list";
     }
     
     public static function tableName()
     {
         return 'iit_uc_power';
+    }
+    
+    public function rules()
+    {
+        $old_rules=parent::rules();
+        
+        $new_rules=[
+            [[],"required"],
+            [[],"string"]
+        ];
+        
+        return ArrayHelper::merge($old_rules, $new_rules);
     }
 }

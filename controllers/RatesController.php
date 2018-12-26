@@ -6,9 +6,12 @@ use devskyfly\yiiModuleAdminPanel\controllers\contentPanel\AbstractContentPanelC
 use devskyfly\yiiModuleAdminPanel\widgets\contentPanel\ItemSelector;
 use devskyfly\yiiModuleIitUc\models\rate\Rate;
 use devskyfly\yiiModuleIitUc\models\rate\RateSection;
+use devskyfly\yiiModuleIitUc\models\stock\Stock;
+use devskyfly\yiiModuleIitUc\widgets\MasterRatesList;
+use devskyfly\yiiModuleIitUc\widgets\SlaveSitesList;
 
 
-class Controller extends AbstractContentPanelController
+class RatesController extends AbstractContentPanelController
 {
     /**
      *
@@ -51,9 +54,28 @@ class Controller extends AbstractContentPanelController
                         "slave_item_cls"=>$item::sectionCls(),
                         "property"=>"_section__id"
                     ])
+                    .ItemSelector::widget([
+                        "form"=>$form,
+                        "master_item"=>$item,
+                        "slave_item_cls"=>Stock::class,
+                        "property"=>"_stock__id"
+                    ])
+                    .ItemSelector::widget([
+                        "form"=>$form,
+                        "master_item"=>$item,
+                        "slave_item_cls"=>Rate::class,
+                        "property"=>"__id"
+                    ])
                     .$form->field($item,'create_date_time')
                     .$form->field($item,'change_date_time')
                     .$form->field($item,'active')->checkbox(['value'=>'Y','uncheckValue'=>'N','checked'=>$item->active=='Y'?true:false])
+                    .$form->field($item,'price')
+                    .$form->field($item,'slx_id')
+                ],
+                [
+                    "label"=>"tools",
+                    "content"=>
+                    SlaveSitesList::widget([])
                 ]
             ];
         };
@@ -96,7 +118,7 @@ class Controller extends AbstractContentPanelController
      */
     public function itemLabel()
     {
-        return "";
+        return "Тарифы";
     }
 }
 

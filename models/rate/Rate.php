@@ -2,8 +2,16 @@
 namespace devskyfly\yiiModuleIitUc\models\rate;
 
 use devskyfly\yiiModuleAdminPanel\models\contentPanel\AbstractEntity;
+use yii\helpers\ArrayHelper;
 
-
+/**
+ * 
+ * @author devskyfly
+ * @property integer $__id
+ * @property string $price
+ * @property integer $_stock__id
+ * @property string $slx_id
+ */
 class Rate extends AbstractEntity
 {
     /**
@@ -24,11 +32,28 @@ class Rate extends AbstractEntity
      */
     public static function selectListRoute()
     {
-        return "iit-uc/rates/entity-select-list";
+        return "/iit-uc/rates/entity-select-list";
     }
     
     public static function tableName()
     {
         return 'iit_uc_rate';
+    }
+    
+    public function rules()
+    {
+        $old_rules=parent::rules();
+        $new_rules=[
+            [["price","slx_id"],"required"],
+            [["price","slx_id","__id","_stock__id"],"string"]
+        ];
+        return ArrayHelper::merge($old_rules, $new_rules);
+    }
+    
+    public function attributeLabels()
+    {
+        $labels=parent::attributeLabels();
+        $labels['__id']="Parent rate";
+        return $labels;
     }
 }

@@ -4,10 +4,10 @@ namespace devskyfly\yiiModuleIitUc\controllers;
 use devskyfly\php56\types\Obj;
 use devskyfly\yiiModuleAdminPanel\controllers\contentPanel\AbstractContentPanelController;
 use devskyfly\yiiModuleAdminPanel\widgets\contentPanel\ItemSelector;
-use devskyfly\yiiModuleIitUc\models\service\ServicePackage;
-use devskyfly\yiiModuleIitUc\models\service\ServicePackageSection;
+use devskyfly\yiiModuleIitUc\models\servicePackage\ServicePackage;
+use devskyfly\yiiModuleIitUc\models\servicePackage\ServicePackageSection;
 
-class Controller extends AbstractContentPanelController
+class ServicesPackagesController extends AbstractContentPanelController
 {
     /**
      *
@@ -53,6 +53,7 @@ class Controller extends AbstractContentPanelController
                     .$form->field($item,'create_date_time')
                     .$form->field($item,'change_date_time')
                     .$form->field($item,'active')->checkbox(['value'=>'Y','uncheckValue'=>'N','checked'=>$item->active=='Y'?true:false])
+                    .$form->field($item,'select_type')->dropDownList(['MULTY'=>'MULTY','MONO'=>'MONO'])
                 ]
             ];
         };
@@ -95,7 +96,7 @@ class Controller extends AbstractContentPanelController
      */
     public function itemLabel()
     {
-        return "";
+        return "Пакеты доп. услуг";
     }
 }
 

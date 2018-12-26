@@ -2,7 +2,13 @@
 namespace devskyfly\yiiModuleIitUc\models\site;
 
 use devskyfly\yiiModuleAdminPanel\models\contentPanel\AbstractEntity;
+use yii\helpers\ArrayHelper;
 
+/**
+ * 
+ * @author devskyfly
+ * @property string $url
+ */
 class Site extends AbstractEntity
 {
     /**
@@ -23,11 +29,22 @@ class Site extends AbstractEntity
      */
     public static function selectListRoute()
     {
-        return "iit-uc/sites/entity-select-list";
+        return "/iit-uc/sites/entity-select-list";
     }
     
     public static function tableName()
     {
         return 'iit_uc_site';
+    }
+    
+    public function rules()
+    {
+        $old_rules=parent::rules();
+        
+        $new_rules=[
+            [["url"],"string"]
+        ];
+        
+        return ArrayHelper::merge($old_rules, $new_rules);
     }
 }

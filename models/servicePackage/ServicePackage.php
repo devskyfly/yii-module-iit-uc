@@ -1,8 +1,14 @@
 <?php
-namespace devskyfly\yiiModuleIitUc\models\service;
+namespace devskyfly\yiiModuleIitUc\models\servicePackage;
 
 use devskyfly\yiiModuleAdminPanel\models\contentPanel\AbstractEntity;
+use yii\helpers\ArrayHelper;
 
+/**
+ * 
+ * @author devskyfly
+ * @property string $select_type
+ */
 class ServicePackage extends AbstractEntity
 {
     /**
@@ -23,11 +29,23 @@ class ServicePackage extends AbstractEntity
      */
     public static function selectListRoute()
     {
-        return "iit-uc/services-packages/entity-select-list";
+        return "/iit-uc/services-packages/entity-select-list";
     }
     
     public static function tableName()
     {
         return 'iit_uc_service_package';
+    }
+    
+    public function rules()
+    {
+        $old_rules=parent::rules();
+        
+        $new_rules=[
+            [["select_type"],"required"],
+            [["select_type"],"string"]
+        ];
+        
+        return ArrayHelper::merge($old_rules, $new_rules);
     }
 }

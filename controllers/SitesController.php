@@ -4,9 +4,12 @@ namespace devskyfly\yiiModuleIitUc\controllers;
 use devskyfly\php56\types\Obj;
 use devskyfly\yiiModuleAdminPanel\controllers\contentPanel\AbstractContentPanelController;
 use devskyfly\yiiModuleAdminPanel\widgets\contentPanel\ItemSelector;
+use devskyfly\yiiModuleIitUc\models\site\Site;
 use devskyfly\yiiModuleIitUc\models\site\SiteSection;
+use devskyfly\yiiModuleIitUc\widgets\MasterRatesList;
+use devskyfly\yiiModuleIitUc\widgets\SlaveSitesList;
 
-class Controller extends AbstractContentPanelController
+class SitesController extends AbstractContentPanelController
 {
     /**
      *
@@ -26,7 +29,7 @@ class Controller extends AbstractContentPanelController
      */
     public static function entityCls()
     {
-        return SiteSection::class;
+        return Site::class;
     }
     
     /**
@@ -52,6 +55,12 @@ class Controller extends AbstractContentPanelController
                     .$form->field($item,'create_date_time')
                     .$form->field($item,'change_date_time')
                     .$form->field($item,'active')->checkbox(['value'=>'Y','uncheckValue'=>'N','checked'=>$item->active=='Y'?true:false])
+                    .$form->field($item,'url')
+                ],
+                [
+                    "label"=>"tools",
+                    "content"=>
+                    MasterRatesList::widget([])
                 ]
             ];
         };
@@ -81,7 +90,7 @@ class Controller extends AbstractContentPanelController
                     .$form->field($item,'create_date_time')
                     .$form->field($item,'change_date_time')
                     .$form->field($item,'active')->checkbox(['value'=>'Y','uncheckValue'=>'N','checked'=>$item->active=='Y'?true:false])
-                    
+                    .$form->field($item,'url')
                 ]
             ];
         };
@@ -94,7 +103,7 @@ class Controller extends AbstractContentPanelController
      */
     public function itemLabel()
     {
-        return "";
+        return "Площадки";
     }
 }
 

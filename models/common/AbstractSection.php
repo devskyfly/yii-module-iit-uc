@@ -4,7 +4,7 @@ namespace devskyfly\yiiModuleIitUc\models\common;
 
 use devskyfly\yiiModuleAdminPanel\models\contentPanel\AbstractSection as Section;
 
-class AbstractSection extends Section
+abstract class AbstractSection extends Section
 {
     public static function tableName()
     {

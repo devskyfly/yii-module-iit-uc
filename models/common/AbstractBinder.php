@@ -3,7 +3,7 @@ namespace devskyfly\yiiModuleIitUc\models\common;
 
 use devskyfly\yiiModuleAdminPanel\models\contentPanel\AbstractBinder as Binder;
 
-class AbstractBinder extends Binder
+abstract class AbstractBinder extends Binder
 {
     public static function tableName()
     {

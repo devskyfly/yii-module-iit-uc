@@ -6,5 +6,10 @@
 			"email" : "devskyfly@gmail.com"
 		}
 	],
-	"type" : "module"
+	"type" : "module",
+	"autoload" : {
+		"psr-4" : {
+			"devskyfly\\yiiModuleIitUc\\" : ""
+		}
+	}
 }

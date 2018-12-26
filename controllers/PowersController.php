@@ -4,8 +4,8 @@ namespace devskyfly\yiiModuleIitUc\controllers;
 use devskyfly\php56\types\Obj;
 use devskyfly\yiiModuleAdminPanel\controllers\contentPanel\AbstractContentPanelController;
 use devskyfly\yiiModuleAdminPanel\widgets\contentPanel\ItemSelector;
-use devskyfly\yiiModuleIitUc\models\site\PowerSection;
-use devskyfly\yiiModuleIitUc\models\site\Power;
+use devskyfly\yiiModuleIitUc\models\power\PowerSection;
+use devskyfly\yiiModuleIitUc\models\power\Power;
 
 class PowersController extends AbstractContentPanelController
 {

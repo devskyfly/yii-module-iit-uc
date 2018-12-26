@@ -1,5 +1,5 @@
 <?php
-namespace devskyfly\yiiModuleIitUc\models\service;
+namespace devskyfly\yiiModuleIitUc\models\servicePackage;
 
 use devskyfly\yiiModuleIitUc\models\common\AbstractSection;
 
@@ -17,6 +17,6 @@ class ServicePackageSection extends AbstractSection
      */
     public static function selectListRoute()
     {
-        return "iit-uc/services-packages/section-select-list";
+        return "/iit-uc/services-packages/section-select-list";
     }
 }

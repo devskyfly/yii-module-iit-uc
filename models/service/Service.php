@@ -2,7 +2,14 @@
 namespace devskyfly\yiiModuleIitUc\models\service;
 
 use devskyfly\yiiModuleAdminPanel\models\contentPanel\AbstractEntity;
+use yii\helpers\ArrayHelper;
 
+/**
+ * 
+ * @author devskyfly
+ * @property string $price
+ * @property string $slx_id
+ */
 class Service extends AbstractEntity
 {
     /**
@@ -23,11 +30,21 @@ class Service extends AbstractEntity
      */
     public static function selectListRoute()
     {
-        return "iit-uc/services/entity-select-list";
+        return "/iit-uc/services/entity-select-list";
     }
     
     public static function tableName()
     {
         return 'iit_uc_service';
+    }
+    
+    public function rules()
+    {
+        $old_rules=parent::rules();
+        $new_rules=[
+            [["price","slx_id"],"required"],
+            [["price","slx_id"],"string"]
+        ];
+        return ArrayHelper::merge($old_rules, $new_rules);
     }
 }

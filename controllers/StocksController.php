@@ -7,7 +7,7 @@ use devskyfly\yiiModuleAdminPanel\widgets\contentPanel\ItemSelector;
 use devskyfly\yiiModuleIitUc\models\stock\Stock;
 use devskyfly\yiiModuleIitUc\models\stock\StockSection;
 
-class Controller extends AbstractContentPanelController
+class StocksController extends AbstractContentPanelController
 {
     /**
      *
@@ -53,6 +53,8 @@ class Controller extends AbstractContentPanelController
                     .$form->field($item,'create_date_time')
                     .$form->field($item,'change_date_time')
                     .$form->field($item,'active')->checkbox(['value'=>'Y','uncheckValue'=>'N','checked'=>$item->active=='Y'?true:false])
+                    .$form->field($item,'stock')
+                    .$form->field($item,'client_type')
                 ]
             ];
         };
@@ -95,7 +97,7 @@ class Controller extends AbstractContentPanelController
      */
     public function itemLabel()
     {
-        return "";
+        return "Услуги";
     }
 }
 
