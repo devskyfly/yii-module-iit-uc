@@ -2,7 +2,7 @@
 namespace devskyfly\yiiModuleIitUc\models\stock;
 
 use devskyfly\yiiModuleIitUc\models\common\AbstractBinder;
-use devskyfly\yiiModuleIitUc\models\service\ServicePackage;
+use devskyfly\yiiModuleIitUc\models\servicePackage\ServicePackage;
 
 
 class StockToServicePackageBinder extends AbstractBinder

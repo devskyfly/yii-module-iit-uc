@@ -3,9 +3,12 @@ namespace devskyfly\yiiModuleIitUc\controllers;
 
 use devskyfly\php56\types\Obj;
 use devskyfly\yiiModuleAdminPanel\controllers\contentPanel\AbstractContentPanelController;
+use devskyfly\yiiModuleAdminPanel\widgets\contentPanel\Binder;
 use devskyfly\yiiModuleAdminPanel\widgets\contentPanel\ItemSelector;
 use devskyfly\yiiModuleIitUc\models\stock\Stock;
 use devskyfly\yiiModuleIitUc\models\stock\StockSection;
+use devskyfly\yiiModuleIitUc\models\stock\StockToCheckedServiceBinder;
+use devskyfly\yiiModuleIitUc\models\stock\StockToServicePackageBinder;
 
 class StocksController extends AbstractContentPanelController
 {
@@ -39,6 +42,9 @@ class StocksController extends AbstractContentPanelController
     {
         return function($form,$item)
         {
+            $stock_to_checked_service_binder_cls=StockToCheckedServiceBinder::class;
+            $stock_to_service_package_binder_cls=StockToServicePackageBinder::class;
+            
             return [
                 [
                     "label"=>"main",
@@ -55,7 +61,23 @@ class StocksController extends AbstractContentPanelController
                     .$form->field($item,'active')->checkbox(['value'=>'Y','uncheckValue'=>'N','checked'=>$item->active=='Y'?true:false])
                     .$form->field($item,'stock')
                     .$form->field($item,'client_type')
-                ]
+                ],
+                [
+                    "label"=>"binds",
+                    "content"=>
+                    Binder::widget([
+                        "label"=>"Отмеченные доп. услуги",
+                        "form"=>$form,
+                        "master_item"=>$item,
+                        "binder_cls"=>$stock_to_checked_service_binder_cls
+                    ])
+                    .Binder::widget([
+                        "label"=>"Пакеты доп. услуг",
+                        "form"=>$form,
+                        "master_item"=>$item,
+                        "binder_cls"=>$stock_to_service_package_binder_cls
+                    ])
+                ],
             ];
         };
     }
