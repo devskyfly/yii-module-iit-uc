@@ -42,7 +42,8 @@ class Service extends AbstractEntity
     {
         $old_rules=parent::rules();
         $new_rules=[
-            [["price","slx_id"],"required"],
+            //[["price","slx_id"],"required"],
+            [["price"],"required"],
             [["price","slx_id"],"string"]
         ];
         return ArrayHelper::merge($old_rules, $new_rules);

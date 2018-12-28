@@ -3,11 +3,14 @@ namespace devskyfly\yiiModuleIitUc\controllers;
 
 use devskyfly\php56\types\Obj;
 use devskyfly\yiiModuleAdminPanel\controllers\contentPanel\AbstractContentPanelController;
+use devskyfly\yiiModuleAdminPanel\widgets\contentPanel\Binder;
 use devskyfly\yiiModuleAdminPanel\widgets\contentPanel\ItemSelector;
-use devskyfly\yiiModuleIitUc\models\service\Service;
-use devskyfly\yiiModuleIitUc\models\service\ServiceSection;
 
-class ServicesController extends AbstractContentPanelController
+use devskyfly\yiiModuleIitUc\models\powerPackage\PowerPackage;
+use devskyfly\yiiModuleIitUc\models\powerPackage\PowerPackageSection;
+use devskyfly\yiiModuleIitUc\models\powerPackage\PowerPackageToPowerBinder;
+
+class PowersPackagesController extends AbstractContentPanelController
 {
     /**
      *
@@ -17,7 +20,7 @@ class ServicesController extends AbstractContentPanelController
     public static function sectionCls()
     {
         //Если иерархичность не требуется, товместо названия класса можно передать null
-        return ServiceSection::class;
+        return PowerPackageSection::class;
     }
     
     /**
@@ -27,7 +30,7 @@ class ServicesController extends AbstractContentPanelController
      */
     public static function entityCls()
     {
-        return Service::class;
+        return PowerPackage::class;
     }
     
     /**
@@ -39,6 +42,8 @@ class ServicesController extends AbstractContentPanelController
     {
         return function($form,$item)
         {
+            $power_package_to_power_binder_cls=PowerPackageToPowerBinder::class;
+            
             return [
                 [
                     "label"=>"main",
@@ -53,7 +58,17 @@ class ServicesController extends AbstractContentPanelController
                     .$form->field($item,'create_date_time')
                     .$form->field($item,'change_date_time')
                     .$form->field($item,'active')->checkbox(['value'=>'Y','uncheckValue'=>'N','checked'=>$item->active=='Y'?true:false])
-                    .$form->field($item,'slx_id')
+                    .$form->field($item,'select_type')->dropDownList(['MULTY'=>'MULTY','MONO'=>'MONO'])
+                ],
+                [
+                    "label"=>"binds",
+                    "content"=>
+                    Binder::widget([
+                        "label"=>"Полномочия",
+                        "form"=>$form,
+                        "master_item"=>$item,
+                        "binder_cls"=>$power_package_to_power_binder_cls
+                    ])
                 ]
             ];
         };
@@ -83,8 +98,7 @@ class ServicesController extends AbstractContentPanelController
                     .$form->field($item,'create_date_time')
                     .$form->field($item,'change_date_time')
                     .$form->field($item,'active')->checkbox(['value'=>'Y','uncheckValue'=>'N','checked'=>$item->active=='Y'?true:false])
-                    .$form->field($item,'price')
-                    .$form->field($item,'slx_id')
+                    
                 ]
             ];
         };
@@ -97,7 +111,7 @@ class ServicesController extends AbstractContentPanelController
      */
     public function itemLabel()
     {
-        return "Доп. услуги";
+        return "Пакеты полномочий";
     }
 }
 

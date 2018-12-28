@@ -1,10 +1,15 @@
 <?php
-namespace devskyfly\yiiModuleIitUc\models\power;
+namespace devskyfly\yiiModuleIitUc\models\powerPackage;
 
 use devskyfly\yiiModuleAdminPanel\models\contentPanel\AbstractEntity;
 use yii\helpers\ArrayHelper;
 
-class Power extends AbstractEntity
+/**
+ * 
+ * @author devskyfly
+ * @property string $select_type
+ */
+class PowerPackage extends AbstractEntity
 {
     /**
      *
@@ -14,7 +19,7 @@ class Power extends AbstractEntity
     public static function sectionCls()
     {
         //Если иерархичность не требуется, то вместо названия класса можно передать null
-        return PowerSection::class;
+        return PowerPackageSection::class;
     }
     
     /**
@@ -24,12 +29,12 @@ class Power extends AbstractEntity
      */
     public static function selectListRoute()
     {
-        return "/iit-uc/powers/entity-select-list";
+        return "/iit-uc/power-packages/entity-select-list";
     }
     
     public static function tableName()
     {
-        return 'iit_uc_power';
+        return 'iit_uc_power_package';
     }
     
     public function rules()
@@ -37,8 +42,8 @@ class Power extends AbstractEntity
         $old_rules=parent::rules();
         
         $new_rules=[
-            [[],"required"],
-            [[],"string"]
+            [["select_type"],"required"],
+            [["select_type"],"string"]
         ];
         
         return ArrayHelper::merge($old_rules, $new_rules);
