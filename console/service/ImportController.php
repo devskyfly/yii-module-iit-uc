@@ -7,6 +7,7 @@ use devskyfly\yiiModuleIitUc\models\rate\Rate;
 use devskyfly\yiiModuleIitUc\models\site\Site;
 use devskyfly\yiiModuleIitUc\models\site\SiteSection;
 use yii\helpers\BaseConsole;
+
 use devskyfly\yiiModuleIitUc\models\rate\RateSection;
 use devskyfly\yiiModuleIitUc\models\rate\RateToPowerBinder;
 use devskyfly\yiiModuleIitUc\models\rate\RateToSiteBinder;
@@ -14,7 +15,17 @@ use devskyfly\yiiModuleIitUc\models\service\Service;
 use devskyfly\yiiModuleIitUc\models\stock\Stock;
 use Yii;
 use yii\db\Exception;
+use devskyfly\yiiModuleIitUc\models\servicePackage\ServicePackage;
+use devskyfly\yiiModuleIitUc\models\servicePackage\ServicePackageToServiceBinder;
+use devskyfly\yiiModuleIitUc\models\stock\StockToServicePackageBinder;
+use devskyfly\yiiModuleIitUc\models\stock\StockToCheckedServiceBinder;
 
+/**
+ * This controller is only for initialithation of module.
+ * 
+ * @author devskyfly
+ *
+ */
 class ImportController extends Controller
 {
     public $data_path="";
@@ -33,8 +44,10 @@ class ImportController extends Controller
             $this->importRates();
             $this->importSites();
             $this->importServices();
+            $this->importServicesPackages();
             $this->importStocks();
-            $this->import();
+            
+            //$this->import();
             $this->importRateToSiteBinder();     
         }
         catch (\Throwable $e){
@@ -51,16 +64,54 @@ class ImportController extends Controller
         return 0;
     }
     
+    public function importServicesPackages()
+    {
+        $packages=[
+            ['name'=>'Базовый сертификат','ids'=>[1]],
+            ['name'=>'ОФД','ids'=>[1,4]],
+            ['name'=>'СМЭВ','ids'=>[1,4]],
+            ['name'=>'ЕГАИС','ids'=>[2,12,4]],
+            ['name'=>'Маркировка','ids'=>[2,12,4]],
+            ['name'=>'Квал. для физ. лиц','ids'=>[1,4]],
+            ['name'=>'Настройка рабочего места','ids'=>[5,4],'select_type'=>'MONO'],
+        ];
+        
+        foreach ($packages as $package){
+            $obj=new ServicePackage();
+            $obj->active="Y";
+            $obj->name=$package['name'];
+            
+            if(isset($package['select_type'])){
+                $obj->select_type="MONO";
+            }else{
+                $obj->select_type="MULTI";
+            }
+            
+            if(!$obj->saveLikeItem()){
+                throw new Exception('Can\'t save service package: '.print_r($obj->getErrorSummary(true),true));
+            }
+            
+            foreach ($package['ids'] as $id){
+                $bind=new ServicePackageToServiceBinder();
+                $bind->master_id=$obj->id;
+                $bind->slave_id=$id;
+                if(!$bind->insert()){
+                    throw new Exception('Can\'t save service bind: '.print_r($bind->getErrorSummary(true),true));
+                }
+            }
+        }
+    }
+    
     public function importStocks()
     {
         $stocks=[
-            ['name'=>'Базовый сертификат','stock'=>'15',"client_type"=>"['UR','IP','FIZ']",'rate'=>2],
-            ['name'=>'ОФД','stock'=>'42',"client_type"=>"['UR','IP']",'rate'=>18],
+            ['name'=>'Базовый сертификат','stock'=>'15',"client_type"=>"['UR','IP','FIZ']",'rate'=>2,'packages'=>[1,7],'services'=>[1]],
+            ['name'=>'ОФД','stock'=>'42',"client_type"=>"['UR','IP']",'rate'=>18,'packages'=>[2],'services'=>[1]],
             //['name'=>'ОФД-Я','stock'=>'37','rate'=>],
-            ['name'=>'СМЭВ','stock'=>'22',"client_type"=>"['UR']",'rate'=>[20,28]],
-            ['name'=>'ЕГАИС','stock'=>'25',"client_type"=>"['UR','IP']",'rate'=>3],
-            ['name'=>'Маркировка','stock'=>'92',"client_type"=>"['UR','IP']",'rate'=>27],
-            ['name'=>'Квал. для физ. лиц','stock'=>'39',"client_type"=>"['FIZ']",'rate'=>1],
+            ['name'=>'СМЭВ','stock'=>'22',"client_type"=>"['UR']",'rate'=>[20,28],'packages'=>[3],'services'=>[1]],
+            ['name'=>'ЕГАИС','stock'=>'25',"client_type"=>"['UR','IP']",'rate'=>3,'packages'=>[4],'services'=>[]],
+            ['name'=>'Маркировка','stock'=>'92',"client_type"=>"['UR','IP']",'rate'=>27,'packages'=>[5],'services'=>[]],
+            ['name'=>'Квал. для физ. лиц','stock'=>'39',"client_type"=>"['FIZ']",'rate'=>1,'packages'=>[6],'services'=>[1]],
         ];
         
         foreach ($stocks as $stock){
@@ -71,11 +122,30 @@ class ImportController extends Controller
             $model->client_type=$stock['client_type'];
             
             if($model->saveLikeItem()){
+                
+                foreach ($stock['packages'] as $package_id){
+                    $binder=new StockToServicePackageBinder();
+                    $binder->master_id=$model->id;
+                    $binder->slave_id=$package_id;
+                    if(!$binder->insert()){
+                        throw new \RuntimeException("Can't write StockToServicePackageBinder : ".print_r($binder->getErrorSummary(true),true));
+                    }
+                }
+                
+                foreach ($stock['services'] as $service_id){
+                    $binder=new StockToCheckedServiceBinder();
+                    $binder->master_id=$model->id;
+                    $binder->slave_id=$service_id;
+                    if(!$binder->insert()){
+                        throw new \RuntimeException("Can't write StockToCheckedServiceBinder : ".print_r($binder->getErrorSummary(true),true));
+                    }
+                }
+                
                 if(!is_array($stock['rate'])){
                     $rate=Rate::find()->where(['id'=>$stock['rate']])->one();
                     if($rate){
                         $rate->_stock__id=''.$model['id'];
-                        BaseConsole::stdout(print_r($rate->attributes,true),PHP_EOL);
+                        //BaseConsole::stdout(print_r($rate->attributes,true),PHP_EOL);
                         if(!$rate->saveLikeItem()){
                             throw new Exception("Can't write rate with id={$rate->id}:".print_r($rate->getErrorSummary(true),true));
                         }
@@ -119,7 +189,7 @@ class ImportController extends Controller
             $obj->price=$item['price'];
             $result=$obj->saveLikeItem();
             if(!$result){
-                BaseConsole::stdout(print_r($obj->getErrors(),true).PHP_EOL);
+                throw new Exception("Can't write service with id=$obj->id:".print_r($obj->getErrorSummary(true),true));
             }
         }
     }
@@ -138,7 +208,7 @@ class ImportController extends Controller
             
             $result=$obj->insert();;
             if(!$result){
-                BaseConsole::stdout(print_r($obj->getErrors(),true).PHP_EOL);
+                throw new Exception("Can't write rate to site binder with id=$obj->id:".print_r($obj->getErrorSummary(true),true));
             }
         }
     }
@@ -161,7 +231,7 @@ class ImportController extends Controller
             $obj->price=$item['price'];
             $result=$obj->saveLikeItem();
             if(!$result){
-                BaseConsole::stdout(print_r($obj->getErrors(),true).PHP_EOL);
+                throw new Exception("Can't write rate with id=$obj->id:".print_r($obj->getErrorSummary(true),true));
             }
         }
         
@@ -177,7 +247,7 @@ class ImportController extends Controller
             //$obj->code=$item['code'];
             $result=$obj->saveLikeItem();
             if(!$result){
-                BaseConsole::stdout(print_r($obj->getErrors(),true).PHP_EOL);
+                throw new Exception("Can't write rate section with id=$obj->id:".print_r($obj->getErrorSummary(true),true));
             }
         }
     }
@@ -199,7 +269,7 @@ class ImportController extends Controller
             //$obj->code=$item['code'];
             $result=$obj->saveLikeItem();
             if(!$result){
-                BaseConsole::stdout(print_r($obj->getErrors(),true).PHP_EOL);
+                throw new Exception("Can't write site with id=$obj->id:".print_r($obj->getErrorSummary(true),true));
             }
         }
         
@@ -215,7 +285,7 @@ class ImportController extends Controller
             //$obj->code=$item['code'];
             $result=$obj->saveLikeItem();
             if(!$result){
-                BaseConsole::stdout(print_r($obj->getErrors(),true).PHP_EOL);
+                throw new Exception("Can't write site section with id=$obj->id:".print_r($obj->getErrorSummary(true),true));
             }
         }
     }

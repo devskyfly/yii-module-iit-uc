@@ -66,17 +66,18 @@ class StocksController extends AbstractContentPanelController
                     "label"=>"binds",
                     "content"=>
                     Binder::widget([
-                        "label"=>"Отмеченные доп. услуги",
-                        "form"=>$form,
-                        "master_item"=>$item,
-                        "binder_cls"=>$stock_to_checked_service_binder_cls
-                    ])
-                    .Binder::widget([
                         "label"=>"Пакеты доп. услуг",
                         "form"=>$form,
                         "master_item"=>$item,
                         "binder_cls"=>$stock_to_service_package_binder_cls
                     ])
+                    .Binder::widget([
+                        "label"=>"Отмеченные доп. услуги",
+                        "form"=>$form,
+                        "master_item"=>$item,
+                        "binder_cls"=>$stock_to_checked_service_binder_cls
+                    ])
+                    
                 ],
             ];
         };

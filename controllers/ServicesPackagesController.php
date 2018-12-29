@@ -3,9 +3,11 @@ namespace devskyfly\yiiModuleIitUc\controllers;
 
 use devskyfly\php56\types\Obj;
 use devskyfly\yiiModuleAdminPanel\controllers\contentPanel\AbstractContentPanelController;
+use devskyfly\yiiModuleAdminPanel\widgets\contentPanel\Binder;
 use devskyfly\yiiModuleAdminPanel\widgets\contentPanel\ItemSelector;
 use devskyfly\yiiModuleIitUc\models\servicePackage\ServicePackage;
 use devskyfly\yiiModuleIitUc\models\servicePackage\ServicePackageSection;
+use devskyfly\yiiModuleIitUc\models\servicePackage\ServicePackageToServiceBinder;
 
 class ServicesPackagesController extends AbstractContentPanelController
 {
@@ -39,6 +41,7 @@ class ServicesPackagesController extends AbstractContentPanelController
     {
         return function($form,$item)
         {
+            $service_package_to_service_binder_cls=ServicePackageToServiceBinder::class;
             return [
                 [
                     "label"=>"main",
@@ -54,7 +57,17 @@ class ServicesPackagesController extends AbstractContentPanelController
                     .$form->field($item,'change_date_time')
                     .$form->field($item,'active')->checkbox(['value'=>'Y','uncheckValue'=>'N','checked'=>$item->active=='Y'?true:false])
                     .$form->field($item,'select_type')->dropDownList(['MULTY'=>'MULTY','MONO'=>'MONO'])
-                ]
+                ],
+                [
+                    "label"=>"binds",
+                    "content"=>
+                    Binder::widget([
+                        "label"=>"Доп. услуги",
+                        "form"=>$form,
+                        "master_item"=>$item,
+                        "binder_cls"=>$service_package_to_service_binder_cls
+                    ])
+                ],
             ];
         };
     }
@@ -68,7 +81,6 @@ class ServicesPackagesController extends AbstractContentPanelController
     {
         return function($form,$item)
         {
-            
             return [
                 [
                     "label"=>"main",
