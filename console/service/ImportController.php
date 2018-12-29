@@ -3,6 +3,7 @@ namespace devskyfly\yiiModuleIitUc\console\service;
 
 use yii\console\Controller;
 use yii\helpers\Json;
+use devskyfly\yiiModuleIitUc\models\power\Power;
 use devskyfly\yiiModuleIitUc\models\rate\Rate;
 use devskyfly\yiiModuleIitUc\models\site\Site;
 use devskyfly\yiiModuleIitUc\models\site\SiteSection;
@@ -13,12 +14,20 @@ use devskyfly\yiiModuleIitUc\models\rate\RateToPowerBinder;
 use devskyfly\yiiModuleIitUc\models\rate\RateToSiteBinder;
 use devskyfly\yiiModuleIitUc\models\service\Service;
 use devskyfly\yiiModuleIitUc\models\stock\Stock;
+use PHPExcel_IOFactory;
 use Yii;
 use yii\db\Exception;
 use devskyfly\yiiModuleIitUc\models\servicePackage\ServicePackage;
 use devskyfly\yiiModuleIitUc\models\servicePackage\ServicePackageToServiceBinder;
 use devskyfly\yiiModuleIitUc\models\stock\StockToServicePackageBinder;
 use devskyfly\yiiModuleIitUc\models\stock\StockToCheckedServiceBinder;
+use devskyfly\php56\libs\fileSystem\Files;
+use Codeception\Module\Filesystem;
+use devskyfly\yiiModuleIitUc\models\power\PowerSection;
+use yii\base\BaseObject;
+use devskyfly\yiiModuleIitUc\models\powerPackage\PowerPackageToPowerBinder;
+use devskyfly\yiiModuleIitUc\models\powerPackage\PowerPackage;
+use devskyfly\yiiModuleIitUc\models\rate\RateToPowerPackageBinder;
 
 /**
  * This controller is only for initialithation of module.
@@ -29,10 +38,12 @@ use devskyfly\yiiModuleIitUc\models\stock\StockToCheckedServiceBinder;
 class ImportController extends Controller
 {
     public $data_path="";
+    public $static_data_path="";
     
     public function init()
     {
         $this->data_path=__DIR__."/../../data";
+        $this->static_data_path=__DIR__."/../../service/data";
     }
     
     public function actionIndex()
@@ -46,9 +57,8 @@ class ImportController extends Controller
             $this->importServices();
             $this->importServicesPackages();
             $this->importStocks();
-            
-            //$this->import();
-            $this->importRateToSiteBinder();     
+            $this->importRateToSiteBinder();  
+            $this->importPowers();
         }
         catch (\Throwable $e){
             $trns->rollBack();
@@ -62,6 +72,86 @@ class ImportController extends Controller
         }
         $trns->commit();
         return 0;
+    }
+    
+    public function importPowers()
+    {
+        $sections_names=[
+            "6,4"=>"АЭТП и ФЭТП|ФЭТП",
+            "20"=>"СМЭВ",
+            "23"=>"АСТ ГОЗ",
+            "26"=>"Росреестра",
+            "34"=>"ФРДО",
+        ];
+        
+        //BaseConsole::stdout(print_r($files,true).PHP_EOL);
+        
+        $path=$this->static_data_path.'/powers';
+        $files=glob($path.'/*.xls');
+        
+        foreach ($files as $file){  
+            $basename=basename($file,'.xls');
+            $ids=explode(',', $basename);
+            
+            $objPHPExcel = PHPExcel_IOFactory::load($file);
+            $sheetData = $objPHPExcel->getActiveSheet()->toArray(null,true,true,true);
+            
+            $section=new PowerSection();
+            $section->active='Y';
+            $section->name=$sections_names[$basename];
+            if(!$section->saveLikeItem()){
+                throw new Exception('Can\'t save PowerSection: '.print_r($section->getErrorSummary(true),true));
+            }
+            $powers_ids=[];
+            
+            foreach ($sheetData as $item){
+                if(empty($item['A'])){
+                    break;
+                }
+                $power=new Power();
+                $power->active='Y';
+                $power->_section__id=$section->id;
+                $power->name=$item['A'];
+                $power->slx_id=$item['B'];
+                if(!$power->saveLikeItem()){
+                    throw new Exception('Can\'t save Power: '.print_r($power->getErrorSummary(true),true));
+                }
+                $powers_ids[]=$power->id;
+            }
+            
+            foreach ($ids as $id){
+                $power_package=new PowerPackage();
+                $power_package->active='Y';
+                $power_package->name=$section->name;
+                $power_package->select_type='MULTI';
+                if(!$power_package->saveLikeItem()){
+                    throw new Exception('Can\'t save power package: '.print_r($power_package->getErrorSummary(true),true));
+                }
+                
+                foreach ($powers_ids as $powers_id){
+                    $binder=new PowerPackageToPowerBinder();
+                    $binder->master_id=$power_package->id;
+                    $binder->slave_id=$powers_id;
+                    if(!$binder->insert()){
+                        throw new Exception('Can\'t save binder: '.print_r($binder->getErrorSummary(true),true));
+                    }
+                }
+                
+                
+                $rate=Rate::find()->where(['id'=>$id])->one();
+                if(!$rate){throw new \RuntimeException("Can't find rate with id={$id}");}
+                
+                $rate_to_power_package_binder=new RateToPowerPackageBinder();
+                
+                $rate_to_power_package_binder->master_id=$rate->id;
+                $rate_to_power_package_binder->slave_id=$power_package->id;
+                
+                if(!$rate_to_power_package_binder->insert()){
+                    throw new Exception('Can\'t save binder: '.print_r($rate_to_power_package_binder->getErrorSummary(true),true));
+                }
+                
+            }
+        }
     }
     
     public function importServicesPackages()

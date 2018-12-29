@@ -12,6 +12,7 @@ use devskyfly\yiiModuleIitUc\widgets\MasterRatesList;
 use devskyfly\yiiModuleIitUc\widgets\SlaveSitesList;
 use devskyfly\yiiModuleIitUc\models\rate\RateToSiteBinder;
 use devskyfly\yiiModuleIitUc\models\rate\RateToPowerBinder;
+use devskyfly\yiiModuleIitUc\models\rate\RateToPowerPackageBinder;
 
 
 class RatesController extends AbstractContentPanelController
@@ -47,7 +48,7 @@ class RatesController extends AbstractContentPanelController
         return function($form,$item)
         {
             $rate_to_site_binder_cls=RateToSiteBinder::class;
-            $rate_to_power_binder_cls=RateToPowerBinder::class;
+            $rate_to_power_package_binder_cls=RateToPowerPackageBinder::class;
             
             return [
                 [
@@ -93,7 +94,7 @@ class RatesController extends AbstractContentPanelController
                         "label"=>"Полномочия",
                         "form"=>$form,
                         "master_item"=>$item,
-                        "binder_cls"=>$rate_to_power_binder_cls
+                        "binder_cls"=>$rate_to_power_package_binder_cls
                     ])
                 ],
                 [

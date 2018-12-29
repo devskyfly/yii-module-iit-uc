@@ -4,6 +4,11 @@ namespace devskyfly\yiiModuleIitUc\models\power;
 use devskyfly\yiiModuleAdminPanel\models\contentPanel\AbstractEntity;
 use yii\helpers\ArrayHelper;
 
+/**
+ * 
+ * @author devskyfly
+ * @property string slx_id
+ */
 class Power extends AbstractEntity
 {
     /**
@@ -37,8 +42,8 @@ class Power extends AbstractEntity
         $old_rules=parent::rules();
         
         $new_rules=[
-            [[],"required"],
-            [[],"string"]
+            //[[],"required"],
+            [['slx_id'],"string"]
         ];
         
         return ArrayHelper::merge($old_rules, $new_rules);

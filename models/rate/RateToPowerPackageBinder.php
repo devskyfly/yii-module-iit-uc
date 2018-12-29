@@ -5,7 +5,7 @@ use devskyfly\yiiModuleIitUc\models\common\AbstractBinder;
 use devskyfly\yiiModuleIitUc\models\powerPackage\PowerPackage;
 
 
-class RateToPowerBinder extends AbstractBinder
+class RateToPowerPackageBinder extends AbstractBinder
 {
     protected function slaveCls()
     {

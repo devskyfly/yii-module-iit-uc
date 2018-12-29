@@ -7,6 +7,9 @@
 		}
 	],
 	"type" : "module",
+	"require" : {
+		"phpoffice/phpexcel" : "1.8.2"
+	},
 	"autoload" : {
 		"psr-4" : {
 			"devskyfly\\yiiModuleIitUc\\" : ""
