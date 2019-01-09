@@ -7,7 +7,7 @@ use devskyfly\yiiModuleIitUc\models\servicePackage\ServicePackage;
 
 class ServicePackageToServiceBinder extends AbstractBinder
 {
-    protected function slaveCls()
+    protected static function slaveCls()
     {
         return Service::class;
     }

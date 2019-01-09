@@ -7,7 +7,7 @@ use devskyfly\yiiModuleIitUc\models\powerPackage\PowerPackage;
 
 class RateToPowerPackageBinder extends AbstractBinder
 {
-    protected function slaveCls()
+    protected static function slaveCls()
     {
         return PowerPackage::class;
     }

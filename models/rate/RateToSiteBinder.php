@@ -6,7 +6,7 @@ use devskyfly\yiiModuleIitUc\models\site\Site;
 
 class RateToSiteBinder extends AbstractBinder
 {
-    protected function slaveCls()
+    protected static function slaveCls()
     {
         return Site::class;
     }
@@ -15,6 +15,5 @@ class RateToSiteBinder extends AbstractBinder
     {
         return Rate::class;
     }
-
 }
 

@@ -7,7 +7,7 @@ use devskyfly\yiiModuleIitUc\models\service\Service;
 
 class StockToCheckedServiceBinder extends AbstractBinder
 {
-    protected function slaveCls()
+    protected static function slaveCls()
     {
         return Service::class;
     }
