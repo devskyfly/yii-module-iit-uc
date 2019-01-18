@@ -2,6 +2,7 @@
 namespace devskyfly\yiiModuleIitUc;
 
 use Yii;
+use yii\filters\AccessControl;
 
 class Module extends \yii\base\Module
 {
@@ -16,8 +17,21 @@ class Module extends \yii\base\Module
          }
      }
      
-     /* protected function checkProperties()
+     public function behaviors()
      {
-         
-     } */
+         return [
+             'access' => [
+                 'class' => AccessControl::className(),
+                 'except'=>[
+                     'rest/*/*',
+                 ],
+                 'rules' => [
+                      [
+                         'allow' => true,
+                         'roles' => ['@'],
+                     ], 
+                 ],
+             ]
+         ];
+     }
 }
