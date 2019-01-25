@@ -38,12 +38,10 @@ use devskyfly\yiiModuleIitUc\models\rate\RateToPowerPackageBinder;
 class ImportController extends Controller
 {
     public $data_path="";
-    public $static_data_path="";
     
     public function init()
     {
-        $this->data_path=__DIR__."/../../data";
-        $this->static_data_path=__DIR__."/../../service/data";
+        $this->data_path=__DIR__."/../../service/data/files/";
     }
     
     public function actionIndex()
@@ -86,7 +84,7 @@ class ImportController extends Controller
         
         //BaseConsole::stdout(print_r($files,true).PHP_EOL);
         
-        $path=$this->static_data_path.'/powers';
+        $path=$this->data_path.'/Powers';
         $files=glob($path.'/*.xls');
         
         foreach ($files as $file){  
