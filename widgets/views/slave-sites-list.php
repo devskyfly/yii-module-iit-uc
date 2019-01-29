@@ -19,7 +19,7 @@ use devskyfly\php56\types\Vrbl;
             	<?$i++;?>
             		<tr>
             			<td><?=$i?></td>
-            			<td><?=$item['active']?'Y':'N'?></td>
+            			<td><?=$item['active']?></td>
                 		<td>
                 			<?=$item['name']?>
                 			<span><?=$item['url']?></span>
