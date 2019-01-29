@@ -100,7 +100,7 @@ class RatesController extends AbstractContentPanelController
                 [
                     "label"=>"tools",
                     "content"=>
-                    SlaveSitesList::widget([])
+                    SlaveSitesList::widget(['model'=>$item])
                 ]
             ];
         };

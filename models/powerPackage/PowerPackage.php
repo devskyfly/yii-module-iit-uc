@@ -29,7 +29,7 @@ class PowerPackage extends AbstractEntity
      */
     public static function selectListRoute()
     {
-        return "/iit-uc/power-packages/entity-select-list";
+        return "/iit-uc/powers-packages/entity-select-list";
     }
     
     public static function tableName()

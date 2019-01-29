@@ -7,6 +7,7 @@ use devskyfly\php56\types\Vrbl;
 use devskyfly\yiiModuleIitUc\models\rate\Rate;
 use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;
+use devskyfly\yiiModuleIitUc\components\RatesManager;
 
 class RatesController extends CommonController
 {
@@ -23,6 +24,7 @@ class RatesController extends CommonController
             if(!Str::isString($id)){
                 throw new BadRequestHttpException('Query param \'id\' is not string type.');
             }
+            
             $item=$rates_cls::find()
             ->where(
                 ['active'=>'Y',
@@ -41,5 +43,12 @@ class RatesController extends CommonController
         }
         
         $this->asJson($data);
+    }
+    
+    public function actionGetChain($id){
+        
+        $model=RatesManager::getBySlxId($id);
+        $chain=RatesManager::getChain($model);
+        $this->asJson($chain);
     }
 }
