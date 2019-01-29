@@ -1,8 +1,6 @@
 <?php
 namespace devskyfly\yiiModuleIitUc\controllers\rest;
 
-
-use devskyfly\php56\types\Arr;
 use devskyfly\php56\types\Nmbr;
 use devskyfly\php56\types\Vrbl;
 use devskyfly\yiiModuleIitUc\models\power\Power;
@@ -15,10 +13,61 @@ use devskyfly\yiiModuleIitUc\models\rate\RateToPowerPackageBinder;
 
 class PowersPackagesController extends CommonController
 {
-    public function actionGetByRateId($id,$mode_list='N')
+    public function actionIndex($mode_list='N')
     {
         if(!in_array($mode_list,$this->mode_list)){
-            throw new BadRequestHttpException('Param $mode_list aout of range.');
+            throw new BadRequestHttpException('Param $mode_list is out of range.');
+        }
+        $data=[];
+        
+        $powers_packages=PowerPackage::find()
+        ->where(['active'=>'Y'])
+        ->orderBy(['sort'=>SORT_ASC])
+        ->all();
+        
+        
+        foreach ($powers_packages as $power_package){
+            $package_data=[];
+            $list=[];
+            
+            $power_ids=PowerPackageToPowerBinder::getSlaveIds($power_package->id);
+            $powers=Power::find()
+            ->where(['active'=>'Y','id'=>$power_ids])
+            ->orderBy(['name'=>SORT_ASC])
+            ->all();
+            
+            if($mode_list=='Y'){
+                foreach ($powers as $power){
+                    $list[]=[
+                        'id'=>$power->id,
+                        'name'=>$power->name,
+                        'slx_id'=>$power->slx_id
+                    ];
+                }
+            }else{
+                foreach ($powers as $power){
+                    $list[]=$power->id;
+                }
+            }
+            
+            $package_data=[
+                'id'=>$power_package->id,
+                'name'=>$power_package->name,
+                'type'=>$power_package->select_type=='MULTI'?'checkbox':'radio',
+                'list'=>$list
+            ];
+            
+            $data[]=$package_data;
+        }
+        
+        
+        $this->asJson($data);
+    }
+    
+    private function actionGetByRateId($id,$mode_list='N')
+    {
+        if(!in_array($mode_list,$this->mode_list)){
+            throw new BadRequestHttpException('Param $mode_list is out of range.');
         }
         
         $data=[];

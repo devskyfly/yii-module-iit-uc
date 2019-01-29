@@ -8,10 +8,12 @@ use devskyfly\yiiModuleIitUc\models\rate\Rate;
 use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;
 use devskyfly\yiiModuleIitUc\components\RatesManager;
+use devskyfly\yiiModuleIitUc\models\rate\RateToPowerPackageBinder;
+use devskyfly\yiiModuleIitUc\models\powerPackage\PowerPackage;
 
 class RatesController extends CommonController
 {
-    public function actionGetBySlxIds(array $ids)
+    private function actionGetBySlxIds(array $ids)
     {
         $data=[];
         $rates_cls=Rate::class;
@@ -45,10 +47,44 @@ class RatesController extends CommonController
         $this->asJson($data);
     }
     
-    public function actionGetChain($id){
+    private function actionGetChain($id){
         
         $model=RatesManager::getBySlxId($id);
         $chain=RatesManager::getChain($model);
         $this->asJson($chain);
     }
+    
+    public function actionGetMultiChain(array $ids){
+        $result=[];
+        
+        $models=[];
+        foreach ($ids as $id){
+            $models[]=RatesManager::getBySlxId($id);
+        }
+        
+        $chain=RatesManager::getMultiChain($models);
+        
+        foreach ($chain as $item){
+            
+            $packages=RateToPowerPackageBinder::getSlaveItems($item->id);
+            $packages_ids=[];
+            foreach ($packages as $package){
+                if($package->active==PowerPackage::ACTIVE){
+                    $packages_ids[]=$package->id;
+                }
+            }
+            
+            $result[]=[
+                "id"=>$item->id,
+                "name"=>$item->name,
+                "slx_id"=>$item->slx_id,
+                "price"=>$item->price,
+                "powers_packages"=>$packages_ids,
+                "required_powers"=>[],
+                "stock_id"=>$item->_stock__id,
+                "required_license"=>false
+            ];
+        }    
+        $this->asJson($result);  
+    }   
 }

@@ -4,9 +4,11 @@ namespace devskyfly\yiiModuleIitUc\components;
 use devskyfly\php56\types\Arr;
 use devskyfly\php56\types\Obj;
 use devskyfly\php56\types\Str;
+use devskyfly\php56\types\Vrbl;
 use devskyfly\yiiModuleIitUc\models\rate\Rate;
 use yii\base\BaseObject;
 use devskyfly\yiiModuleIitUc\models\rate\RateToPowerBinder;
+use yii\helpers\ArrayHelper;
 
 class RatesManager extends BaseObject
 {
@@ -41,6 +43,38 @@ class RatesManager extends BaseObject
             $result[]=$parent;
         }
         return Arr::reverse($result);
+    }
+    
+    /**
+     * 
+     * @param \devskyfly\yiiModuleIitUc\models\rate\Rate $models
+     * @throws \InvalidArgumentException
+     * @return \devskyfly\yiiModuleIitUc\models\rate\Rate[]
+     */
+    public static function getMultiChain($models)
+    {
+        $result=[];
+        if(!Arr::isArray($models)){
+            throw new \InvalidArgumentException('Parameter $models is not array type.');
+        }
+        $main=null;
+        $list=[];
+        foreach ($models as $model){
+            $chain=self::getChain($model);
+            foreach ($chain as $item){
+                if(!Vrbl::isEmpty($item->_stock__id)){
+                    $main=$item;
+                    continue;
+                }
+                $list[$item->id]=$item;
+            }
+        }
+        
+        $result[]=$main;
+        
+        $result=ArrayHelper::merge($result, $list);
+        
+        return $result;
     }
     
     /**

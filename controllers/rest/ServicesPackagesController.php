@@ -13,7 +13,60 @@ use devskyfly\yiiModuleIitUc\models\servicePackage\ServicePackageToServiceBinder
 
 class ServicesPackagesController extends CommonController
 {
-    public function actionGetByStockId($id, $mode_list='N')
+    public function actionIndex($mode_list='N')
+    {
+        if(!in_array($mode_list,$this->mode_list)){
+            throw new BadRequestHttpException('Query param \'mode_list\' aout of range.');
+        }
+        
+        $data=[];
+        $stock_cls=Stock::class;
+        $service_package_cls=ServicePackage::class;
+        $stock_to_service_package_binder=StockToServicePackageBinder::class;
+        $service_package_to_service=ServicePackageToServiceBinder::class;
+       
+        
+        $service_packages=ServicePackage::find()
+        ->where(['active'=>'Y'])
+        ->orderBy(['sort'=>SORT_ASC])->all();
+        
+        foreach ($service_packages as $service_package){
+            if($service_package->active=='N')continue;
+            $list=[];
+            
+            $service_ids=$service_package_to_service::getSlaveIds($service_package->id);
+            $services=Service::find()
+            ->where(['active'=>'Y','id'=>$service_ids])
+            ->orderBy(['name'=>SORT_ASC])->all();
+            
+            if($mode_list=='Y'){
+                foreach ($services as $service){
+                    $list[]=[
+                        'id'=>$service->id,
+                        'name'=>$service->name,
+                        'price'=>$service->price,
+                    ];
+                }
+            }else{
+                foreach ($services as $service){
+                    $list[]=$service->id;
+                }
+            }
+            
+            $package_data=[
+                'id'=>$service_package->id,
+                'name'=>$service_package->name,
+                'type'=>$service_package->select_type=='MULTI'?'checkbox':'radio',
+                'list'=>$list
+            ];
+            
+            $data[]=$package_data;
+        }
+        
+        $this->asJson($data);
+    }
+    
+    private function actionGetByStockId($id, $mode_list='N')
     {
         if(!in_array($mode_list,$this->mode_list)){
             throw new BadRequestHttpException('Query param \'mode_list\' aout of range.');
