@@ -8,10 +8,9 @@ use devskyfly\yiiModuleAdminPanel\widgets\contentPanel\ItemSelector;
 use devskyfly\yiiModuleIitUc\models\rate\Rate;
 use devskyfly\yiiModuleIitUc\models\rate\RateSection;
 use devskyfly\yiiModuleIitUc\models\stock\Stock;
-use devskyfly\yiiModuleIitUc\widgets\MasterRatesList;
+
 use devskyfly\yiiModuleIitUc\widgets\SlaveSitesList;
 use devskyfly\yiiModuleIitUc\models\rate\RateToSiteBinder;
-use devskyfly\yiiModuleIitUc\models\rate\RateToPowerBinder;
 use devskyfly\yiiModuleIitUc\models\rate\RateToPowerPackageBinder;
 
 
@@ -64,7 +63,24 @@ class RatesController extends AbstractContentPanelController
                     
                     .$form->field($item,'create_date_time')
                     .$form->field($item,'change_date_time')
-                    .$form->field($item,'active')->checkbox(['value'=>'Y','uncheckValue'=>'N','checked'=>$item->active=='Y'?true:false])
+                    .'<div class="row">'
+                        .'<div class="col-xs-2">'
+                        .$form->field($item,'active')
+                        ->checkbox(['value'=>'Y','uncheckValue'=>'N','checked'=>$item->active=='Y'?true:false])
+                        .'</div>'
+                        .'<div class="col-xs-2">'
+                        .$form->field($item,'flag_for_license')
+                        ->checkbox(['value'=>'Y','uncheckValue'=>'N','checked'=>$item->active=='Y'?true:false])
+                        .'</div>'
+                        .'<div class="col-xs-2">'
+                        .$form->field($item,'flag_for_crypto_pro')
+                        ->checkbox(['value'=>'Y','uncheckValue'=>'N','checked'=>$item->active=='Y'?true:false])
+                        .'</div>'
+                        .'<div class="col-xs-2">'
+                        .$form->field($item,'flag_is_terminated')
+                        ->checkbox(['value'=>'Y','uncheckValue'=>'N','checked'=>$item->active=='Y'?true:false])
+                        .'</div>'
+                    .'</div>'
                     .$form->field($item,'price')
                     .$form->field($item,'slx_id')
 

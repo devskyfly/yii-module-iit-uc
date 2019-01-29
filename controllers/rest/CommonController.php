@@ -5,7 +5,7 @@ use Yii;
 use yii\web\Response;
 use yii\web\Controller;
 
-class CommonController extends Controller
+abstract class CommonController extends Controller
 {
     public $mode_list=[];
     

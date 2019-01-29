@@ -9,7 +9,9 @@ use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;
 use devskyfly\yiiModuleIitUc\components\RatesManager;
 use devskyfly\yiiModuleIitUc\models\rate\RateToPowerPackageBinder;
+use devskyfly\yiiModuleIitUc\models\stock\Stock;
 use devskyfly\yiiModuleIitUc\models\powerPackage\PowerPackage;
+use devskyfly\php56\types\Nmbr;
 
 class RatesController extends CommonController
 {
@@ -74,15 +76,29 @@ class RatesController extends CommonController
                 }
             }
             
+            $stock=null;
+            if(!Vrbl::isEmpty($item->_stock__id)){
+                $stock=Stock::find()
+                ->where([
+                    'active'=>Stock::ACTIVE,
+                    'id'=>$item->_stock__id  
+                ])
+                ->one();
+                
+                if(Vrbl::isEmpty($stock)){
+                    throw new \RuntimeException('Parameter $stock is empty.');
+                }
+            }
+            
             $result[]=[
                 "id"=>$item->id,
                 "name"=>$item->name,
                 "slx_id"=>$item->slx_id,
-                "price"=>$item->price,
+                "price"=>Nmbr::toDoubleStrict($item->price),
                 "powers_packages"=>$packages_ids,
                 "required_powers"=>[],
-                "stock_id"=>$item->_stock__id,
-                "required_license"=>false
+                "stock_id"=>Vrbl::isNull($stock)?'':$stock->stock,
+                "required_license"=>$item->flag_for_license=='Y'?true:false
             ];
         }    
         $this->asJson($result);  

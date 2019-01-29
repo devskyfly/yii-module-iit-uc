@@ -11,6 +11,9 @@ use yii\helpers\ArrayHelper;
  * @property string $price
  * @property integer $_stock__id
  * @property string $slx_id
+ * @property string $flag_for_license
+ * @property string $flag_for_crypto_pro
+ * @property string $flag_is_terminated
  */
 class Rate extends AbstractEntity
 {
@@ -45,7 +48,7 @@ class Rate extends AbstractEntity
         $old_rules=parent::rules();
         $new_rules=[
             [["price","slx_id"],"required"],
-            [["price","slx_id","__id","_stock__id"],"string"]
+            [["price","slx_id","__id","_stock__id","flag_for_license","flag_for_crypto_pro","flag_is_terminated"],"string"]
         ];
         return ArrayHelper::merge($old_rules, $new_rules);
     }
@@ -54,6 +57,7 @@ class Rate extends AbstractEntity
     {
         $labels=parent::attributeLabels();
         $labels['__id']="Parent rate";
+        $labels['_stock__id']="Parent stock";
         return $labels;
     }
 }
