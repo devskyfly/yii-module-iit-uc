@@ -6,6 +6,7 @@ use devskyfly\php56\types\Vrbl;
 use devskyfly\yiiModuleIitUc\models\service\Service;
 use devskyfly\yiiModuleIitUc\models\servicePackage\ServicePackage;
 use devskyfly\yiiModuleIitUc\models\stock\Stock;
+use yii\helpers\Json;
 use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;
 use devskyfly\php56\types\Nmbr;
@@ -63,7 +64,7 @@ class StocksController extends CommonController
                 "stock"=>$stock->stock,
                 "additional_services_pakages"=>$services_pakages_ids,
                 "checked_additional_services"=>$checked_services_ids,
-                "client_types"=>$stock->client_type
+                "client_types"=>Json::decode($stock->client_type)
             ];
         }
         
