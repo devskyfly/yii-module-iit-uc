@@ -5,6 +5,6 @@ class SalesController extends CommonController
 {
     public function actionIndex()
     {
-        $this->asJson(['sales'=>0]);
+        $this->asJson(['sale'=>0]);
     }    
 }
