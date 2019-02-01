@@ -56,7 +56,7 @@ class ServicesPackagesController extends AbstractContentPanelController
                     .$form->field($item,'create_date_time')
                     .$form->field($item,'change_date_time')
                     .$form->field($item,'active')->checkbox(['value'=>'Y','uncheckValue'=>'N','checked'=>$item->active=='Y'?true:false])
-                    .$form->field($item,'select_type')->dropDownList(['MULTY'=>'MULTY','MONO'=>'MONO'])
+                    .$form->field($item,'select_type')->dropDownList(['MULTI'=>'MULTI','MONO'=>'MONO'])
                 ],
                 [
                     "label"=>"binds",

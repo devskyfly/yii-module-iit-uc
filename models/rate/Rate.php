@@ -60,4 +60,16 @@ class Rate extends AbstractEntity
         $labels['_stock__id']="Parent stock";
         return $labels;
     }
+
+    /**
+     * 
+     * {@inheritDoc}
+     * @see \devskyfly\yiiModuleAdminPanel\models\contentPanel\AbstractItem::binders()
+     */
+    public function binders(){
+        return [
+            'RateToPowerPackageBinder'=>RateToPowerPackageBinder::class,
+            'RateToSiteBinder'=>RateToSiteBinder::class
+        ];
+    }
 }

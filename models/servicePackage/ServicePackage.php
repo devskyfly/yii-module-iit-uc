@@ -48,4 +48,16 @@ class ServicePackage extends AbstractEntity
         
         return ArrayHelper::merge($old_rules, $new_rules);
     }
+
+    /**
+     * 
+     * {@inheritDoc}
+     * @see \devskyfly\yiiModuleAdminPanel\models\contentPanel\AbstractItem::binders()
+     */
+    public function binders()
+    {
+        return [
+            'ServicePackageToServiceBinder'=>ServicePackageToServiceBinder::class
+        ];
+    }
 }

@@ -28,6 +28,7 @@ class Stock extends AbstractEntity
      * @see devskyfly\yiiModuleAdminPanel\models\contentPanel\AbstractItem::selectListRoute()
      * Здесь прописывается роут к списку выбора
      */
+    
     public static function selectListRoute()
     {
         return "/iit-uc/stocks/entity-select-list";
@@ -48,5 +49,17 @@ class Stock extends AbstractEntity
         ];
         
         return ArrayHelper::merge($old_rules, $new_rules);
+    }
+
+    /**
+     *
+     * {@inheritDoc}
+     * @see \devskyfly\yiiModuleAdminPanel\models\contentPanel\AbstractItem::binders()
+     */
+    public function binders()
+    {
+        return [
+            'StockToServicePackageBinder'=>StockToServicePackageBinder::class
+        ];
     }
 }
