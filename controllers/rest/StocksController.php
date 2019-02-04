@@ -105,7 +105,7 @@ class StocksController extends CommonController
         $services_pakages_ids=$ids;
         $data[]=[
             "name"=>$item->name,
-            "stock"=>$item->stock,
+            "stock_id"=>$item->stock,
             "additional_services_pakages"=>$services_pakages_ids,
             "client_types"=>$item->client_type
         ];
