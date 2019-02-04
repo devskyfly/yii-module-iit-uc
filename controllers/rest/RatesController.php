@@ -56,7 +56,7 @@ class RatesController extends CommonController
         $this->asJson($chain);
     }
     
-    public function actionGetMultiChain(array $ids){
+    public function actionIndex(array $ids){
         $result=[];
         
         $models=[];
