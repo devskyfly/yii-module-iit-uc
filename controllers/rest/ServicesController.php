@@ -22,7 +22,8 @@ class ServicesController extends CommonController
         foreach ($items as $item){
             $data[]=[
                 "name"=>$item->name,
-                "price"=>$item->price
+                "price"=>$item->price,
+                "slx_id"=>$item->slx_id
             ];
         }
         
