@@ -1,11 +1,9 @@
 <?php
 namespace devskyfly\yiiModuleIitUc\controllers\rest;
 
-use Yii;
 use yii\filters\Cors;
 use yii\helpers\ArrayHelper;
-use yii\web\Response;
-use yii\web\Controller;
+use yii\rest\Controller;
 
 abstract class CommonController extends Controller
 {
