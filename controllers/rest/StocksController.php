@@ -27,14 +27,14 @@ class StocksController extends CommonController
         ->all();
         
         foreach ($stocks as $stock){
-            $services_pakages_ids=[];
+            $services_packages_ids=[];
             $checked_services_ids=[];
             
             //Services
-            $services_pakages_ids=$stock_to_service_package_binder_cls::getSlaveIds($stock->id);
+            $services_packages_ids=$stock_to_service_package_binder_cls::getSlaveIds($stock->id);
             
             $packages=$packages_cls::find()
-            ->where(['id'=>$services_pakages_ids,'active'=>'Y'])
+            ->where(['id'=>$services_packages_ids,'active'=>'Y'])
             ->all();
             
             $ids=[];
@@ -42,7 +42,7 @@ class StocksController extends CommonController
                 $ids[]=$package->id;
             }
 
-            $services_pakages_ids=$ids;
+            $services_packages_ids=$ids;
             
             //Checked services
             $checked_services_ids=$stock_to_service_package_binder_cls::getSlaveIds($stock->id);
@@ -62,7 +62,7 @@ class StocksController extends CommonController
             $data[]=[
                 "name"=>$stock->name,
                 "stock_id"=>$stock->stock,
-                "additional_services_pakages"=>$services_pakages_ids,
+                "additional_services_packages"=>$services_packages_ids,
                 "checked_additional_services"=>$checked_services_ids,
                 "client_types"=>Json::decode($stock->client_type)
             ];
@@ -94,19 +94,20 @@ class StocksController extends CommonController
             throw new NotFoundHttpException("Stock with id='{$id}' is not found.");
         }
         
-        $services_pakages_ids=[];
+        $services_packages_ids=[];
         
-        $services_pakages_ids=$stock_to_service_package_binder_cls::getSlaveIds($item->id);
-        $packages=$packages_cls::find()->where(['id'=>$services_pakages_ids])->all();
+        $services_packages_ids=$stock_to_service_package_binder_cls::getSlaveIds($item->id);
+        $packages=$packages_cls::find()->where(['id'=>$services_packages_ids])->all();
         $ids=[];
         foreach ($packages as $package){
             $ids[]=$package->id;
         }
-        $services_pakages_ids=$ids;
+        $services_packages_ids=$ids;
         $data[]=[
             "name"=>$item->name,
             "stock_id"=>$item->stock,
-            "additional_services_pakages"=>$services_pakages_ids,
+            "additional_services_pakages"=>$services_packages_ids,
+            "checked_additional_services"=>[],
             "client_types"=>$item->client_type
         ];
 

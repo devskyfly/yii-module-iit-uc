@@ -46,14 +46,14 @@ class PowersPackagesController extends CommonController
                 }
             }else{
                 foreach ($powers as $power){
-                    $list[]=$power->id;
+                    $list[]=$power->slx_id;
                 }
             }
             
             $package_data=[
                 'id'=>$power_package->id,
                 'name'=>$power_package->name,
-                'type'=>$power_package->select_type=='MULTI'?'checkbox':'radio',
+                'select_type'=>$power_package->select_type=='MULTI'?'MULTI':'MONO',
                 'list'=>$list
             ];
             

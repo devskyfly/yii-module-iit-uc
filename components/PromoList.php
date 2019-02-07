@@ -27,7 +27,7 @@ class PromoList extends BaseObject
         $this->_list=[
             [
                 "asset" => [$this->_rates['AETP'],$this->_rates['FETP']],
-                "change"
+                "change" => [$this->_rates['AETP_PL_FETP']]
             ],
         ];
     }
@@ -36,8 +36,10 @@ class PromoList extends BaseObject
     {
         $this->_rates=[];
         $this->_rates['AETP']=RatesManager::getBySlxId('Y6UJ9A0000XM');
-        $this->_rates['B2b']=RatesManager::getBySlxId('Y6UJ9A0000XP');
+        
         $this->_rates['FETP']=RatesManager::getBySlxId('Y6UJ9A0000XL');
+        
+        $this->_rates['AETP_PL_FETP']=RatesManager::getBySlxId('Y6UJ9A0000XN');
         
         foreach ($this->_rates as $key => $rate){
             if(!Obj::isA($rate, Rate::class)){
@@ -57,16 +59,16 @@ class PromoList extends BaseObject
         $binds=[];
         
         foreach ($models as $model){
-            if(Obj::isA($model, Rate::class)){
+            if(!Obj::isA($model, Rate::class)){
                 throw \InvalidArgumentException('Item $models is not '.Rate::class.' type.');
             }
         }
         
         foreach ($this->_list as $item){
-            if(in_array($item['master'], $models)){
+            if(in_array($item['asset'], $models)){
                 
                 foreach ($models as $key => $rate){
-                    if($rate==$item['master']){
+                    if($rate==$item['asset']){
                         unset($models[$key]);
                     }
                 }

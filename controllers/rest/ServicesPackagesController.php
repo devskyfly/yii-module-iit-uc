@@ -49,14 +49,14 @@ class ServicesPackagesController extends CommonController
                 }
             }else{
                 foreach ($services as $service){
-                    $list[]=$service->id;
+                    $list[]=$service->slx_id;
                 }
             }
             
             $package_data=[
                 'id'=>$service_package->id,
                 'name'=>$service_package->name,
-                'type'=>$service_package->select_type=='MULTI'?'checkbox':'radio',
+                'select_type'=>$service_package->select_type=='MULTI'?'MULTI':'MONO',
                 'list'=>$list
             ];
             
