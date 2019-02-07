@@ -2,6 +2,7 @@
 namespace devskyfly\yiiModuleIitUc\controllers\rest;
 
 use devskyfly\php56\types\Arr;
+use devskyfly\php56\types\Nmbr;
 use devskyfly\php56\types\Str;
 use devskyfly\php56\types\Vrbl;
 use devskyfly\yiiModuleIitUc\models\service\Service;
@@ -20,9 +21,10 @@ class ServicesController extends CommonController
         ->all();
         
         foreach ($items as $item){
+            if(empty($item->slx_id)){continue;}
             $data[]=[
                 "name"=>$item->name,
-                "price"=>$item->price,
+                "price"=>Nmbr::toDoubleStrict($item->price),
                 "slx_id"=>$item->slx_id
             ];
         }
