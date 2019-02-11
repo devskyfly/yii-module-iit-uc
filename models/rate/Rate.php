@@ -72,4 +72,9 @@ class Rate extends AbstractEntity
             'RateToSiteBinder'=>RateToSiteBinder::class
         ];
     }
+
+    public function __toString()
+    {
+        return $this->slx_id;
+    }
 }

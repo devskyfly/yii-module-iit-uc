@@ -2,6 +2,7 @@
 namespace devskyfly\yiiModuleIitUc\components;
 
 use devskyfly\php56\types\Obj;
+use devskyfly\php56\types\Vrbl;
 use yii\base\BaseObject;
 use devskyfly\yiiModuleIitUc\models\rate\Rate;
 use yii\helpers\ArrayHelper;
@@ -35,10 +36,8 @@ class PromoList extends BaseObject
     private function initRates()
     {
         $this->_rates=[];
-        $this->_rates['AETP']=RatesManager::getBySlxId('Y6UJ9A0000XM');
-        
+        $this->_rates['AETP']=RatesManager::getBySlxId('Y6UJ9A0000XM');       
         $this->_rates['FETP']=RatesManager::getBySlxId('Y6UJ9A0000XL');
-        
         $this->_rates['AETP_PL_FETP']=RatesManager::getBySlxId('Y6UJ9A0000XN');
         
         foreach ($this->_rates as $key => $rate){
@@ -46,6 +45,7 @@ class PromoList extends BaseObject
                 throw new \InvalidArgumentException("Array _rates['{$key}'] is not ".Rate::class." type");
             }
         }
+        
         return $this;
     }
     
@@ -57,6 +57,7 @@ class PromoList extends BaseObject
     public function apply($models)
     {
         $binds=[];
+        $changes=[];
         
         foreach ($models as $model){
             if(!Obj::isA($model, Rate::class)){
@@ -65,17 +66,18 @@ class PromoList extends BaseObject
         }
         
         foreach ($this->_list as $item){
-            if(in_array($item['asset'], $models)){
-                
+            $intersect=array_intersect($item['asset'],$models);
+            $diff=array_diff($item['asset'],$intersect);
+            if(Vrbl::isEmpty($diff)){
                 foreach ($models as $key => $rate){
-                    if($rate==$item['asset']){
+                    if(in_array($rate, $item['asset'])){
                         unset($models[$key]);
                     }
                 }
-                
-                $binds=ArrayHelper::merge($binds,$item['slave']);
+                $changes=ArrayHelper::merge($changes, $item['change']);
             }
         }
+        $binds=ArrayHelper::merge($models,$changes);
         $binds=array_unique($binds);
         
         return $binds;

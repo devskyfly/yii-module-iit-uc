@@ -31,15 +31,29 @@ class BindsList extends BaseObject
                     $this->_rates['B2b']
                 ],
             ],
+            [
+                "master" => $this->_rates['FETP'],
+                "slave"=>[
+                    $this->_rates['AST_GOZ']
+                ],
+            ],
+            [
+                "master" => $this->_rates['AETP_PL_FETP'],
+                "slave"=>[
+                    $this->_rates['B2b']
+                ],
+            ],
         ];
     }
     
     private function initRates()
     {
         $this->_rates=[];
+        $this->_rates['AST_GOZ']=RatesManager::getBySlxId('Y6UJ9A0002H1');
         $this->_rates['AETP']=RatesManager::getBySlxId('Y6UJ9A0000XM');
         $this->_rates['B2b']=RatesManager::getBySlxId('Y6UJ9A0000XP');
         $this->_rates['FETP']=RatesManager::getBySlxId('Y6UJ9A0000XL');
+        $this->_rates['AETP_PL_FETP']=RatesManager::getBySlxId('Y6UJ9A0000XN');
         
         foreach ($this->_rates as $key => $rate){
             if(!Obj::isA($rate, Rate::class)){
@@ -57,11 +71,11 @@ class BindsList extends BaseObject
      */
     public function apply($models)
     {
-        $binds=[];
+        $binds=$models;
         
         foreach ($models as $model){
-            if(Obj::isA($model, Rate::class)){
-                throw \InvalidArgumentException('Item $models is not '.Rate::class.' type.');
+            if(!Obj::isA($model, Rate::class)){
+                throw new \InvalidArgumentException('Item $models is not '.Rate::class.' type.');
             }
         }
         
@@ -70,7 +84,7 @@ class BindsList extends BaseObject
                 $binds=ArrayHelper::merge($binds,$item['slave']);
             }
         }
-        $binds=array_unique($binds);
+        $binds=array_unique($binds); 
         
         return $binds;
     }
