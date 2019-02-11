@@ -6,9 +6,9 @@ use devskyfly\php56\types\Vrbl;
 ?>
 
 <div class="row">
-    <div "col-xs-12">
+    <div class="col-xs-12">
         <div  class="well well-sm">
-        	<div class=>
+        	<div >
         		<h3>Подчиненные площадки:</h3>
         	</div>
         	<div>

@@ -9,6 +9,7 @@ use devskyfly\yiiModuleIitUc\models\rate\Rate;
 use devskyfly\yiiModuleIitUc\models\rate\RateSection;
 use devskyfly\yiiModuleIitUc\models\stock\Stock;
 
+use devskyfly\yiiModuleIitUc\widgets\SlavePowersList;
 use devskyfly\yiiModuleIitUc\widgets\SlaveSitesList;
 use devskyfly\yiiModuleIitUc\models\rate\RateToSiteBinder;
 use devskyfly\yiiModuleIitUc\models\rate\RateToPowerPackageBinder;
@@ -117,7 +118,9 @@ class RatesController extends AbstractContentPanelController
                     "label"=>"tools",
                     "content"=>
                     SlaveSitesList::widget(['model'=>$item])
-                ]
+                    .SlavePowersList::widget(['model'=>$item])
+                ],
+                
             ];
         };
     }
