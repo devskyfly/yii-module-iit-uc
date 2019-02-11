@@ -74,8 +74,11 @@ class RatesManager extends BaseObject
         
         $result=ArrayHelper::merge($result, $list);
         
-        //$promoList=new PromoList();
-        //$result=$promoList->apply($result);
+        $promoList=new PromoList();
+        $result=$promoList->apply($result);
+        $binds=new BindsList();
+        $result=$binds->apply($result);
+        //new SalesList();
         
         return $result;
     }

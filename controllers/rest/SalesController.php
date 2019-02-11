@@ -2,6 +2,7 @@
 namespace devskyfly\yiiModuleIitUc\controllers\rest;
 
 use devskyfly\yiiModuleIitUc\components\RatesManager;
+use devskyfly\yiiModuleIitUc\components\SalesList;
 
 class SalesController extends CommonController
 {
@@ -15,7 +16,7 @@ class SalesController extends CommonController
         }
         
         $chain=RatesManager::getMultiChain($models);
-        
-        $this->asJson(['sale'=>0]);
+        $sale=(new SalesList())->count($chain);
+        $this->asJson(['sale'=>$sale]);
     }    
 }

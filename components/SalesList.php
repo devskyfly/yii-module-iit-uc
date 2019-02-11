@@ -31,9 +31,10 @@ class SalesList extends BaseObject
                 "sale" => 2000
             ],
             [
-                "ids" => [  $this->_rates['AETP'],  $this->_rates['FETP'] ],
+                "rates" => [  $this->_rates['AETP_PL_FETP'],  $this->_rates['B2b'] ],
                 "sale" => 2000
-            ]];
+            ]            
+        ];
     }
     
     private function initRates()
@@ -42,12 +43,14 @@ class SalesList extends BaseObject
         $this->_rates['AETP']=RatesManager::getBySlxId('Y6UJ9A0000XM');
         $this->_rates['B2b']=RatesManager::getBySlxId('Y6UJ9A0000XP');
         $this->_rates['FETP']=RatesManager::getBySlxId('Y6UJ9A0000XL');
+        $this->_rates['AETP_PL_FETP']=RatesManager::getBySlxId('Y6UJ9A0000XN');
         
         foreach ($this->_rates as $key => $rate){
             if(!Obj::isA($rate, Rate::class)){
                 throw new \InvalidArgumentException("Array _rates['{$key}'] is not ".Rate::class." type");
             }
         }
+        
         return $this;
     }
     
@@ -61,18 +64,18 @@ class SalesList extends BaseObject
     private function match($models,$asset)
     {
         foreach ($models as $model){
-            if(Obj::isA($model, Rate::class)){
-                throw \InvalidArgumentException('Item $models is not '.Rate::class.' type.');
+            if(!Obj::isA($model, Rate::class)){
+                throw new \InvalidArgumentException('Item $models is not '.Rate::class.' type.');
             }
         }
         
         foreach ($asset as $item){
-            if(Obj::isA($item, Rate::class)){
-                throw \InvalidArgumentException('Item $asset is not '.Rate::class.' type.');
+            if(!Obj::isA($item, Rate::class)){
+                throw new \InvalidArgumentException('Item $asset is not '.Rate::class.' type.');
             }
         }
         
-        $intersect=array_intersect($models, $asset);
+        $intersect=array_intersect($asset,$models);
         $diff=array_diff($asset,$intersect);
         if(empty($diff)){
             return true;
@@ -94,7 +97,7 @@ class SalesList extends BaseObject
                 if(!Nmbr::isNumeric($item['sale'])){
                     throw new \InvalidArgumentException('Item $item[\'sale\'] is not numeric type.');
                 }
-                $summ=$item['sale'];
+                $summ+=$item['sale'];
             }
         }
         return $summ;
