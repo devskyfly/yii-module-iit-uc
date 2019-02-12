@@ -84,6 +84,8 @@ class RatesController extends AbstractContentPanelController
                     .'</div>'
                     .$form->field($item,'price')
                     .$form->field($item,'slx_id')
+                    .$form->field($item,'comment')->textarea(["rows"=>5])
+                    .$form->field($item,'tooltip')->textarea(["rows"=>5])
 
                 ],
                 [

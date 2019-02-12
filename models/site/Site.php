@@ -8,6 +8,8 @@ use yii\helpers\ArrayHelper;
  * 
  * @author devskyfly
  * @property string $url
+ * @property string $comment
+ * @property string $tooltip
  */
 class Site extends AbstractEntity
 {
@@ -42,7 +44,7 @@ class Site extends AbstractEntity
         $old_rules=parent::rules();
         
         $new_rules=[
-            [["url"],"string"]
+            [["url","comment","tooltip"],"string"]
         ];
         
         return ArrayHelper::merge($old_rules, $new_rules);

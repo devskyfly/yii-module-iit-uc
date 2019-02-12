@@ -9,6 +9,8 @@ use yii\helpers\ArrayHelper;
  * @author devskyfly
  * @property string $price
  * @property string $slx_id
+ * @property string $comment
+ * @property string $tooltip
  */
 class Service extends AbstractEntity
 {
@@ -44,7 +46,7 @@ class Service extends AbstractEntity
         $new_rules=[
             //[["price","slx_id"],"required"],
             [["price"],"required"],
-            [["price","slx_id"],"string"]
+            [["price","slx_id","comment","tooltip"],"string"]
         ];
         return ArrayHelper::merge($old_rules, $new_rules);
     }
