@@ -12,7 +12,12 @@ use yii\helpers\ArrayHelper;
 
 class RatesManager extends BaseObject
 {
-    
+    /**
+     * 
+     * @param Rate $model
+     * @throws \InvalidArgumentException
+     * @throws \RuntimeException
+     */
     public static function checkModel($model)
     {
         if(!Obj::isA($model, Rate::class)){
@@ -98,26 +103,50 @@ class RatesManager extends BaseObject
     }
     
     /**
-     * @todo Nead to realize
+     * 
+     * @param Rate $model
+     * @return [['item'=>...,sublist=>]]
      */
-    public static function getRelatives($model)
+    public static function getAllChilds($model=null)
     {
-        self::checkModel($model);
+        $result=[];
+        $parent_id=0;
+        if(!Vrbl::isNull($model)){
+            self::checkModel($model);
+            $parent_id=$model->__id;
+        }else{
+            $parent_id=null;
+        }
+        
+        $list=static::getChilds($model);
+        
+        foreach ($list as $item){
+            $result[]=['item'=>$item,'sublist'=>static::getAllChilds($item)];  
+        }
+        
+        return $result;
     }
     
     /**
      * 
-     * @param \devskyfly\yiiModuleIitUc\models\rate\Rate $model
-     * @throws \InvalidArgumentException
-     * @throws \RuntimeException
-     * @return \devskyfly\yiiModuleIitUc\models\rate\Rate[]
+     * @param Rate|null $model
+     * @return Rate[]
      */
-    public static function getChilds($model)
-    {
-        self::checkModel($model);
-        $id=$model->id;
-        return Rate::findAll(['active'=>'Y','__id'=>$id]);
+    public static function getChilds($model=null)
+    {   
+        $parent_id=0;
+        if(!Vrbl::isNull($model)){
+            self::checkModel($model);
+            $parent_id=$model->id;
+        }else{
+            $parent_id=null;
+        }
+        
+        $result=Rate::find()->where(['__id'=>$parent_id])->all();
+        return $result;
     }
+    
+    
     
     /**
      * 
@@ -145,5 +174,22 @@ class RatesManager extends BaseObject
             throw new \InvalidArgumentException('Parameter $slx_id is not string type.');
         }
         return Rate::findOne(['active'=>'Y','slx_id'=>$slx_id]);
+    }
+
+    /**
+     * 
+     * @param Rate $model
+     * @return number
+     */
+    public static function getCost($model)
+    {
+        $cost=0;
+        $chain=static::getChain($model);
+        
+        foreach ($chain as $item){
+            $cost=$cost + $item->price;
+        }
+        
+        return $cost;
     }
 }
