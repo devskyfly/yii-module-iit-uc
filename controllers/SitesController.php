@@ -62,7 +62,7 @@ class SitesController extends AbstractContentPanelController
                 [
                     "label"=>"tools",
                     "content"=>
-                    MasterRatesList::widget([])
+                    MasterRatesList::widget(['model'=>$item])
                 ]
             ];
         };

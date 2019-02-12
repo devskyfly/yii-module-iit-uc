@@ -23,9 +23,9 @@ class RatesManager extends BaseObject
         if(!Obj::isA($model, Rate::class)){
             throw new \InvalidArgumentException('Parameter $model is not '.Rate::class.' type.');
         }
-        if($model->isNewRecord){
+        /* if($model->isNewRecord){
             throw new \RuntimeException('Item $model does not exist in data base.');
-        }
+        } */
     }
     
     /**

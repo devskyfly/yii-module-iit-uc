@@ -3,6 +3,7 @@
 
 
 use devskyfly\php56\types\Vrbl;
+use yii\helpers\Url;
 ?>
 
 <div class="row">
@@ -18,7 +19,11 @@ use devskyfly\php56\types\Vrbl;
             	<?foreach ($list as $item):?>
             	<?$i++;?>
             		<tr>
-            			<td colspan="3" class="list-group-item-info"><?=$item['package']['active']?> <?=$item['package']['name']?></td>
+            			<td colspan="3" class="list-group-item-info">
+                			
+                				<?=$item['package']['active']?> <?=$item['package']['name']?>
+                			
+            			</td>
             		</tr>
             		<?$j=0;?>
             		<?foreach ($item['powers'] as $power):?>
@@ -29,7 +34,10 @@ use devskyfly\php56\types\Vrbl;
                     			<?=$power['active']?>
                     		</td>
                     		<td>
-                    			<?=$power['name']?>
+                    			<a target="_blank"
+                    			href="<?=Url::toRoute(['/iit-uc/powers/entity-edit','entity_id'=>$power['id']])?>">
+                    				<?=$power['name']?>
+                    			</a>
                     		</td>
                 		</tr>
             		<?endforeach;?>

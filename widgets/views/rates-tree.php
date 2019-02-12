@@ -13,7 +13,8 @@ use devskyfly\yiiModuleIitUc\components\RatesManager;
                 	<?foreach ($list as $item):?>
                 		<li class="list-group-item">
                 			<?=$item['item']['active']?> 
-                    		<a href="<?=Url::toRoute(['/iit-uc/rates/entity-edit','entity_id'=>$item['item']['id']])?>">
+                    		<a target="_blank"
+                    		href="<?=Url::toRoute(['/iit-uc/rates/entity-edit','entity_id'=>$item['item']['id']])?>">
                     			<?=$item['item']['name']?>
                     		</a>
                     		<span>

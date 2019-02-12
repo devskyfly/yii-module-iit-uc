@@ -1,7 +1,8 @@
 <?php
 namespace devskyfly\yiiModuleIitUc\components;
 
-use devskyfly\php56\types\Arr;
+use devskyfly\php56\types\Obj;
+use devskyfly\php56\types\Vrbl;
 use devskyfly\yiiModuleIitUc\models\rate\Rate;
 use yii\base\BaseObject;
 use devskyfly\yiiModuleIitUc\models\rate\RateToSiteBinder;
@@ -10,6 +11,38 @@ use yii\helpers\ArrayHelper;
 
 class SitesManager extends BaseObject
 {
+    /**
+     *
+     * @param Rate $model
+     * @throws \InvalidArgumentException
+     * @throws \RuntimeException
+     */
+    public static function checkModel($model)
+    {
+        if(!Obj::isA($model, Site::class)){
+            throw new \InvalidArgumentException('Parameter $model is not '.Rate::class.' type.');
+        }
+        /* if($model->isNewRecord){
+            throw new \RuntimeException('Item $model does not exist in data base.');
+        } */
+    }
+    
+    /**
+     * 
+     * @param Site $model
+     * @return \devskyfly\yiiModuleIitUc\models\rate\Rate[]
+     */
+    public static function getRates($model)
+    {
+        $chain=[];
+        static::checkModel($model);
+        $rates=RateToSiteBinder::getMasterItems($model->id);
+        if(!Vrbl::isEmpty($rates)){
+            $chain=RatesManager::getMultiChain($rates);
+        }
+        return $chain;
+    }
+    
     /**
      * 
      * @param \devskyfly\yiiModuleIitUc\models\rate\Rate $model

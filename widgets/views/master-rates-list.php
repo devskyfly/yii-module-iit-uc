@@ -3,6 +3,7 @@
 
 
 use devskyfly\php56\types\Vrbl;
+use yii\helpers\Url;
 ?>
 
 <div class="row">
@@ -21,7 +22,10 @@ use devskyfly\php56\types\Vrbl;
             			<td><?=$i?></td>
             			<td><?=$item['active']?></td>
                 		<td>
-                			<a href="<?=$item['link']?>"><?=$item['name']?></a>
+                			<a target="_blank"
+                			href="<?=Url::toRoute(['/iit-uc/rates/entity-edit','entity_id'=>$item['id']])?>">
+                				<?=$item['name']?>
+                			</a>
                 		</td>
             		</tr>
         		<?endforeach;?>
