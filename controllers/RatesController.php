@@ -13,6 +13,8 @@ use devskyfly\yiiModuleIitUc\widgets\SlavePowersList;
 use devskyfly\yiiModuleIitUc\widgets\SlaveSitesList;
 use devskyfly\yiiModuleIitUc\models\rate\RateToSiteBinder;
 use devskyfly\yiiModuleIitUc\models\rate\RateToPowerPackageBinder;
+use devskyfly\yiiModuleIitUc\models\rate\RateToAdditionalService;
+use devskyfly\yiiModuleIitUc\models\rate\RateToExcludedService;
 
 
 class RatesController extends AbstractContentPanelController
@@ -49,6 +51,8 @@ class RatesController extends AbstractContentPanelController
         {
             $rate_to_site_binder_cls=RateToSiteBinder::class;
             $rate_to_power_package_binder_cls=RateToPowerPackageBinder::class;
+            $rate_to_additional_service_binder_cls=RateToAdditionalService::class;
+            $rate_to_excluded_service_binder_cls=RateToExcludedService::class;
             
             return [
                 [
@@ -103,19 +107,40 @@ class RatesController extends AbstractContentPanelController
                         "slave_item_cls"=>Rate::class,
                         "property"=>"__id"
                     ])
-                    .Binder::widget([
+                ],
+                [
+                    "label"=>"sites",
+                    "content"=>
+                    Binder::widget([
                         "label"=>"Площадки",
                         "form"=>$form,
                         "master_item"=>$item,
                         "binder_cls"=>$rate_to_site_binder_cls
                     ])
-                    .Binder::widget([
+                ],
+                [
+                    "label"=>"powers and services",
+                    "content"=>
+                    Binder::widget([
                         "label"=>"Полномочия",
                         "form"=>$form,
                         "master_item"=>$item,
                         "binder_cls"=>$rate_to_power_package_binder_cls
                     ])
+                    .Binder::widget([
+                        "label"=>"Дополнительные услуги",
+                        "form"=>$form,
+                        "master_item"=>$item,
+                        "binder_cls"=>$rate_to_additional_service_binder_cls
+                    ])
+                    .Binder::widget([
+                        "label"=>"Исключенные услуги",
+                        "form"=>$form,
+                        "master_item"=>$item,
+                        "binder_cls"=>$rate_to_excluded_service_binder_cls
+                    ])
                 ],
+                
                 [
                     "label"=>"tools",
                     "content"=>
