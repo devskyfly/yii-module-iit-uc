@@ -71,7 +71,9 @@ class Rate extends AbstractEntity
     public function binders(){
         return [
             'RateToPowerPackageBinder'=>RateToPowerPackageBinder::class,
-            'RateToSiteBinder'=>RateToSiteBinder::class
+            'RateToSiteBinder'=>RateToSiteBinder::class,
+            'RateToIncludedService'=>RateToIncludedService::class,
+            'RateToExcludedService'=>RateToExcludedService::class,
         ];
     }
 
