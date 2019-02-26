@@ -4,19 +4,34 @@ namespace devskyfly\yiiModuleIitUc\controllers\rest;
 use yii\web\BadRequestHttpException;
 use devskyfly\php56\types\Nmbr;
 use devskyfly\php56\types\Vrbl;
+use devskyfly\yiiModuleIitUc\components\RatesManager;
 use devskyfly\yiiModuleIitUc\models\service\Service;
 use devskyfly\yiiModuleIitUc\models\servicePackage\ServicePackage;
 use devskyfly\yiiModuleIitUc\models\stock\Stock;
 use yii\web\NotFoundHttpException;
 use devskyfly\yiiModuleIitUc\models\stock\StockToServicePackageBinder;
 use devskyfly\yiiModuleIitUc\models\servicePackage\ServicePackageToServiceBinder;
+use devskyfly\yiiModuleIitUc\components\ServicesManager;
 
 class ServicesPackagesController extends CommonController
 {
-    public function actionIndex($mode_list='N')
+    public function actionIndex(array $ids, $mode_list='N')
     {
         if(!in_array($mode_list,$this->mode_list)){
             throw new BadRequestHttpException('Query param \'mode_list\' aout of range.');
+        }
+        
+        $rates=[];
+        foreach ($ids as $id){
+            $rates[]=RatesManager::getBySlxId($id);
+        }
+        
+        $rates_chain=RatesManager::getMultiChain($rates);
+        $excluded_services=ServicesManager::getExcludedByRateChain($rates_chain);
+        $excluded_services_ids=[];
+        
+        foreach ($excluded_services as $excluded_service){
+            $excluded_services_ids[]=$excluded_service->id;
         }
         
         $data=[];
@@ -41,6 +56,7 @@ class ServicesPackagesController extends CommonController
             
             if($mode_list=='Y'){
                 foreach ($services as $service){
+                    if(in_array($service->id, $excluded_services_ids))continue;
                     $list[]=[
                         'id'=>$service->id,
                         'name'=>$service->name,
@@ -49,6 +65,7 @@ class ServicesPackagesController extends CommonController
                 }
             }else{
                 foreach ($services as $service){
+                    if(in_array($service->id, $excluded_services_ids))continue;
                     $list[]=$service->slx_id;
                 }
             }

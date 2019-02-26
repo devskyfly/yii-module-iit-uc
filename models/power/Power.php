@@ -48,4 +48,9 @@ class Power extends AbstractEntity
         
         return ArrayHelper::merge($old_rules, $new_rules);
     }
+    
+    public function __toString()
+    {
+        return $this->id;
+    }
 }

@@ -62,4 +62,9 @@ class Stock extends AbstractEntity
             'StockToServicePackageBinder'=>StockToServicePackageBinder::class
         ];
     }
+
+    public function __toString()
+    {
+        return $this->id;
+    }
 }

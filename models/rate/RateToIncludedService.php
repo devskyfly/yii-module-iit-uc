@@ -4,6 +4,11 @@ namespace devskyfly\yiiModuleIitUc\models\rate;
 use devskyfly\yiiModuleIitUc\models\common\AbstractBinder;
 use devskyfly\yiiModuleIitUc\models\service\Service;
 
+/**
+ * 
+ * @author devskyfly
+ * @deprecated
+ */
 class RateToIncludedService extends AbstractBinder
 {
     protected static function slaveCls()

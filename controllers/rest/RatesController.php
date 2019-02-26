@@ -63,7 +63,6 @@ class RatesController extends CommonController
         foreach ($ids as $id){
             $models[]=RatesManager::getBySlxId($id);
         }
-        
         $chain=RatesManager::getMultiChain($models);
         
         foreach ($chain as $item){
