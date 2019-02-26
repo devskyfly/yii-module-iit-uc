@@ -127,7 +127,7 @@ class RatesController extends AbstractContentPanelController
                         "master_item"=>$item,
                         "binder_cls"=>$rate_to_power_package_binder_cls
                     ])
-                    .Binder::widget([
+                    /* .Binder::widget([
                         "label"=>"Дополнительные услуги",
                         "form"=>$form,
                         "master_item"=>$item,
@@ -138,7 +138,7 @@ class RatesController extends AbstractContentPanelController
                         "form"=>$form,
                         "master_item"=>$item,
                         "binder_cls"=>$rate_to_excluded_service_binder_cls
-                    ])
+                    ]) */
                 ],
                 
                 [
