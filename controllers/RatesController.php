@@ -11,9 +11,9 @@ use devskyfly\yiiModuleIitUc\models\stock\Stock;
 
 use devskyfly\yiiModuleIitUc\widgets\SlavePowersList;
 use devskyfly\yiiModuleIitUc\widgets\SlaveSitesList;
+use devskyfly\yiiModuleIitUc\models\rate\RateToIncludedService;
 use devskyfly\yiiModuleIitUc\models\rate\RateToSiteBinder;
 use devskyfly\yiiModuleIitUc\models\rate\RateToPowerPackageBinder;
-use devskyfly\yiiModuleIitUc\models\rate\RateToAdditionalService;
 use devskyfly\yiiModuleIitUc\models\rate\RateToExcludedService;
 
 
@@ -51,7 +51,7 @@ class RatesController extends AbstractContentPanelController
         {
             $rate_to_site_binder_cls=RateToSiteBinder::class;
             $rate_to_power_package_binder_cls=RateToPowerPackageBinder::class;
-            $rate_to_additional_service_binder_cls=RateToAdditionalService::class;
+            $rate_to_included_service_binder_cls=RateToIncludedService::class;
             $rate_to_excluded_service_binder_cls=RateToExcludedService::class;
             
             return [
@@ -127,18 +127,18 @@ class RatesController extends AbstractContentPanelController
                         "master_item"=>$item,
                         "binder_cls"=>$rate_to_power_package_binder_cls
                     ])
-                    /* .Binder::widget([
-                        "label"=>"Дополнительные услуги",
+                    .Binder::widget([
+                        "label"=>"Включенные услуги",
                         "form"=>$form,
                         "master_item"=>$item,
-                        "binder_cls"=>$rate_to_additional_service_binder_cls
+                        "binder_cls"=>$rate_to_included_service_binder_cls
                     ])
                     .Binder::widget([
                         "label"=>"Исключенные услуги",
                         "form"=>$form,
                         "master_item"=>$item,
                         "binder_cls"=>$rate_to_excluded_service_binder_cls
-                    ]) */
+                    ])
                 ],
                 
                 [

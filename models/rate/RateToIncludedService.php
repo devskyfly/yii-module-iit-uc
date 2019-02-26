@@ -4,7 +4,7 @@ namespace devskyfly\yiiModuleIitUc\models\rate;
 use devskyfly\yiiModuleIitUc\models\common\AbstractBinder;
 use devskyfly\yiiModuleIitUc\models\service\Service;
 
-class RateToAdditionalService extends AbstractBinder
+class RateToIncludedService extends AbstractBinder
 {
     protected static function slaveCls()
     {
