@@ -6,6 +6,7 @@ use devskyfly\yiiModuleAdminPanel\controllers\contentPanel\AbstractContentPanelC
 use devskyfly\yiiModuleAdminPanel\widgets\contentPanel\Binder;
 use devskyfly\yiiModuleAdminPanel\widgets\contentPanel\ItemSelector;
 use devskyfly\yiiModuleIitUc\models\stock\Stock;
+use devskyfly\yiiModuleIitUc\models\stock\StockFilter;
 use devskyfly\yiiModuleIitUc\models\stock\StockSection;
 use devskyfly\yiiModuleIitUc\models\stock\StockToCheckedServiceBinder;
 use devskyfly\yiiModuleIitUc\models\stock\StockToServicePackageBinder;
@@ -31,6 +32,15 @@ class StocksController extends AbstractContentPanelController
     public static function entityCls()
     {
         return Stock::class;
+    }
+    
+    /**
+     *
+     * @return string
+     */
+    public static function entityFilterCls()
+    {
+        return StockFilter::class;
     }
     
     /**

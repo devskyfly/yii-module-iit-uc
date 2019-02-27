@@ -11,6 +11,7 @@ use devskyfly\yiiModuleIitUc\models\stock\Stock;
 
 use devskyfly\yiiModuleIitUc\widgets\SlavePowersList;
 use devskyfly\yiiModuleIitUc\widgets\SlaveSitesList;
+use devskyfly\yiiModuleIitUc\models\rate\RateFilter;
 use devskyfly\yiiModuleIitUc\models\rate\RateToIncludedService;
 use devskyfly\yiiModuleIitUc\models\rate\RateToSiteBinder;
 use devskyfly\yiiModuleIitUc\models\rate\RateToPowerPackageBinder;
@@ -38,6 +39,15 @@ class RatesController extends AbstractContentPanelController
     public static function entityCls()
     {
         return Rate::class;
+    }
+    
+    /**
+     *
+     * @return string
+     */
+    public static function entityFilterCls()
+    {
+        return RateFilter::class;
     }
     
     /**

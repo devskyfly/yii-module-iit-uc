@@ -8,6 +8,7 @@ use devskyfly\yiiModuleAdminPanel\widgets\contentPanel\ItemSelector;
 use devskyfly\yiiModuleIitUc\models\servicePackage\ServicePackage;
 use devskyfly\yiiModuleIitUc\models\servicePackage\ServicePackageSection;
 use devskyfly\yiiModuleIitUc\models\servicePackage\ServicePackageToServiceBinder;
+use devskyfly\yiiModuleIitUc\models\servicePackage\ServicePackageFilter;
 
 class ServicesPackagesController extends AbstractContentPanelController
 {
@@ -30,6 +31,15 @@ class ServicesPackagesController extends AbstractContentPanelController
     public static function entityCls()
     {
         return ServicePackage::class;
+    }
+    
+    /**
+     *
+     * @return string
+     */
+    public static function entityFilterCls()
+    {
+        return ServicePackageFilter::class;
     }
     
     /**

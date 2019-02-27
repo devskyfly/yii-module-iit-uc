@@ -5,6 +5,7 @@ use devskyfly\php56\types\Obj;
 use devskyfly\yiiModuleAdminPanel\controllers\contentPanel\AbstractContentPanelController;
 use devskyfly\yiiModuleAdminPanel\widgets\contentPanel\ItemSelector;
 use devskyfly\yiiModuleIitUc\models\service\Service;
+use devskyfly\yiiModuleIitUc\models\service\ServiceFilter;
 use devskyfly\yiiModuleIitUc\models\service\ServiceSection;
 
 class ServicesController extends AbstractContentPanelController
@@ -28,6 +29,15 @@ class ServicesController extends AbstractContentPanelController
     public static function entityCls()
     {
         return Service::class;
+    }
+    
+    /**
+     *
+     * @return string
+     */
+    public static function entityFilterCls()
+    {
+        return ServiceFilter::class;
     }
     
     /**

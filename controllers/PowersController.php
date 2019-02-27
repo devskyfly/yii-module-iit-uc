@@ -4,6 +4,7 @@ namespace devskyfly\yiiModuleIitUc\controllers;
 use devskyfly\php56\types\Obj;
 use devskyfly\yiiModuleAdminPanel\controllers\contentPanel\AbstractContentPanelController;
 use devskyfly\yiiModuleAdminPanel\widgets\contentPanel\ItemSelector;
+use devskyfly\yiiModuleIitUc\models\power\PowerFilter;
 use devskyfly\yiiModuleIitUc\models\power\PowerSection;
 use devskyfly\yiiModuleIitUc\models\power\Power;
 
@@ -28,6 +29,15 @@ class PowersController extends AbstractContentPanelController
     public static function entityCls()
     {
         return Power::class;
+    }
+    
+    /**
+     *
+     * @return string
+     */
+    public static function entityFilterCls()
+    {
+        return PowerFilter::class;
     }
     
     /**

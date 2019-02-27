@@ -5,6 +5,7 @@ use devskyfly\php56\types\Obj;
 use devskyfly\yiiModuleAdminPanel\controllers\contentPanel\AbstractContentPanelController;
 use devskyfly\yiiModuleAdminPanel\widgets\contentPanel\ItemSelector;
 use devskyfly\yiiModuleIitUc\models\site\Site;
+use devskyfly\yiiModuleIitUc\models\site\SiteFilter;
 use devskyfly\yiiModuleIitUc\models\site\SiteSection;
 use devskyfly\yiiModuleIitUc\widgets\MasterRatesList;
 use devskyfly\yiiModuleIitUc\widgets\SlaveSitesList;
@@ -30,6 +31,15 @@ class SitesController extends AbstractContentPanelController
     public static function entityCls()
     {
         return Site::class;
+    }
+    
+    /**
+     * 
+     * @return string
+     */
+    public static function entityFilterCls()
+    {
+        return SiteFilter::class;
     }
     
     /**

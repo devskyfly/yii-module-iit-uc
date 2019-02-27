@@ -7,6 +7,7 @@ use devskyfly\yiiModuleAdminPanel\widgets\contentPanel\Binder;
 use devskyfly\yiiModuleAdminPanel\widgets\contentPanel\ItemSelector;
 
 use devskyfly\yiiModuleIitUc\models\powerPackage\PowerPackage;
+use devskyfly\yiiModuleIitUc\models\powerPackage\PowerPackageFilter;
 use devskyfly\yiiModuleIitUc\models\powerPackage\PowerPackageSection;
 use devskyfly\yiiModuleIitUc\models\powerPackage\PowerPackageToPowerBinder;
 
@@ -31,6 +32,16 @@ class PowersPackagesController extends AbstractContentPanelController
     public static function entityCls()
     {
         return PowerPackage::class;
+    }
+    
+    
+    /**
+     *
+     * @return string
+     */
+    public static function entityFilterCls()
+    {
+        return PowerPackageFilter::class;
     }
     
     /**
