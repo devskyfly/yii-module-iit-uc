@@ -17,8 +17,9 @@ class MasterRatesList extends Widget
         if(!Obj::isA($this->model,Site::class)){
             throw new \InvalidArgumentException('Property $model is not '.Site::class.' type.');
         }
-        
-        $this->list=SitesManager::getRates($this->model);
+        if(!$this->model->isNewRecord){
+            $this->list=SitesManager::getRates($this->model);
+        }
     }
     
     public function run()
