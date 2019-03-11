@@ -7,6 +7,7 @@ use yii\filters\AccessControl;
 class Module extends \yii\base\Module
 {
      const CSS_NAMESPACE='devskyfly-yii-iit-uc';
+     const TITLE="Модуль \"УЦ\"";
      
      public function init()
      {
