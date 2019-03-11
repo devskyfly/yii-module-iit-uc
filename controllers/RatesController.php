@@ -6,16 +6,14 @@ use devskyfly\yiiModuleAdminPanel\controllers\contentPanel\AbstractContentPanelC
 use devskyfly\yiiModuleAdminPanel\widgets\contentPanel\Binder;
 use devskyfly\yiiModuleAdminPanel\widgets\contentPanel\ItemSelector;
 use devskyfly\yiiModuleIitUc\models\rate\Rate;
+use devskyfly\yiiModuleIitUc\models\rate\RateFilter;
 use devskyfly\yiiModuleIitUc\models\rate\RateSection;
+use devskyfly\yiiModuleIitUc\models\rate\RateToExcludedService;
+use devskyfly\yiiModuleIitUc\models\rate\RateToPowerPackageBinder;
+use devskyfly\yiiModuleIitUc\models\rate\RateToSiteBinder;
 use devskyfly\yiiModuleIitUc\models\stock\Stock;
-
 use devskyfly\yiiModuleIitUc\widgets\SlavePowersList;
 use devskyfly\yiiModuleIitUc\widgets\SlaveSitesList;
-use devskyfly\yiiModuleIitUc\models\rate\RateFilter;
-use devskyfly\yiiModuleIitUc\models\rate\RateToIncludedService;
-use devskyfly\yiiModuleIitUc\models\rate\RateToSiteBinder;
-use devskyfly\yiiModuleIitUc\models\rate\RateToPowerPackageBinder;
-use devskyfly\yiiModuleIitUc\models\rate\RateToExcludedService;
 
 
 class RatesController extends AbstractContentPanelController
@@ -61,7 +59,7 @@ class RatesController extends AbstractContentPanelController
         {
             $rate_to_site_binder_cls=RateToSiteBinder::class;
             $rate_to_power_package_binder_cls=RateToPowerPackageBinder::class;
-            $rate_to_included_service_binder_cls=RateToIncludedService::class;
+            //$rate_to_included_service_binder_cls=RateToIncludedService::class;
             $rate_to_excluded_service_binder_cls=RateToExcludedService::class;
             
             return [
@@ -72,7 +70,7 @@ class RatesController extends AbstractContentPanelController
                     .ItemSelector::widget([
                         "form"=>$form,
                         "master_item"=>$item,
-                        "slave_item_cls"=>$item::sectionCls(),
+                        "slave_item_cls"=>$item::getSectionCls(),
                         "property"=>"_section__id"
                     ])
                     

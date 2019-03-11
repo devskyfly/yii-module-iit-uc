@@ -6,9 +6,9 @@ use devskyfly\yiiModuleAdminPanel\controllers\contentPanel\AbstractContentPanelC
 use devskyfly\yiiModuleAdminPanel\widgets\contentPanel\Binder;
 use devskyfly\yiiModuleAdminPanel\widgets\contentPanel\ItemSelector;
 use devskyfly\yiiModuleIitUc\models\servicePackage\ServicePackage;
+use devskyfly\yiiModuleIitUc\models\servicePackage\ServicePackageFilter;
 use devskyfly\yiiModuleIitUc\models\servicePackage\ServicePackageSection;
 use devskyfly\yiiModuleIitUc\models\servicePackage\ServicePackageToServiceBinder;
-use devskyfly\yiiModuleIitUc\models\servicePackage\ServicePackageFilter;
 
 class ServicesPackagesController extends AbstractContentPanelController
 {
@@ -60,7 +60,7 @@ class ServicesPackagesController extends AbstractContentPanelController
                     .ItemSelector::widget([
                         "form"=>$form,
                         "master_item"=>$item,
-                        "slave_item_cls"=>$item::sectionCls(),
+                        "slave_item_cls"=>$item::getSectionCls(),
                         "property"=>"_section__id"
                     ])
                     .$form->field($item,'create_date_time')
