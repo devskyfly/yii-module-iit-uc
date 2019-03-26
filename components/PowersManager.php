@@ -8,6 +8,11 @@ use devskyfly\yiiModuleIitUc\models\rate\RateToPowerPackageBinder;
 use devskyfly\yiiModuleIitUc\models\powerPackage\PowerPackage;
 use devskyfly\yiiModuleIitUc\models\powerPackage\PowerPackageToPowerBinder;
 
+/**
+ * Provides manager for binding rates, powers, and powerspackages.
+ * @author devskyfly
+ *
+ */
 class PowersManager extends BaseObject
 {
     public static function getGroupedList($model)

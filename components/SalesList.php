@@ -1,12 +1,17 @@
 <?php
 namespace devskyfly\yiiModuleIitUc\components;
 
-use devskyfly\php56\types\Arr;
 use devskyfly\php56\types\Nmbr;
 use devskyfly\php56\types\Obj;
-use yii\base\BaseObject;
 use devskyfly\yiiModuleIitUc\models\rate\Rate;
+use yii\base\BaseObject;
 
+/**
+ * Provides making sales on rates.
+ * 
+ * @author devskyfly
+ *
+ */
 class SalesList extends BaseObject
 {
     private $_list=[];

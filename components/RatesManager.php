@@ -10,6 +10,13 @@ use yii\base\BaseObject;
 use devskyfly\yiiModuleIitUc\models\rate\RateToPowerBinder;
 use yii\helpers\ArrayHelper;
 
+
+/**
+ * Provides managing rates.
+ * 
+ * @author devskyfly
+ *
+ */
 class RatesManager extends BaseObject
 {
     /**

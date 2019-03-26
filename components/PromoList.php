@@ -7,6 +7,12 @@ use yii\base\BaseObject;
 use devskyfly\yiiModuleIitUc\models\rate\Rate;
 use yii\helpers\ArrayHelper;
 
+/**
+ * Provide make promo company on some  assets of rates.
+ * 
+ * @author devskyfly
+ *
+ */
 class PromoList extends BaseObject
 {
     private $_list=[];

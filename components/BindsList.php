@@ -6,6 +6,13 @@ use yii\base\BaseObject;
 use devskyfly\yiiModuleIitUc\models\rate\Rate;
 use yii\helpers\ArrayHelper;
 
+
+/**
+ * Provides binding rates on rate select.
+ * 
+ * @author devskyfly
+ *
+ */
 class BindsList extends BaseObject
 {
     private $_list=[];

@@ -43,7 +43,7 @@ class Power extends AbstractEntity
         
         $new_rules=[
             //[[],"required"],
-            [['slx_id'],"string"]
+            [['oid'],"string"]
         ];
         
         return ArrayHelper::merge($old_rules, $new_rules);

@@ -62,7 +62,7 @@ class ServicesController extends AbstractContentPanelController
                     ])
                     .$form->field($item,'create_date_time')
                     .$form->field($item,'change_date_time')
-                    .$form->field($item,'active')->checkbox(['value'=>'Y','uncheckValue'=>'N','checked'=>$item->active=='Y'?true:false])
+                    .$form->field($item,'active')->checkbox(['value'=>'Y','uncheck'=>'N','checked'=>$item->active=='Y'?true:false])
                     .$form->field($item,'price')
                     .$form->field($item,'slx_id')
                     .$form->field($item,'comment')->textarea(["rows"=>5])
@@ -95,7 +95,7 @@ class ServicesController extends AbstractContentPanelController
                     ])
                     .$form->field($item,'create_date_time')
                     .$form->field($item,'change_date_time')
-                    .$form->field($item,'active')->checkbox(['value'=>'Y','uncheckValue'=>'N','checked'=>$item->active=='Y'?true:false])
+                    .$form->field($item,'active')->checkbox(['value'=>'Y','uncheck'=>'N','checked'=>$item->active=='Y'?true:false])
                     .$form->field($item,'price')
                     .$form->field($item,'slx_id')
                 ]

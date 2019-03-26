@@ -9,6 +9,12 @@ use devskyfly\yiiModuleIitUc\models\rate\RateToSiteBinder;
 use devskyfly\yiiModuleIitUc\models\site\Site;
 use yii\helpers\ArrayHelper;
 
+/**
+ * Provides managing sites and them bindings to rates.
+ * 
+ * @author devskyfly
+ *
+ */
 class SitesManager extends BaseObject
 {
     /**

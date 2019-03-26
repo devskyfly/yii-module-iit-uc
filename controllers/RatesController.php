@@ -79,19 +79,19 @@ class RatesController extends AbstractContentPanelController
                     .'<div class="row">'
                         .'<div class="col-xs-2">'
                         .$form->field($item,'active')
-                        ->checkbox(['value'=>'Y','uncheckValue'=>'N','checked'=>$item->active=='Y'?true:false])
+                        ->checkbox(['value'=>'Y','uncheck'=>'N','checked'=>$item->active=='Y'?true:false])
                         .'</div>'
                         .'<div class="col-xs-2">'
                         .$form->field($item,'flag_for_license')
-                        ->checkbox(['value'=>'Y','uncheckValue'=>'N','checked'=>$item->active=='Y'?true:false])
+                        ->checkbox(['value'=>'Y','uncheck'=>'N','checked'=>$item->active=='Y'?true:false])
                         .'</div>'
                         .'<div class="col-xs-2">'
                         .$form->field($item,'flag_for_crypto_pro')
-                        ->checkbox(['value'=>'Y','uncheckValue'=>'N','checked'=>$item->active=='Y'?true:false])
+                        ->checkbox(['value'=>'Y','uncheck'=>'N','checked'=>$item->active=='Y'?true:false])
                         .'</div>'
                         .'<div class="col-xs-2">'
                         .$form->field($item,'flag_is_terminated')
-                        ->checkbox(['value'=>'Y','uncheckValue'=>'N','checked'=>$item->active=='Y'?true:false])
+                        ->checkbox(['value'=>'Y','uncheck'=>'N','checked'=>$item->active=='Y'?true:false])
                         .'</div>'
                     .'</div>'
                     .$form->field($item,'price')
@@ -183,7 +183,7 @@ class RatesController extends AbstractContentPanelController
                     ])
                     .$form->field($item,'create_date_time')
                     .$form->field($item,'change_date_time')
-                    .$form->field($item,'active')->checkbox(['value'=>'Y','uncheckValue'=>'N','checked'=>$item->active=='Y'?true:false])
+                    .$form->field($item,'active')->checkbox(['value'=>'Y','uncheck'=>'N','checked'=>$item->active=='Y'?true:false])
                     
                 ]
             ];

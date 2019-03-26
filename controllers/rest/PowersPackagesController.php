@@ -41,12 +41,12 @@ class PowersPackagesController extends CommonController
                     $list[]=[
                         'id'=>$power->id,
                         'name'=>$power->name,
-                        'slx_id'=>$power->slx_id
+                        'oid'=>$power->oid
                     ];
                 }
             }else{
                 foreach ($powers as $power){
-                    $list[]=$power->slx_id;
+                    $list[]=$power->oid;
                 }
             }
             

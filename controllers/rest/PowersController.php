@@ -26,7 +26,7 @@ class PowersController extends CommonController
             $data[]=[
                 "id"=>$item->id,
                 "name"=>$item->name,
-                "slx_id"=>$item->slx_id
+                "oid"=>$item->oid
             ];
         }
         
