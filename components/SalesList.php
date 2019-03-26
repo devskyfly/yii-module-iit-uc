@@ -3,6 +3,7 @@ namespace devskyfly\yiiModuleIitUc\components;
 
 use devskyfly\php56\types\Nmbr;
 use devskyfly\php56\types\Obj;
+use devskyfly\php56\types\Vrbl;
 use devskyfly\yiiModuleIitUc\models\rate\Rate;
 use yii\base\BaseObject;
 
@@ -14,9 +15,9 @@ use yii\base\BaseObject;
  */
 class SalesList extends BaseObject
 {
-    private $_list=[];
+    public $list=[];
     
-    private $_rates=[];
+    public $rates=[];
     
     /**
      * 
@@ -26,11 +27,18 @@ class SalesList extends BaseObject
      */
     public function init()
     {
-        parent::init();
+        if(Vrbl::isEmpty($this->rates)){
+            $this->initRates();
+        }
         
-        $this->initRates();
-        
-        $this->_list=[
+        if(Vrbl::isEmpty($this->list)){
+            $this->initList();
+        }
+    }
+    
+    public function initList()
+    {
+        $this->list=[
             [
                 "rates" => [  $this->_rates['AETP'],  $this->_rates['B2b'] ],
                 "sale" => 2000
@@ -38,17 +46,17 @@ class SalesList extends BaseObject
             [
                 "rates" => [  $this->_rates['AETP_PL_FETP'],  $this->_rates['B2b'] ],
                 "sale" => 2000
-            ]            
+            ]
         ];
     }
     
-    private function initRates()
+    public function initRates()
     {
-        $this->_rates=[];
-        $this->_rates['AETP']=RatesManager::getBySlxId('Y6UJ9A0000XM');
-        $this->_rates['B2b']=RatesManager::getBySlxId('Y6UJ9A0000XP');
-        $this->_rates['FETP']=RatesManager::getBySlxId('Y6UJ9A0000XL');
-        $this->_rates['AETP_PL_FETP']=RatesManager::getBySlxId('Y6UJ9A0000XN');
+        $this->rates=[];
+        $this->rates['AETP']=RatesManager::getBySlxId('Y6UJ9A0000XM');
+        $this->rates['B2b']=RatesManager::getBySlxId('Y6UJ9A0000XP');
+        $this->rates['FETP']=RatesManager::getBySlxId('Y6UJ9A0000XL');
+        $this->rates['AETP_PL_FETP']=RatesManager::getBySlxId('Y6UJ9A0000XN');
         
         foreach ($this->_rates as $key => $rate){
             if(!Obj::isA($rate, Rate::class)){
@@ -66,7 +74,7 @@ class SalesList extends BaseObject
      * @throws \InvalidArgumentException
      * @return boolean
      */
-    private function match($models,$asset)
+    public function match($models,$asset)
     {
         foreach ($models as $model){
             if(!Obj::isA($model, Rate::class)){
@@ -97,7 +105,7 @@ class SalesList extends BaseObject
     public function count($models)
     {
         $summ=0;
-        foreach ($this->_list as $item){
+        foreach ($this->list as $item){
             if($this->match($models, $item['rates'])){
                 if(!Nmbr::isNumeric($item['sale'])){
                     throw new \InvalidArgumentException('Item $item[\'sale\'] is not numeric type.');

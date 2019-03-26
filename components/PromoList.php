@@ -15,9 +15,9 @@ use yii\helpers\ArrayHelper;
  */
 class PromoList extends BaseObject
 {
-    private $_list=[];
+    public $list=[];
     
-    private $_rates=[];
+    public $rates=[];
     
     /**
      *
@@ -29,9 +29,18 @@ class PromoList extends BaseObject
     {
         parent::init();
         
-        $this->initRates();
+        if(Vrbl::isEmpty($this->rates)){
+            $this->initRates();
+        }
         
-        $this->_list=[
+        if(Vrbl::isEmpty($this->list)){
+            $this->initList();
+        }
+    }
+    
+    public function initList()
+    {
+        $this->list=[
             [
                 "asset" => [$this->_rates['AETP'],$this->_rates['FETP']],
                 "change" => [$this->_rates['AETP_PL_FETP']]
@@ -39,7 +48,7 @@ class PromoList extends BaseObject
         ];
     }
     
-    private function initRates()
+    public function initRates()
     {
         $this->_rates=[];
         $this->_rates['AETP']=RatesManager::getBySlxId('Y6UJ9A0000XM');       
@@ -71,7 +80,7 @@ class PromoList extends BaseObject
             }
         }
         
-        foreach ($this->_list as $item){
+        foreach ($this->list as $item){
             $intersect=array_intersect($item['asset'],$models);
             $diff=array_diff($item['asset'],$intersect);
             if(Vrbl::isEmpty($diff)){

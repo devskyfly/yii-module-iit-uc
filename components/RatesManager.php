@@ -63,7 +63,7 @@ class RatesManager extends BaseObject
      * @throws \InvalidArgumentException
      * @return \devskyfly\yiiModuleIitUc\models\rate\Rate[]
      */
-    public static function getMultiChain($models)
+    public static function getMultiChain($models, PromoList $promoList=null, BindsList $bindsList=null)
     {
         $result=[];
         if(!Arr::isArray($models)){
@@ -81,15 +81,10 @@ class RatesManager extends BaseObject
                 $list[$item->id]=$item;
             }
         }
-        
         $result[]=$main;
-        
         $result=ArrayHelper::merge($result, $list);
-        
-        $promoList=new PromoList();
-        $result=$promoList->apply($result);
-        $binds=new BindsList();
-        $result=$binds->apply($result);
+        if($promoList)$result=$promoList->apply($result);
+        if($bindsList)$result=$bindsList->apply($result);
         //new SalesList();
         
         return $result;

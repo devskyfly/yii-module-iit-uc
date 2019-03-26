@@ -12,6 +12,8 @@ use devskyfly\yiiModuleIitUc\models\rate\RateToPowerPackageBinder;
 use devskyfly\yiiModuleIitUc\models\stock\Stock;
 use devskyfly\yiiModuleIitUc\models\powerPackage\PowerPackage;
 use devskyfly\php56\types\Nmbr;
+use devskyfly\yiiModuleIitUc\components\PromoList;
+use devskyfly\yiiModuleIitUc\components\BindsList;
 
 class RatesController extends CommonController
 {
@@ -63,7 +65,7 @@ class RatesController extends CommonController
         foreach ($ids as $id){
             $models[]=RatesManager::getBySlxId($id);
         }
-        $chain=RatesManager::getMultiChain($models);
+        $chain=RatesManager::getMultiChain($models, new PromoList(), new BindsList());
         
         foreach ($chain as $item){
             

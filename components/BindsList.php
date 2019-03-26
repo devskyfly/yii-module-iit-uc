@@ -2,6 +2,7 @@
 namespace devskyfly\yiiModuleIitUc\components;
 
 use devskyfly\php56\types\Obj;
+use devskyfly\php56\types\Vrbl;
 use yii\base\BaseObject;
 use devskyfly\yiiModuleIitUc\models\rate\Rate;
 use yii\helpers\ArrayHelper;
@@ -15,9 +16,9 @@ use yii\helpers\ArrayHelper;
  */
 class BindsList extends BaseObject
 {
-    private $_list=[];
+    public $list=[];
     
-    private $_rates=[];
+    public $rates=[];
     
     /**
      *
@@ -29,11 +30,20 @@ class BindsList extends BaseObject
     {
         parent::init();
         
-        $this->initRates();
+        if(Vrbl::isEmpty($this->rates)){
+            $this->initRates();
+        }
         
-        $this->_list=[
+        if(Vrbl::isEmpty($this->list)){
+            $this->initList();
+        }
+    }
+    
+    public function initList()
+    {
+        $this->list=[
             [
-                "master" => $this->_rates['AETP'], 
+                "master" => $this->_rates['AETP'],
                 "slave"=>[
                     $this->_rates['B2b']
                 ],
@@ -53,7 +63,7 @@ class BindsList extends BaseObject
         ];
     }
     
-    private function initRates()
+    public function initRates()
     {
         $this->_rates=[];
         $this->_rates['AST_GOZ']=RatesManager::getBySlxId('Y6UJ9A0002H1');
@@ -62,7 +72,7 @@ class BindsList extends BaseObject
         $this->_rates['FETP']=RatesManager::getBySlxId('Y6UJ9A0000XL');
         $this->_rates['AETP_PL_FETP']=RatesManager::getBySlxId('Y6UJ9A0000XN');
         
-        foreach ($this->_rates as $key => $rate){
+        foreach ($this->rates as $key => $rate){
             if(!Obj::isA($rate, Rate::class)){
                 throw new \InvalidArgumentException("Array _rates['{$key}'] is not ".Rate::class." type");
             }
@@ -86,7 +96,7 @@ class BindsList extends BaseObject
             }
         }
         
-        foreach ($this->_list as $item){
+        foreach ($this->list as $item){
             if(in_array($item['master'], $models)){
                 $binds=ArrayHelper::merge($binds,$item['slave']);
             }
