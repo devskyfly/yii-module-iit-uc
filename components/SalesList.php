@@ -40,11 +40,11 @@ class SalesList extends BaseObject
     {
         $this->list=[
             [
-                "rates" => [  $this->_rates['AETP'],  $this->_rates['B2b'] ],
+                "rates" => [  $this->rates['AETP'],  $this->rates['B2b'] ],
                 "sale" => 2000
             ],
             [
-                "rates" => [  $this->_rates['AETP_PL_FETP'],  $this->_rates['B2b'] ],
+                "rates" => [  $this->rates['AETP_PL_FETP'],  $this->rates['B2b'] ],
                 "sale" => 2000
             ]
         ];
@@ -58,9 +58,9 @@ class SalesList extends BaseObject
         $this->rates['FETP']=RatesManager::getBySlxId('Y6UJ9A0000XL');
         $this->rates['AETP_PL_FETP']=RatesManager::getBySlxId('Y6UJ9A0000XN');
         
-        foreach ($this->_rates as $key => $rate){
+        foreach ($this->rates as $key => $rate){
             if(!Obj::isA($rate, Rate::class)){
-                throw new \InvalidArgumentException("Array _rates['{$key}'] is not ".Rate::class." type");
+                throw new \InvalidArgumentException("Array rates['{$key}'] is not ".Rate::class." type");
             }
         }
         

@@ -42,7 +42,7 @@ class RatesManager extends BaseObject
      * @throws \RuntimeException
      * @return \devskyfly\yiiModuleIitUc\models\rate\Rate[]
      */
-    public static function getChain($model)
+    public static function getChain($model,PromoList $promoList=null, BindsList $bindsList=null)
     {
         $result=[];
         self::checkModel($model);
@@ -54,6 +54,10 @@ class RatesManager extends BaseObject
         {
             $result[]=$parent;
         }
+        
+        if($promoList)$result=$promoList->apply($result);
+        if($bindsList)$result=$bindsList->apply($result);
+        
         return Arr::reverse($result);
     }
     
@@ -85,7 +89,6 @@ class RatesManager extends BaseObject
         $result=ArrayHelper::merge($result, $list);
         if($promoList)$result=$promoList->apply($result);
         if($bindsList)$result=$bindsList->apply($result);
-        //new SalesList();
         
         return $result;
     }

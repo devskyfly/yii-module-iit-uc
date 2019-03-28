@@ -19,7 +19,7 @@ class ModuleNavigation extends AbstractModuleNavigation
             ['name'=>'Площадки','route'=>'/iit-uc/sites'],
             ['name'=>'Доп. услуги','route'=>'/iit-uc/services'],
             ['name'=>'Пакеты доп. услуги','route'=>'/iit-uc/services-packages'],
-            ['name'=>'Пономочия','route'=>'/iit-uc/powers'],
+            ['name'=>'Полномочия','route'=>'/iit-uc/powers'],
             ['name'=>'Пакеты полномочий','route'=>'/iit-uc/powers-packages']
         ];
     }

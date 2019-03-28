@@ -65,7 +65,57 @@ class RatesController extends CommonController
         foreach ($ids as $id){
             $models[]=RatesManager::getBySlxId($id);
         }
-        $chain=RatesManager::getMultiChain($models, new PromoList(), new BindsList());
+        if(YII_ENV_TEST){
+            $model5 = Rate::find()->where([
+                'slx_id' => 'SLXID_5'
+            ])->one();
+            $model4 = Rate::find()->where([
+                'slx_id' => 'SLXID_4'
+            ])->one();
+            $model3 = Rate::find()->where([
+                'slx_id' => 'SLXID_3'
+            ])->one();
+            $model2 = Rate::find()->where([
+                'slx_id' => 'SLXID_2'
+            ])->one();
+            $model1 = Rate::find()->where([
+                'slx_id' => 'SLXID_1'
+            ])->one();
+            
+            $promoList = new PromoList([
+                'rates' => true,
+                'list' => [
+                    [
+                        "asset" => [
+                            $model2,
+                            $model3
+                        ],
+                        "change" => [
+                            $model5
+                        ]
+                    ]
+                ]
+                
+            ]);
+            
+            $bindsList = new BindsList([
+                'rates' => true,
+                'list' => [
+                    [
+                        "master" => $model5,
+                        "slave" => [
+                            $model4
+                        ]
+                    ]
+                ]
+                
+            ]);
+        }else{
+            $promoList = new PromoList();
+            $bindsList = new BindsList();
+        }
+        
+        $chain=RatesManager::getMultiChain($models, $promoList, $bindsList);
         
         foreach ($chain as $item){
             

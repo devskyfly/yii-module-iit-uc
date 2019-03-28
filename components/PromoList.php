@@ -42,22 +42,22 @@ class PromoList extends BaseObject
     {
         $this->list=[
             [
-                "asset" => [$this->_rates['AETP'],$this->_rates['FETP']],
-                "change" => [$this->_rates['AETP_PL_FETP']]
+                "asset" => [$this->rates['AETP'],$this->rates['FETP']],
+                "change" => [$this->rates['AETP_PL_FETP']]
             ],
         ];
     }
     
     public function initRates()
     {
-        $this->_rates=[];
-        $this->_rates['AETP']=RatesManager::getBySlxId('Y6UJ9A0000XM');       
-        $this->_rates['FETP']=RatesManager::getBySlxId('Y6UJ9A0000XL');
-        $this->_rates['AETP_PL_FETP']=RatesManager::getBySlxId('Y6UJ9A0000XN');
+        $this->rates=[];
+        $this->rates['AETP']=RatesManager::getBySlxId('Y6UJ9A0000XM');       
+        $this->rates['FETP']=RatesManager::getBySlxId('Y6UJ9A0000XL');
+        $this->rates['AETP_PL_FETP']=RatesManager::getBySlxId('Y6UJ9A0000XN');
         
-        foreach ($this->_rates as $key => $rate){
+        foreach ($this->rates as $key => $rate){
             if(!Obj::isA($rate, Rate::class)){
-                throw new \InvalidArgumentException("Array _rates['{$key}'] is not ".Rate::class." type");
+                throw new \InvalidArgumentException("Array rates['{$key}'] is not ".Rate::class." type");
             }
         }
         
