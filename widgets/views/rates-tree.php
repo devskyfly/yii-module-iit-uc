@@ -14,11 +14,14 @@ use devskyfly\yiiModuleIitUc\components\RatesManager;
                 		<li class="list-group-item">
                 			<?=$item['item']['active']?> 
                     		<a target="_blank"
-                    		href="<?=Url::toRoute(['/iit-uc/rates/entity-edit','entity_id'=>$item['item']['id']])?>">
+                    			href="<?=Url::toRoute(['/iit-uc/rates/entity-edit','entity_id'=>$item['item']['id']])?>">
                     			<?=$item['item']['name']?>
                     		</a>
                     		<span>
                     			<?=RatesManager::getCost($item['item'])?> (<?=$item['item']['price']?>)
+                    			<?=$item['item']['flag_for_license']=='Y'?'L':''?>
+                    			<?=$item['item']['flag_for_crypto_pro']=='Y'?' CRYPTO':''?>
+                    			<?=$item['item']['flag_is_terminated']=='Y'?' T':''?>
                     		</span>
                 		</li>
                 		<?if(isset($item['sublist'])&&(!Vrbl::isEmpty($item['sublist']))):?>
