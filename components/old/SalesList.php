@@ -5,7 +5,6 @@ use devskyfly\php56\types\Nmbr;
 use devskyfly\php56\types\Obj;
 use devskyfly\php56\types\Vrbl;
 use devskyfly\yiiModuleIitUc\models\rate\Rate;
-use Yii;
 use yii\base\BaseObject;
 
 /**
@@ -14,14 +13,60 @@ use yii\base\BaseObject;
  * @author devskyfly
  *
  */
-class SalesList extends AbstractRatesAsset
+class SalesList extends BaseObject
 {
-
-    public function initIdsList()
+    public $list=[];
+    
+    public $rates=[];
+    
+    /**
+     * 
+     * {@inheritDoc}
+     * @see \yii\base\BaseObject::init()
+     * @throws \InvalidArgumentException
+     */
+    public function init()
     {
-        return Yii::$app->params['iit-uc']['sales-list']['idsList'];
+        if(Vrbl::isEmpty($this->rates)){
+            $this->initRates();
+        }
+        
+        if(Vrbl::isEmpty($this->list)){
+            $this->initList();
+        }
     }
-
+    
+    public function initList()
+    {
+        $this->list=[
+            [
+                "rates" => [  $this->rates['AETP'],  $this->rates['B2b'] ],
+                "sale" => 2000
+            ],
+            [
+                "rates" => [  $this->rates['AETP_PL_FETP'],  $this->rates['B2b'] ],
+                "sale" => 2000
+            ]
+        ];
+    }
+    
+    public function initRates()
+    {
+        $this->rates=[];
+        $this->rates['AETP']=RatesManager::getBySlxId('Y6UJ9A0000XM');
+        $this->rates['B2b']=RatesManager::getBySlxId('Y6UJ9A0000XP');
+        $this->rates['FETP']=RatesManager::getBySlxId('Y6UJ9A0000XL');
+        $this->rates['AETP_PL_FETP']=RatesManager::getBySlxId('Y6UJ9A0000XN');
+        
+        foreach ($this->rates as $key => $rate){
+            if(!Obj::isA($rate, Rate::class)){
+                throw new \InvalidArgumentException("Array rates['{$key}'] is not ".Rate::class." type");
+            }
+        }
+        
+        return $this;
+    }
+    
     /**
      * 
      * @param Rate[] $models

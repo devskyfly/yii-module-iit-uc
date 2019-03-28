@@ -5,7 +5,6 @@ use devskyfly\php56\types\Obj;
 use devskyfly\php56\types\Vrbl;
 use yii\base\BaseObject;
 use devskyfly\yiiModuleIitUc\models\rate\Rate;
-use Yii;
 use yii\helpers\ArrayHelper;
 
 
@@ -15,15 +14,54 @@ use yii\helpers\ArrayHelper;
  * @author devskyfly
  *
  */
-class BindsList extends AbstractRatesAsset
+class BindsList extends BaseObject
 {
-
-    public function initIdsList()
+    public $list=[];
+    
+    public $rates=[];
+    
+    /**
+     *
+     * {@inheritDoc}
+     * @see \yii\base\BaseObject::init()
+     * @throws \InvalidArgumentException
+     */
+    public function init()
     {
-        return Yii::$app->params['iit-uc']['binds-list']['idsList'];
+        parent::init();
+        
+        if(Vrbl::isEmpty($this->rates)){
+            $this->initRates();
+        }
+        
+        if(Vrbl::isEmpty($this->list)){
+            $this->initList();
+        }
     }
     
-    
+    public function initList()
+    {
+        $this->list=[
+            [
+                "master" => $this->rates['AETP'],
+                "slave"=>[
+                    $this->rates['B2b']
+                ],
+            ],
+            [
+                "master" => $this->rates['FETP'],
+                "slave"=>[
+                    $this->rates['AST_GOZ']
+                ],
+            ],
+            [
+                "master" => $this->rates['AETP_PL_FETP'],
+                "slave"=>[
+                    $this->rates['B2b']
+                ],
+            ],
+        ];
+    }
     
     public function initRates()
     {

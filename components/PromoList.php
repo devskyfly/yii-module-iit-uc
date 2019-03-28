@@ -3,69 +3,26 @@ namespace devskyfly\yiiModuleIitUc\components;
 
 use devskyfly\php56\types\Obj;
 use devskyfly\php56\types\Vrbl;
-use yii\base\BaseObject;
 use devskyfly\yiiModuleIitUc\models\rate\Rate;
+use Yii;
 use yii\helpers\ArrayHelper;
 
 /**
- * Provide make promo company on some  assets of rates.
- * 
- * @author devskyfly
+ * Provide make promo company on some assets of rates.
  *
+ * @author devskyfly
+ *        
  */
-class PromoList extends BaseObject
+class PromoList extends AbstractRatesAsset
 {
-    public $list=[];
-    
-    public $rates=[];
+
+    public function initIdsList()
+    {
+        return Yii::$app->params['iit-uc']['promo-list']['idsList'];
+    }
     
     /**
      *
-     * {@inheritDoc}
-     * @see \yii\base\BaseObject::init()
-     * @throws \InvalidArgumentException
-     */
-    public function init()
-    {
-        parent::init();
-        
-        if(Vrbl::isEmpty($this->rates)){
-            $this->initRates();
-        }
-        
-        if(Vrbl::isEmpty($this->list)){
-            $this->initList();
-        }
-    }
-    
-    public function initList()
-    {
-        $this->list=[
-            [
-                "asset" => [$this->rates['AETP'],$this->rates['FETP']],
-                "change" => [$this->rates['AETP_PL_FETP']]
-            ],
-        ];
-    }
-    
-    public function initRates()
-    {
-        $this->rates=[];
-        $this->rates['AETP']=RatesManager::getBySlxId('Y6UJ9A0000XM');       
-        $this->rates['FETP']=RatesManager::getBySlxId('Y6UJ9A0000XL');
-        $this->rates['AETP_PL_FETP']=RatesManager::getBySlxId('Y6UJ9A0000XN');
-        
-        foreach ($this->rates as $key => $rate){
-            if(!Obj::isA($rate, Rate::class)){
-                throw new \InvalidArgumentException("Array rates['{$key}'] is not ".Rate::class." type");
-            }
-        }
-        
-        return $this;
-    }
-    
-    /**
-     * 
      * @param Rate[] $models
      * @return array
      */
