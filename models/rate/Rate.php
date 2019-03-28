@@ -30,7 +30,7 @@ class Rate extends AbstractEntity
         return RateSection::class;
     }
     
-    /**
+    /**l
      * {@inheritdoc}
      * @see devskyfly\yiiModuleAdminPanel\models\contentPanel\AbstractItem::selectListRoute()
      * Здесь прописывается роут к списку выбора
@@ -50,7 +50,8 @@ class Rate extends AbstractEntity
         $old_rules=parent::rules();
         $new_rules=[
             [["price","slx_id"],"required"],
-            [["price","slx_id","__id","_stock__id","flag_for_license","flag_for_crypto_pro","flag_is_terminated","comment","tooltip"],"string"]
+            [["price","slx_id","flag_for_license","flag_for_crypto_pro","flag_is_terminated","comment","tooltip"],"string"],
+            [["__id","_stock__id",],'number']
         ];
         return ArrayHelper::merge($old_rules, $new_rules);
     }
