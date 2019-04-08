@@ -55,6 +55,5 @@ abstract class AbstractRatesAsset extends BaseObject
             }
             $this->list[]=$ratesListItem;
         }
-        codecept_debug(print_r($this->list,true));
     }
 }
