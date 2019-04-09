@@ -17,6 +17,7 @@ use devskyfly\yiiModuleIitUc\components\RatesManager;
                     			href="<?=Url::toRoute(['/iit-uc/rates/entity-edit','entity_id'=>$item['item']['id']])?>">
                     			<?=$item['item']['name']?>
                     		</a>
+                    		<span>[<?=$item['item']['slx_id']?>]</span>
                     		<span>
                     			<?=RatesManager::getCost($item['item'])?> (<?=$item['item']['price']?>)
                     			<?=$item['item']['flag_for_license']=='Y'?'L':''?>
