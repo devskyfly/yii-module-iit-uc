@@ -16,6 +16,7 @@ class ModuleNavigation extends AbstractModuleNavigation
         [
             ['name'=>'Услуги','route'=>'/iit-uc/stocks'],
             ['name'=>'Тарифы','route'=>'/iit-uc/rates'],
+            ['name'=>'Пакеты тарифов','route'=>'/iit-uc/rates-packages'],
             ['name'=>'Площадки','route'=>'/iit-uc/sites'],
             ['name'=>'Доп. услуги','route'=>'/iit-uc/services'],
             ['name'=>'Пакеты доп. услуги','route'=>'/iit-uc/services-packages'],
