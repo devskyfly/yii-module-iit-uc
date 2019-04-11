@@ -94,13 +94,13 @@ class RatesController extends CommonController
             
             foreach ($chain as $item){
                 
-                $packages=RateToPowerPackageBinder::getSlaveItems($item->id);
-                $packages_ids=[];
+                $powersPackages=RateToPowerPackageBinder::getSlaveItems($item->id);
+                $powers_packages_ids=[];
                 $rates_packages_ids=[];
                 
-                foreach ($packages as $package){
-                    if($package->active==PowerPackage::ACTIVE){
-                        $packages_ids[]=$package->id;
+                foreach ($powersPackages as $powerPackage){
+                    if($powerPackage->active==PowerPackage::ACTIVE){
+                        $powers_packages_ids[]=$package->id;
                     }
                 }
                 
@@ -108,12 +108,12 @@ class RatesController extends CommonController
                     if($ratePackage['_parent_rate__id']==$item->id){
                         $packageRates=RatePackageManager::getRates($ratePackage);
                         foreach ($packageRates as $packageRate){
-                            $packages_ids[]=$packageRate->id;
+                            $rates_packages_ids[]=$packageRate->id;
                         }
                     }
                 }
                 
-                $packages_ids=array_unique($packages_ids);
+                $rates_packages_ids=array_unique($rates_packages_ids);
                 
                 $stock=null;
                 if(!Vrbl::isEmpty($item->_stock__id)){
@@ -136,7 +136,7 @@ class RatesController extends CommonController
                     "name"=>$item->name,
                     "slx_id"=>$item->slx_id,
                     "price"=>Nmbr::toDoubleStrict($item->price),
-                    "powers_packages"=>$packages_ids,
+                    "powers_packages"=>$powers_packages_ids,
                     "rates_packages"=>$rates_packages_ids,
                     "required_powers"=>[],
                     "stock_id"=>Vrbl::isNull($stock)?'':$stock->stock,
