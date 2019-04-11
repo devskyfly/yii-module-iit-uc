@@ -5,15 +5,10 @@ use devskyfly\php56\types\Obj;
 use devskyfly\yiiModuleAdminPanel\controllers\contentPanel\AbstractContentPanelController;
 use devskyfly\yiiModuleAdminPanel\widgets\contentPanel\Binder;
 use devskyfly\yiiModuleAdminPanel\widgets\contentPanel\ItemSelector;
-
-use devskyfly\yiiModuleIitUc\models\powerPackage\PowerPackage;
-use devskyfly\yiiModuleIitUc\models\powerPackage\PowerPackageFilter;
 use devskyfly\yiiModuleIitUc\models\powerPackage\PowerPackageSection;
-use devskyfly\yiiModuleIitUc\models\powerPackage\PowerPackageToPowerBinder;
 use devskyfly\yiiModuleIitUc\models\rate\Rate;
 use devskyfly\yiiModuleIitUc\models\ratePackage\RatePackage;
 use devskyfly\yiiModuleIitUc\models\ratePackage\RatePackageFilter;
-use devskyfly\yiiModuleIitUc\models\ratePackage\RatePackageToPowerBinder;
 use devskyfly\yiiModuleIitUc\models\ratePackage\RatePackageToRateBinder;
 
 class RatesPackagesController extends AbstractContentPanelController
