@@ -8,7 +8,7 @@ use devskyfly\yiiModuleAdminPanel\widgets\contentPanel\ItemSelector;
 use devskyfly\yiiModuleIitUc\models\rate\Rate;
 use devskyfly\yiiModuleIitUc\models\rate\RateFilter;
 use devskyfly\yiiModuleIitUc\models\rate\RateSection;
-use devskyfly\yiiModuleIitUc\models\rate\RateToExcludedService;
+use devskyfly\yiiModuleIitUc\models\rate\RateToExcludedServiceBinder;
 use devskyfly\yiiModuleIitUc\models\rate\RateToPowerPackageBinder;
 use devskyfly\yiiModuleIitUc\models\rate\RateToSiteBinder;
 use devskyfly\yiiModuleIitUc\models\stock\Stock;
@@ -60,7 +60,7 @@ class RatesController extends AbstractContentPanelController
             $rate_to_site_binder_cls=RateToSiteBinder::class;
             $rate_to_power_package_binder_cls=RateToPowerPackageBinder::class;
             //$rate_to_included_service_binder_cls=RateToIncludedService::class;
-            $rate_to_excluded_service_binder_cls=RateToExcludedService::class;
+            $rate_to_excluded_service_binder_cls=RateToExcludedServiceBinder::class;
             
             return [
                 [
