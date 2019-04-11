@@ -76,6 +76,7 @@ class RatesController extends AbstractContentPanelController
                     
                     .$form->field($item,'create_date_time')
                     .$form->field($item,'change_date_time')
+                    .$form->field($item,'sort')
                     .'<div class="row">'
                         .'<div class="col-xs-2">'
                         .$form->field($item,'active')
