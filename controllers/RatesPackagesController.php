@@ -66,7 +66,7 @@ class RatesPackagesController extends AbstractContentPanelController
                         "slave_item_cls"=>$item::getSectionCls(),
                         "property"=>"_section__id"
                     ])
-                    .ItemSelector::widget([
+                     .ItemSelector::widget([
                         "form"=>$form,
                         "master_item"=>$item,
                         "slave_item_cls"=>Rate::class,
