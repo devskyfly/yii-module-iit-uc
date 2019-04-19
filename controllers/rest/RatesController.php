@@ -65,7 +65,7 @@ class RatesController extends CommonController
         try{
             $result=[];
             $models=[];
-            $ratesPacakges=[];
+            $ratesPackages=[];
             
             foreach ($ids as $id){
                 $models[]=RatesManager::getBySlxId($id);
@@ -81,7 +81,7 @@ class RatesController extends CommonController
                         throw new \RuntimeException('Parameter $parentRate is null.');
                     }
                     $models[]=$parentRate;
-                    $ratesPacakges[]=$ratePackage;
+                    $ratesPackages[]=$ratePackage;
                 }
             }
             
@@ -104,7 +104,7 @@ class RatesController extends CommonController
                     }
                 }
                 
-                foreach ($ratesPacakges as $ratePackage){
+                foreach ($ratesPackages as $ratePackage){
                     if($ratePackage['_parent_rate__id']==$item->id){
                         $packageRates=RatePackageManager::getRates($ratePackage);
                         foreach ($packageRates as $packageRate){

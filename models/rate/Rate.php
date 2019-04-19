@@ -74,7 +74,7 @@ class Rate extends AbstractEntity
             'RateToPowerPackageBinder'=>RateToPowerPackageBinder::class,
             'RateToSiteBinder'=>RateToSiteBinder::class,
             //'RateToIncludedService'=>RateToIncludedService::class,
-            'RateToExcludedService'=>RateToExcludedService::class,
+            'RateToExcludedServiceBinder'=>RateToExcludedServiceBinder::class,
         ];
     }
 
