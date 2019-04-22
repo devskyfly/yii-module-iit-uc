@@ -50,9 +50,9 @@ class RatesPackagesController extends CommonController
             }
             
             $package_data=[
-                'id'=>$power_package->id,
-                'name'=>$power_package->name,
-                'select_type'=>$power_package->select_type=='MULTI'?'MULTI':'MONO',
+                'id'=>$package->id,
+                'name'=>$package->name,
+                'select_type'=>$package->select_type=='MULTI'?'MULTI':'MONO',
                 'list'=>$list
             ];
             

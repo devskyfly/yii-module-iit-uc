@@ -5,10 +5,8 @@ namespace devskyfly\yiiModuleIitUc\components;
 use devskyfly\php56\types\Obj;
 use devskyfly\yiiModuleIitUc\models\rate\Rate;
 use yii\base\BaseObject;
-use devskyfly\yiiModuleIitUc\models\service\Service;
 use yii\helpers\ArrayHelper;
-use devskyfly\yiiModuleIitUc\models\rate\RateToIncludedService;
-use devskyfly\yiiModuleIitUc\models\rate\RateToExcludedService;
+use devskyfly\yiiModuleIitUc\models\rate\RateToExcludedServiceBinder;
 
 class ServicesManager extends BaseObject
 {
@@ -71,7 +69,7 @@ class ServicesManager extends BaseObject
         if(!Obj::isA($model, Rate::class)){
             throw new \InvalidArgumentException('Parameter $model is not '.Rate::class.' type.');
         }
-        $services=RateToExcludedService::getSlaveItems($model->id);
+        $services=RateToExcludedServiceBinder::getSlaveItems($model->id);
         return $services;
     }
 }
