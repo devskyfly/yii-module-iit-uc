@@ -23,7 +23,8 @@ class ServicesController extends CommonController
                 $data[]=[
                     "name"=>$item->name,
                     "price"=>Nmbr::toDoubleStrict($item->price),
-                    "slx_id"=>$item->slx_id
+                    "slx_id"=>$item->slx_id,
+                    "comment"=>$item->comment
                 ];
             }
             
