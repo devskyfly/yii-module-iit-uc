@@ -100,17 +100,14 @@ class RatesController extends CommonController
                     $rates_packages_ids=[];
                     
                     foreach ($powersPackages as $powerPackage){
-                        if($powerPackage->active==PowerPackage::ACTIVE){
+                        if($powerPackage->active=='Y'){
                             $powers_packages_ids[]=$powerPackage->id;
                         }
                     }
                     
                     foreach ($ratesPackages as $ratePackage){
-                        if($ratePackage['_parent_rate__id']==$item->id){
-                            $packageRates=RatePackageManager::getRates($ratePackage);
-                            foreach ($packageRates as $packageRate){
-                                $rates_packages_ids[]=$packageRate->id;
-                            }
+                        if($ratePackage->active=='Y'){
+                            $rates_packages_ids[]=$ratePackage->id;
                         }
                     }
                     
