@@ -115,7 +115,7 @@ class StocksController extends CommonController
             "stock_id"=>$item->stock,
             "additional_services_pakages"=>$services_packages_ids,
             "checked_additional_services"=>[],
-            "client_types"=>$item->client_type
+            //"client_types"=>$item->client_type
         ];
 
         $this->asJson($data);

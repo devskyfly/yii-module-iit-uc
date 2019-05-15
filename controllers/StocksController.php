@@ -71,7 +71,7 @@ class StocksController extends AbstractContentPanelController
                     .$form->field($item,'sort')
                     .$form->field($item,'active')->checkbox(['value'=>'Y','uncheck'=>'N','checked'=>$item->active=='Y'?true:false])
                     .$form->field($item,'stock')
-                    .$form->field($item,'client_type')
+                    //.$form->field($item,'client_type')
                 ],
                 [
                     "label"=>"binds",

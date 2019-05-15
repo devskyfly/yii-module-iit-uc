@@ -8,7 +8,6 @@ use yii\helpers\ArrayHelper;
  * 
  * @author devskyfly
  * @property integer $stock
- * @property string $client_type
  */
 class Stock extends AbstractEntity
 {
@@ -44,8 +43,8 @@ class Stock extends AbstractEntity
         $old_rules=parent::rules();
         
         $new_rules=[
-            [["stock","client_type"],"required"],
-            [["stock","client_type"],"string"]
+            [["stock"],"required"],
+            [["stock"],"string"]
         ];
         
         return ArrayHelper::merge($old_rules, $new_rules);
