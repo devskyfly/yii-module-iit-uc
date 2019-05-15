@@ -16,6 +16,7 @@ use devskyfly\yiiModuleIitUc\components\PromoList;
 use devskyfly\yiiModuleIitUc\components\BindsList;
 use devskyfly\yiiModuleIitUc\components\RatePackageManager;
 use Yii;
+use yii\helpers\Json;
 use yii\web\ServerErrorHttpException;
 
 class RatesController extends CommonController
@@ -93,8 +94,17 @@ class RatesController extends CommonController
         
                 $chain=RatesManager::getMultiChain($models, $promoList, $bindsList);
                 
+
+                $client_types_arr=[];
+                foreach ($chain as $item) {                   
+                    $client_types_arr = array_merge($client_types_arr,[Json::decode($item->client_type)]);
+                }
+
+                $intersected_clients_types=$this->intersect($client_types_arr);
+
+                $itr=0;
                 foreach ($chain as $item){
-                    
+                    $itr++;
                     $powersPackages=RateToPowerPackageBinder::getSlaveItems($item->id);
                     $powers_packages_ids=[];
                     $rates_packages_ids=[];
@@ -127,22 +137,22 @@ class RatesController extends CommonController
                         }
                     }
                     
-                    
-                    
                     $result[]=[
                         "id"=>$item->id,
                         "name"=>$item->name,
                         "slx_id"=>$item->slx_id,
                         "price"=>Nmbr::toDoubleStrict($item->price),
                         "powers_packages"=>$powers_packages_ids,
-                        "rates_packages"=>$rates_packages_ids,
+                        "rates_packages"=>$itr==1?$rates_packages_ids:[],
                         "required_powers"=>[],
                         "stock_id"=>Vrbl::isNull($stock)?'':$stock->stock,
+                        "clients_types"=>$itr==1?Json::encode($intersected_clients_types, true):[],
                         "required_license"=>$item->flag_for_license=='Y'?true:false
                     ];
                 }    
                 
             }else{
+                //All rates
                 $models=[];
  
                 $rates=Rate::find()->where(['active'=>'Y'])->all();
@@ -161,7 +171,34 @@ class RatesController extends CommonController
         }catch(\Exception $e)
         {
             Yii::error($e,self::class);
-            throw new NotFoundHttpException();
+            if(YII_DEBUG){
+                throw $e;
+            }else{
+                throw new NotFoundHttpException();
+            }
+            
         }
     }   
+
+    protected function intersect($arr)
+    {
+        //throw new \Exception(print_r($arr,true));
+        $items=[];
+        $size=count($arr);
+        for($i=0;$i<($size-1);$i++){
+            for($j=$i;$j<($size-1);$j++){
+                $items = array_merge(array_intersect($arr[$j], $arr[$j+1]));
+            }
+        }
+        $items=array_unique($items);
+        $result=[];
+        foreach ($items as $item){
+            $assert=true;
+            foreach ($arr as $arr_item){
+                $assert=$assert && in_array($item, $arr_item);
+            }
+            if ($assert) $result[]=$item;
+        }
+        return $result;
+    }
 }
