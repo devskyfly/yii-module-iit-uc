@@ -182,9 +182,15 @@ class RatesController extends CommonController
 
     protected function intersect($arr)
     {
+        if(empty($arr)){
+            return [];
+        }
         //throw new \Exception(print_r($arr,true));
         $items=[];
         $size=count($arr);
+        if($size==1){
+            return $arr[0];
+        }
         for($i=0;$i<($size-1);$i++){
             for($j=$i;$j<($size-1);$j++){
                 $items = array_merge(array_intersect($arr[$j], $arr[$j+1]));
