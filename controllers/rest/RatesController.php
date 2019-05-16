@@ -10,14 +10,13 @@ use yii\web\NotFoundHttpException;
 use devskyfly\yiiModuleIitUc\components\RatesManager;
 use devskyfly\yiiModuleIitUc\models\rate\RateToPowerPackageBinder;
 use devskyfly\yiiModuleIitUc\models\stock\Stock;
-use devskyfly\yiiModuleIitUc\models\powerPackage\PowerPackage;
 use devskyfly\php56\types\Nmbr;
 use devskyfly\yiiModuleIitUc\components\PromoList;
 use devskyfly\yiiModuleIitUc\components\BindsList;
 use devskyfly\yiiModuleIitUc\components\RatePackageManager;
 use Yii;
 use yii\helpers\Json;
-use yii\web\ServerErrorHttpException;
+use devskyfly\yiiModuleIitUc\components\RatesChainBuilder;
 
 class RatesController extends CommonController
 {
@@ -66,7 +65,61 @@ class RatesController extends CommonController
         $this->asJson($chain);
     }
 
+
     public function actionIndex(array $ids = null)
+    {
+        
+        try {
+            $rates=[];
+            $result=[];
+            if (!Vrbl::isNull($ids)) {
+                //Models definition
+                foreach ($ids as $id) {
+                    $rate = RatesManager::getBySlxId($id);
+                    if (!Vrbl::isNull($rate)) {
+                        $rates[] = $rate;
+                    } else {
+                        throw NotFoundHttpException('Model with id=\'' . $id . '\' does not exist.');
+                    }
+                }
+
+                array_unique($rates);
+                $promoListCmp = new PromoList();
+                $bindsListCmp = new BindsList();
+                $ratesChainCmp = new RatesChainBuilder([
+                    'rates'=>$rates,
+                    'promoListCmp'=>$promoListCmp,
+                    'bindListCmp'=>$bindsListCmp
+                ]);
+
+                $result = $ratesChainCmp->build()->getRatesChain();
+                
+            } else {
+                //All rates
+                $rates = Rate::find()->where(['active' => 'Y'])->all();
+                foreach ($rates as $rate) {
+
+                    $result[] = [
+                        "id" => $rate->id,
+                        "name" => $rate->name,
+                        "slx_id" => $rate->slx_id,
+                        "price" => Nmbr::toDoubleStrict($rate->price),
+                        //"stock_id"=>Vrbl::isNull($stock)?'':$stock->stock,
+                    ];
+                }
+            }
+            $this->asJson($result);
+        } catch (\Exception $e) {
+            Yii::error($e, self::class);
+            if (YII_DEBUG) {
+                throw $e;
+            } else {
+                throw new NotFoundHttpException();
+            }
+        }
+    }
+
+    public function _actionIndex(array $ids = null)
     {
         try {
             if (!Vrbl::isNull($ids)) {
@@ -156,17 +209,18 @@ class RatesController extends CommonController
                         }
                     }
 
-                    $result[] = [
-                        "id" => $item->id,
-                        "name" => $item->name,
-                        "slx_id" => $item->slx_id,
-                        "price" => Nmbr::toDoubleStrict($item->price),
-                        "powers_packages" => $powers_packages_ids,
-                        "rates_packages" => $itr == 1 ? $rates_packages_ids : [],
-                        "required_powers" => [],
-                        "stock_id" => Vrbl::isNull($stock) ? '' : $stock->stock,
-                        "clients_types" => $itr == 1 ? Json::encode($intersected_clients_types, true) : [],
-                        "required_license" => $item->flag_for_license == 'Y' ? true : false
+                    
+                    $result[]=[
+                        "id"=>$item->id,
+                        "name"=>$item->name,
+                        "slx_id"=>$item->slx_id,
+                        "price"=>Nmbr::toDoubleStrict($item->price),
+                        "powers_packages"=>$powers_packages_ids,
+                        "rates_packages"=>$itr==1?$rates_packages_ids:[],
+                        "required_powers"=>[],
+                        "stock_id"=>Vrbl::isNull($stock)?'':$stock->stock,
+                        "client_types"=>$itr==1?$intersected_clients_types:[],
+                        "required_license"=>$item->flag_for_license=='Y'?true:false
                     ];
                 }
             } else {
@@ -194,27 +248,5 @@ class RatesController extends CommonController
                 throw new NotFoundHttpException();
             }
         }
-    }
-
-    protected function intersect($arr)
-    {
-        //throw new \Exception(print_r($arr,true));
-        $items = [];
-        $size = count($arr);
-        for ($i = 0; $i < ($size - 1); $i++) {
-            for ($j = $i; $j < ($size - 1); $j++) {
-                $items = array_merge(array_intersect($arr[$j], $arr[$j + 1]));
-            }
-        }
-        $items = array_unique($items);
-        $result = [];
-        foreach ($items as $item) {
-            $assert = true;
-            foreach ($arr as $arr_item) {
-                $assert = $assert && in_array($item, $arr_item);
-            }
-            if ($assert) $result[] = $item;
-        }
-        return $result;
     }
 }

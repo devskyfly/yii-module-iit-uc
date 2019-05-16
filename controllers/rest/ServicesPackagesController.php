@@ -75,7 +75,7 @@ class ServicesPackagesController extends CommonController
                 $package_data=[
                     'id'=>$service_package->id,
                     'name'=>$service_package->name,
-                    'select_type'=>$service_package->select_type=='MULTI'?'MULTI':'MONO',
+                    'select_type'=>$service_package->select_type,
                     'list'=>$list
                 ];
                 
