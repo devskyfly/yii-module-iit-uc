@@ -146,7 +146,7 @@ class RatesController extends CommonController
                         "rates_packages"=>$itr==1?$rates_packages_ids:[],
                         "required_powers"=>[],
                         "stock_id"=>Vrbl::isNull($stock)?'':$stock->stock,
-                        "clients_types"=>$itr==1?Json::encode($intersected_clients_types, true):[],
+                        "client_types"=>$itr==1?Json::encode($intersected_clients_types, true):[],
                         "required_license"=>$item->flag_for_license=='Y'?true:false
                     ];
                 }    
