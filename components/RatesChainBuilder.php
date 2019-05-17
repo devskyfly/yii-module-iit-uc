@@ -155,7 +155,7 @@ class RatesChainBuilder extends BaseObject
                         "slx_id"=>$rate->slx_id,
                         "price"=>Nmbr::toDoubleStrict($rate->price),
                         "powers_packages"=>$powers_packages_ids,
-                        "rates_packages"=>$itr==1?$rates_packages_ids:[],
+                        "rates_packages"=>$rates_packages_ids,
                         "required_powers"=>[],
                         "stock_id"=>Vrbl::isNull($stock)?'':$stock->stock,
                         "client_types"=>$itr==1?$this->clientTypes:[],
