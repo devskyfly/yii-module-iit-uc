@@ -89,7 +89,7 @@ class RatesChainBuilder extends BaseObject
         $this->editedRates = RatesManager::getMultiChain($this->rates, $this->promoListCmp, $this->bindListCmp);
         //Может здесь надо снова обновить clien types
         $this->getRatesPackages();
-        //$this->excludePackagedRates();
+        $this->excludePackagedRates();
         $this->formRatesChain();
         return $this;
     }
@@ -155,7 +155,7 @@ class RatesChainBuilder extends BaseObject
                         "rates_packages"=>$itr==1?$rates_packages_ids:[],
                         "required_powers"=>[],
                         "stock_id"=>Vrbl::isNull($stock)?'':$stock->stock,
-                        //"client_types"=>$itr==1?$intersected_clients_types:[],
+                        "client_types"=>$itr==1?$this->clientTypes:[],
                         "required_license"=>$rate->flag_for_license=='Y'?true:false
                     ];
                 }
@@ -170,7 +170,11 @@ class RatesChainBuilder extends BaseObject
         $ratesCnt = Arr::getSize($this->editedRates);
         //throw new \Exception(print_r($ratesCnt,true));
         for ($i = 0; $i < $ratesCnt; $i++) {
+            //try{
             $ratePackage = RatePackageManager::getByRate($this->editedRates[$i]);
+            //}catch(\Exception $e){
+            //    throw new \Exception(print_r($i,true));
+            //}
             if (!Vrbl::isNull($ratePackage)) {
                 unset($this->editedRates[$i]);
                 $parentRate = Rate::getById($ratePackage->_parent_rate__id);
@@ -178,8 +182,9 @@ class RatesChainBuilder extends BaseObject
                     throw new \RuntimeException('Param $parentRate is null.');
                 }
             }
+            $this->editedRates = array_values($this->editedRates);
         }
-        $this->editedRates = array_values($this->editedRates);
+        
     }
 
     /**
