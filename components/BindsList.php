@@ -17,32 +17,17 @@ use yii\helpers\ArrayHelper;
  */
 class BindsList extends AbstractRatesAsset
 {
-
+    /**
+     *
+     * @return []]
+     */
     public function initIdsList()
     {
         return Yii::$app->params['iit-uc']['binds-list']['idsList'];
     }
     
-    
-    
-    public function initRates()
-    {
-        $this->rates=[];
-        $this->rates['AST_GOZ']=RatesManager::getBySlxId('Y6UJ9A0002H1');
-        $this->rates['AETP']=RatesManager::getBySlxId('Y6UJ9A0000XM');
-        $this->rates['B2b']=RatesManager::getBySlxId('Y6UJ9A0000XP');
-        $this->rates['FETP']=RatesManager::getBySlxId('Y6UJ9A0000XL');
-        $this->rates['AETP_PL_FETP']=RatesManager::getBySlxId('Y6UJ9A0000XN');
-        
-        foreach ($this->rates as $key => $rate){
-            if(!Obj::isA($rate, Rate::class)){
-                throw new \InvalidArgumentException("Array rates['{$key}'] is not ".Rate::class." type");
-            }
-        }
-        return $this;
-    }
-    
-    /**
+     /**
+     * Apply binds on $models
      * 
      * @param Rate[] $models
      * @throws \InvalidArgumentException

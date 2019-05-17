@@ -10,7 +10,15 @@ abstract class AbstractRatesAsset extends BaseObject
     
     public $idsList=[];
     
-    protected $rates_keys=['asset','change','rates','master','slave'];
+    protected $rates_keys=[
+        //For promo
+        'asset',
+        'change',
+        //For sales
+        'rates',
+        //For binding
+        'master',
+        'slave'];
     
     public function init()
     {
@@ -22,10 +30,19 @@ abstract class AbstractRatesAsset extends BaseObject
     }
     
     /**
+     * Return array on rates relations
+     * 
      * @return []
      */
     abstract public function initIdsList();
     
+    /**
+     * Initialize $this->list using $this->idsList
+     * 
+     * It copies array struct from idsList but change ids on rates.
+     *
+     * @return void
+     */
     protected function generate()
     {
         foreach ($this->idsList as $listItem){

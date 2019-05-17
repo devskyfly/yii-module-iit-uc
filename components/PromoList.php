@@ -16,13 +16,18 @@ use yii\helpers\ArrayHelper;
 class PromoList extends AbstractRatesAsset
 {
 
+    /**
+     *
+     * @return []
+     */
     public function initIdsList()
     {
         return Yii::$app->params['iit-uc']['promo-list']['idsList'];
     }
     
     /**
-     *
+     * Apply promo on $models
+     * 
      * @param Rate[] $models
      * @return array
      */
