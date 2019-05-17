@@ -13,6 +13,7 @@ use devskyfly\php56\types\Arr;
 use devskyfly\yiiModuleIitUc\models\stock\Stock;
 use devskyfly\yiiModuleIitUc\models\rate\RateToPowerPackageBinder;
 use devskyfly\php56\types\Nmbr;
+use devskyfly\php56\core\Cls;
 
 class RatesChainBuilder extends BaseObject
 {
@@ -73,13 +74,13 @@ class RatesChainBuilder extends BaseObject
         $this->rates=RatesManager::getMultiChain(\array_unique($this->rates));
         $this->editedRates=$this->rates;
 
-        if (!(Obj::isA($this->promoListCmp, PromoList::class))) {
-            throw new \InvalidArgumentException('Param $promoList is not '.PromoList::class.' type .');
+        if (!(Obj::isA($this->promoListCmp, PromoList::class))){
+            throw new \InvalidArgumentException('Param $promoList is not '.PromoList::class.' type.');
         }
 
-        /*if (!(Obj::isA($this->bindListCmp, BindList::class))) {
+        if (!(Obj::isA($this->bindListCmp, BindsList::class))){
             throw new \InvalidArgumentException('Param $bindListCmp is not '.BindsList::class.' type.');
-        }*/
+        }
     }
 
     public function build()

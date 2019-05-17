@@ -85,11 +85,13 @@ class RatesController extends CommonController
 
                 array_unique($rates);
                 $promoListCmp = new PromoList();
-                $bindsListCmp = new BindsList();
+                $bindListCmp = new BindsList();
+                //throw new \Exception(print_r($bindListCmp,true));
+                //throw new \Exception($promoListCmp::class);
                 $ratesChainCmp = new RatesChainBuilder([
                     'rates'=>$rates,
                     'promoListCmp'=>$promoListCmp,
-                    'bindListCmp'=>$bindsListCmp
+                    'bindListCmp'=>$bindListCmp
                 ]);
 
                 $result = $ratesChainCmp->build()->getRatesChain();
