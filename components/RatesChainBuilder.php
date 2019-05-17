@@ -2,18 +2,17 @@
 namespace devskyfly\yiiModuleIitUc\components;
 
 use yii\base\BaseObject;
+use yii\helpers\Json;
 use devskyfly\yiiModuleIitUc\models\rate\Rate;
 use devskyfly\yiiModuleIitUc\components\PromoList;
 use devskyfly\yiiModuleIitUc\components\BindsList;
 use devskyfly\php56\libs\arr\Intersect;
 use devskyfly\php56\types\Obj;
-use yii\helpers\Json;
 use devskyfly\php56\types\Vrbl;
 use devskyfly\php56\types\Arr;
 use devskyfly\yiiModuleIitUc\models\stock\Stock;
 use devskyfly\yiiModuleIitUc\models\rate\RateToPowerPackageBinder;
 use devskyfly\php56\types\Nmbr;
-use devskyfly\php56\core\Cls;
 
 class RatesChainBuilder extends BaseObject
 {
@@ -60,7 +59,7 @@ class RatesChainBuilder extends BaseObject
      */
     protected $clientTypes=[];
 
-    protected $ratesPacakges=[];
+    protected $ratesPackages=[];
 
     public function init()
     {
@@ -88,7 +87,7 @@ class RatesChainBuilder extends BaseObject
         $this->clientTypes=$this->getClientTypes();
         $this->editedRates = RatesManager::getMultiChain($this->rates, $this->promoListCmp, $this->bindListCmp);
         //Может здесь надо снова обновить clien types
-        $this->getRatesPackages();
+        $this->formRatesPackages();
         $this->excludePackagedRates();
         $this->formRatesChain();
         return $this;
@@ -137,7 +136,11 @@ class RatesChainBuilder extends BaseObject
                     $rates_packages_ids = [];
 
                     $powersPackages = RateToPowerPackageBinder::getSlaveItems($rate->id);
-                    
+                    $ratePackage=$this->getRatePackage($rate);
+                    if($ratePackage){
+                        $rates_packages_ids[]=$ratePackage->id;
+                    }
+
                     //Powers packages definition
                     foreach ($powersPackages as $powerPackage) {
                         if ($powerPackage->active == 'Y') {
@@ -191,7 +194,7 @@ class RatesChainBuilder extends BaseObject
      *
      * @return [["parentRate"=>Rate,"pacakge"=>RatePackage],...]]
      */
-    protected function getRatesPackages()
+    protected function formRatesPackages()
     {
         $result=[];
         foreach($this->editedRates as $rate){
@@ -205,6 +208,18 @@ class RatesChainBuilder extends BaseObject
                 $result[] = ["parentRate"=>$parentRate,'package'=>$ratePackage];
             }
         }
-        return $result;
+        $this->ratesPackages=$result;
+    }
+
+    protected function getRatePackage($rate){
+        if(!(Obj::isA($rate,Rate::class))){
+            throw new \InvalidArgumentException('Param $rate is not '.Rate::class.' type.');
+        }
+        foreach($this->ratesPackages as $item){
+            if($item['parentRate']['id']==$rate->id){
+                return $item['package'];
+            }
+        }
+        return null;
     }
 }
