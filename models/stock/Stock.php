@@ -58,7 +58,8 @@ class Stock extends AbstractEntity
     public function binders()
     {
         return [
-            'StockToServicePackageBinder'=>StockToServicePackageBinder::class
+            'StockToServicePackageBinder'=>StockToServicePackageBinder::class,
+            'StockToCheckedServiceBinder'=>StockToCheckedServiceBinder::class
         ];
     }
 

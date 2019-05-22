@@ -12,6 +12,7 @@ use yii\web\NotFoundHttpException;
 use devskyfly\php56\types\Nmbr;
 use devskyfly\yiiModuleIitUc\models\stock\StockToServicePackageBinder;
 use Yii;
+use devskyfly\yiiModuleIitUc\models\stock\StockToCheckedServiceBinder;
 
 class StocksController extends CommonController
 {
@@ -23,7 +24,7 @@ class StocksController extends CommonController
             $packages_cls=ServicePackage::class;
             $service_cls=Service::class;
             $stock_to_service_package_binder_cls=StockToServicePackageBinder::class;
-            
+            $stock_to_checked_service_binder_cls=StockToCheckedServiceBinder::class;
             $stocks=$stocs_cls::find()
             ->where(['active'=>'Y'])
             ->all();
@@ -47,7 +48,7 @@ class StocksController extends CommonController
                 $services_packages_ids=$ids;
                 
                 //Checked services
-                $checked_services_ids=$stock_to_service_package_binder_cls::getSlaveIds($stock->id);
+                $checked_services_ids=$stock_to_checked_service_binder_cls::getSlaveIds($stock->id);
                 
                 $services=$service_cls::find()
                 ->where(['id'=>$checked_services_ids,'active'=>'Y'])
