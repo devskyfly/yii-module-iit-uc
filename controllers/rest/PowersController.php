@@ -25,7 +25,7 @@ class PowersController extends CommonController
         foreach ($items as $item){
             $data[]=[
                 "id"=>$item->id,
-                "name"=>$item->name,
+                "name"=>empty($item->detail_text)?$item->name:$item->detail_text,
                 "oid"=>$item->oid
             ];
         }

@@ -65,6 +65,7 @@ class PowersController extends AbstractContentPanelController
                     .$form->field($item,'sort')
                     .$form->field($item,'active')->checkbox(['value'=>'Y','uncheck'=>'N','checked'=>$item->active=='Y'?true:false])
                     .$form->field($item,'oid')
+                    .$form->field($item,'detail_text')->textarea(["rows"=>5])
                     
             ]
             ];
