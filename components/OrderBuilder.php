@@ -14,7 +14,7 @@ use devskyfly\yiiModuleIitUc\models\stock\Stock;
 use devskyfly\yiiModuleIitUc\models\rate\RateToPowerPackageBinder;
 use devskyfly\php56\types\Nmbr;
 
-class RatesChainBuilder extends BaseObject
+class OrderBuilder extends BaseObject
 {
     
     /**
@@ -37,6 +37,20 @@ class RatesChainBuilder extends BaseObject
      * @var BindList
      */
     public $bindListCmp = null;
+
+    /**
+     * Sale value
+     *
+     * @var integer
+     */
+    public $sale = 0;
+
+    /**
+     * SalesList cmp
+     *
+     * @var SaleList
+     */
+    public $salesListCmp = null;
 
     /**
      * Array or $rates after promoList, bindList use and so on.
@@ -80,12 +94,17 @@ class RatesChainBuilder extends BaseObject
         if (!(Obj::isA($this->bindListCmp, BindsList::class))){
             throw new \InvalidArgumentException('Param $bindListCmp is not '.BindsList::class.' type.');
         }
+
+        if (!(Obj::isA($this->salesListCmp, SalesList::class))){
+            throw new \InvalidArgumentException('Param $salesListCmp is not '.SalesList::class.' type.');
+        }
     }
 
     public function build()
     {
         $this->clientTypes=$this->getClientTypes();
         $this->editedRates = RatesManager::getMultiChain($this->rates, $this->promoListCmp, $this->bindListCmp);
+        $this->sale = $this->salesListCmp->count($this->editedRates);
         //Может здесь надо снова обновить clien types
         $this->formRatesPackages();
         $this->excludePackagedRates();

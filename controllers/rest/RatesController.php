@@ -17,6 +17,8 @@ use devskyfly\yiiModuleIitUc\components\RatePackageManager;
 use Yii;
 use yii\helpers\Json;
 use devskyfly\yiiModuleIitUc\components\RatesChainBuilder;
+use devskyfly\yiiModuleIitUc\components\SalesList;
+use devskyfly\yiiModuleIitUc\components\OrderBuilder;
 
 class RatesController extends CommonController
 {
@@ -86,12 +88,14 @@ class RatesController extends CommonController
                 array_unique($rates);
                 $promoListCmp = new PromoList();
                 $bindListCmp = new BindsList();
+                $salesCmp =new SalesList();
                 //throw new \Exception(print_r($bindListCmp,true));
                 //throw new \Exception($promoListCmp::class);
-                $ratesChainCmp = new RatesChainBuilder([
+                $ratesChainCmp = new OrderBuilder([
                     'rates'=>$rates,
                     'promoListCmp'=>$promoListCmp,
-                    'bindListCmp'=>$bindListCmp
+                    'bindListCmp'=>$bindListCmp,
+                    'salesListCmp'=>$salesCmp
                 ]);
 
                 $result = $ratesChainCmp->build()->getRatesChain();
