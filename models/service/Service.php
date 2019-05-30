@@ -3,6 +3,7 @@ namespace devskyfly\yiiModuleIitUc\models\service;
 
 use devskyfly\yiiModuleAdminPanel\models\contentPanel\AbstractEntity;
 use yii\helpers\ArrayHelper;
+use devskyfly\php56\types\Str;
 
 /**
  * 
@@ -54,5 +55,13 @@ class Service extends AbstractEntity
     public function __toString()
     {
         return $this->id;
+    }
+
+    public function getBySlxId($slxId)
+    {
+        if(!Str::isString($slxId)){
+            throw new \InvalidArgumentException('Param $slxId is not string type.');
+        }
+        return static::find()->where(['active'=>'Y', 'slx_id'=>$slxId])->one();
     }
 }

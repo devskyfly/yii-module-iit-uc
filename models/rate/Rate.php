@@ -3,6 +3,7 @@ namespace devskyfly\yiiModuleIitUc\models\rate;
 
 use devskyfly\yiiModuleAdminPanel\models\contentPanel\AbstractEntity;
 use yii\helpers\ArrayHelper;
+use devskyfly\php56\types\Str;
 
 /**
  * 
@@ -82,5 +83,13 @@ class Rate extends AbstractEntity
     public function __toString()
     {
         return $this->slx_id;
+    }
+
+    public function getBySlxId($slxId)
+    {
+        if(!Str::isString($slxId)){
+            throw new \InvalidArgumentException('Param $slxId is not string type.');
+        }
+        return static::find()->where(['active'=>'Y', 'slx_id'=>$slxId])->one();
     }
 }
