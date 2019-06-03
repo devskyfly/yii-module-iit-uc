@@ -24,7 +24,9 @@ class ServicesController extends CommonController
                     "name"=>$item->name,
                     "price"=>Nmbr::toDoubleStrict($item->price),
                     "slx_id"=>$item->slx_id,
-                    "comment"=>$item->comment
+                    "comment"=>$item->comment,
+                    "fast_release" => $item->flag_is_fast_release=="Y"?true:false,
+                    "required_license" => $item->flag_for_license=="Y"?true:false
                 ];
             }
             

@@ -14,7 +14,7 @@ class m190530_123324_alter_service_table extends Migration
     public function safeUp()
     {
         $sql = "ALTER TABLE ".Service::tableName()." ADD COLUMN flag_is_fast_release ENUM('Y','N') DEFAULT 'N';";
-        $sql = "ALTER TABLE ".Service::tableName()." ADD COLUMN flag_for_license ENUM('Y','N') DEFAULT 'N';";
+        $sql .= "ALTER TABLE ".Service::tableName()." ADD COLUMN flag_for_license ENUM('Y','N') DEFAULT 'N';";
         $this->execute($sql);
     }
 
