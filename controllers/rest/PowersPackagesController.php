@@ -33,7 +33,7 @@ class PowersPackagesController extends CommonController
             $power_ids=PowerPackageToPowerBinder::getSlaveIds($power_package->id);
             $powers=Power::find()
             ->where(['active'=>'Y','id'=>$power_ids])
-            ->orderBy(['order'=>SORT_ASC,'name'=>SORT_ASC])
+            ->orderBy(['sort'=>SORT_ASC,'name'=>SORT_ASC])
             ->all();
             
             if($mode_list=='Y'){
