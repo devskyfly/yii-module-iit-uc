@@ -133,56 +133,56 @@ class OrderBuilder extends BaseObject
     protected function formRatesChain()
     {
         $itr = 0;
-                foreach ($this->editedRates as $rate) {
-                    $itr++;
+        foreach ($this->editedRates as $rate) {
+            $itr++;
 
-                    //Stock
-                    $stock = null;
-                    if (!Vrbl::isEmpty($rate->_stock__id)) {
-                        $stock = Stock::find()
-                            ->where([
-                                'active' => Stock::ACTIVE,
-                                'id' => $rate->_stock__id
-                            ])
-                            ->one();
+            //Stock
+            $stock = null;
+            if (!Vrbl::isEmpty($rate->_stock__id)) {
+                $stock = Stock::find()
+                    ->where([
+                        'active' => Stock::ACTIVE,
+                        'id' => $rate->_stock__id
+                    ])
+                    ->one();
 
-                        if (Vrbl::isEmpty($stock)) {
-                            throw new \RuntimeException('Parameter $stock is empty.');
-                        }
-                    }
-
-                    $powers_packages_ids = [];
-                    $rates_packages_ids = [];
-
-                    $powersPackages = RateToPowerPackageBinder::getSlaveItems($rate->id);
-                    $ratePackage=$this->getRatePackage($rate);
-                    if($ratePackage){
-                        $rates_packages_ids[]=$ratePackage->id;
-                    }
-
-                    //Powers packages definition
-                    foreach ($powersPackages as $powerPackage) {
-                        if ($powerPackage->active == 'Y') {
-                            $powers_packages_ids[] = $powerPackage->id;
-                        }
-                    }
-
-
-                    $result[]=[
-                        "id"=>$rate->id,
-                        "name"=>$rate->name,
-                        "slx_id"=>$rate->slx_id,
-                        "price"=>Nmbr::toDoubleStrict($rate->price),
-                        "powers_packages"=>$powers_packages_ids,
-                        "rates_packages"=>$rates_packages_ids,
-                        "required_powers"=>[],
-                        "stock_id"=>Vrbl::isNull($stock)?'':$stock->stock,
-                        "client_types"=>$itr==1?$this->clientTypes:[],
-                        "required_license"=>$rate->flag_for_license=='Y'?true:false
-                    ];
+                if (Vrbl::isEmpty($stock)) {
+                    throw new \RuntimeException('Parameter $stock is empty.');
                 }
+            }
 
-                $this->ratesChain=$result;
+            $powers_packages_ids = [];
+            $rates_packages_ids = [];
+
+            $powersPackages = RateToPowerPackageBinder::getSlaveItems($rate->id);
+            $ratePackage=$this->getRatePackage($rate);
+            if($ratePackage){
+                $rates_packages_ids[]=$ratePackage->id;
+            }
+
+            //Powers packages definition
+            foreach ($powersPackages as $powerPackage) {
+                if ($powerPackage->active == 'Y') {
+                    $powers_packages_ids[] = $powerPackage->id;
+                }
+            }
+
+
+            $result[]=[
+                "id"=>$rate->id,
+                "name"=>$rate->name,
+                "slx_id"=>$rate->slx_id,
+                "price"=>Nmbr::toDoubleStrict($rate->price),
+                "powers_packages"=>$powers_packages_ids,
+                "rates_packages"=>$rates_packages_ids,
+                "required_powers"=>[],
+                "stock_id"=>Vrbl::isNull($stock)?'':$stock->stock,
+                "client_types"=>$itr==1?$this->clientTypes:[],
+                "required_license"=>$rate->flag_for_license=='Y'?true:false
+            ];
+        }
+
+        $this->ratesChain=$result;
     }
 
    
