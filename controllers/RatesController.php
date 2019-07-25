@@ -119,6 +119,14 @@ class RatesController extends AbstractContentPanelController
                     ])
                 ],
                 [
+                    "label"=>"calc",
+                    "content"=>
+                    $form->field($item,'flag_show_in_calc')
+                        ->checkbox(['value'=>'Y','uncheck'=>'N','checked'=>$item->active=='Y'?true:false]) 
+                    .$form->field($item,'calc_name')->textarea(["rows"=>5])
+                    .$form->field($item,'calc_sort')
+                ],
+                [
                     "label"=>"sites",
                     "content"=>
                     Binder::widget([
