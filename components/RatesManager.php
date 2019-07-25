@@ -9,7 +9,8 @@ use devskyfly\yiiModuleIitUc\models\rate\Rate;
 use yii\base\BaseObject;
 use devskyfly\yiiModuleIitUc\models\rate\RateToPowerBinder;
 use yii\helpers\ArrayHelper;
-
+use devskyfly\yiiModuleIitUc\models\stock\Stock;
+use yii\base\InvalidArgumentException;
 
 /**
  * Provides managing rates.
@@ -22,24 +23,19 @@ class RatesManager extends BaseObject
     /**
      * 
      * @param Rate $model
-     * @throws \InvalidArgumentException
-     * @throws \RuntimeException
+     * @throws InvalidArgumentException
      */
     public static function checkModel($model)
     {
         if(!Obj::isA($model, Rate::class)){
-            throw new \InvalidArgumentException('Parameter $model is not '.Rate::class.' type.');
+            throw new InvalidArgumentException('Parameter $model is not '.Rate::class.' type.');
         }
-        /* if($model->isNewRecord){
-            throw new \RuntimeException('Item $model does not exist in data base.');
-        } */
     }
     
     /**
      * 
      * @param \devskyfly\yiiModuleIitUc\models\rate\Rate $model
-     * @throws \InvalidArgumentException
-     * @throws \RuntimeException
+     * @throws InvalidArgumentException
      * @return \devskyfly\yiiModuleIitUc\models\rate\Rate[]
      */
     public static function getChain($model,PromoList $promoList=null, BindsList $bindsList=null)
@@ -64,14 +60,14 @@ class RatesManager extends BaseObject
     /**
      * 
      * @param \devskyfly\yiiModuleIitUc\models\rate\Rate $models
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      * @return \devskyfly\yiiModuleIitUc\models\rate\Rate[]
      */
     public static function getMultiChain($models, PromoList $promoList=null, BindsList $bindsList=null)
     {
         $result=[];
         if(!Arr::isArray($models)){
-            throw new \InvalidArgumentException('Parameter $models is not array type.');
+            throw new InvalidArgumentException('Parameter $models is not array type.');
         }
         $main=null;
         $list=[];
@@ -96,8 +92,7 @@ class RatesManager extends BaseObject
     /**
      * 
      * @param \devskyfly\yiiModuleIitUc\models\rate\Rate $model
-     * @throws \InvalidArgumentException
-     * @throws \RuntimeException
+     * @throws InvalidArgumentException
      * @return \devskyfly\yiiModuleIitUc\models\rate\Rate|NULL
      */
     public static function getParent($model)
@@ -156,8 +151,7 @@ class RatesManager extends BaseObject
     /**
      * 
      * @param \devskyfly\yiiModuleIitUc\models\rate\Rate $model
-     * @throws \InvalidArgumentException
-     * @throws \RuntimeException
+     * @throws InvalidArgumentException
      * @return \devskyfly\yiiModuleIitUc\models\power\Power[]
      */
     public static function getPowers($model)
@@ -184,10 +178,13 @@ class RatesManager extends BaseObject
     /**
      * 
      * @param Rate $model
+     * @throws \InvalidArgumentException
+     * @throws \RuntimeException
      * @return number
      */
     public static function getCost($model)
     {
+        
         $cost=0;
         $chain=static::getChain($model);
         
@@ -197,4 +194,30 @@ class RatesManager extends BaseObject
         
         return $cost;
     }
+
+    /**
+     *
+     * @param Rate $model
+     * @throws InvalidArgumentException
+     * @throws RuntimeException
+     * @return Rate
+     */
+    public static function getRootRate($model)
+    {
+        if (!Obj::isA($model, Rate::class)) {
+            throw new \InvalidArgumentException('Param $model is not '.Rate::class.' type.');
+        }
+
+        $arr = self::getChain($model);
+
+        if (Vrbl::isEmpty($arr)
+            || (!Arr::isArray($arr))
+        ) {
+            throw new InvalidArgumentException('Variable $arr is not .');
+        } 
+
+        $root_rate = $arr[0];
+        return $root_rate;
+    }
+ 
 }
