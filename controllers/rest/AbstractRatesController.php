@@ -3,18 +3,11 @@ namespace devskyfly\yiiModuleIitUc\controllers\rest;
 
 use Yii;
 use devskyfly\php56\types\Vrbl;
-use devskyfly\php56\types\Nmbr;
-use devskyfly\yiiModuleIitUc\models\rate\Rate;
-use yii\web\NotFoundHttpException;
 use devskyfly\yiiModuleIitUc\components\RatesManager;
-use devskyfly\yiiModuleIitUc\models\stock\Stock;
 use devskyfly\yiiModuleIitUc\components\PromoList;
 use devskyfly\yiiModuleIitUc\components\BindsList;
 use devskyfly\yiiModuleIitUc\components\SalesList;
 use devskyfly\yiiModuleIitUc\components\OrderBuilder;
-use yii\base\InvalidArgumentException;
-use yii\filters\VerbFilter;
-use yii\helpers\ArrayHelper;
 
 abstract class AbstractRatesController extends CommonController
 {

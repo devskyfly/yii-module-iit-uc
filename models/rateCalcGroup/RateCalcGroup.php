@@ -34,7 +34,7 @@ class RateCalcGroup extends AbstractEntity
      */
     public function binders(){
         return [
-            'RateCalcGroupToRate'=>RateCalcGroupToRateBinder::class            
+            'RateCalcGroupToRateBinder'=>RateCalcGroupToRateBinder::class            
         ];
     }
 }

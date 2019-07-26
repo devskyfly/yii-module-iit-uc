@@ -35,7 +35,7 @@ class SiteCalcGroup extends AbstractEntity
      */
     public function binders(){
         return [
-            'SiteCalcGroupToRateBinder'=>SiteCalcGroupToSiteBinder::class            
+            'SiteCalcGroupToSiteBinder'=>SiteCalcGroupToSiteBinder::class            
         ];
     }
 }
