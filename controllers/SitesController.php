@@ -70,6 +70,13 @@ class SitesController extends AbstractContentPanelController
                     .$form->field($item,'tooltip')->textarea(["rows"=>5])
                 ],
                 [
+                    "label"=>"calc",
+                    "content"=> 
+                    $form->field($item,'flag_show_in_calc')->checkbox(['value'=>'Y','uncheck'=>'N','checked'=>$item->active=='Y'?true:false])
+                    .$form->field($item,'calc_name')
+                    .$form->field($item,'calc_sort')
+                ],
+                [
                     "label"=>"tools",
                     "content"=>
                     MasterRatesList::widget(['model'=>$item])

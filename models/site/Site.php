@@ -10,6 +10,9 @@ use yii\helpers\ArrayHelper;
  * @property string $url
  * @property string $comment
  * @property string $tooltip
+ * @property string $flag_show_in_calc
+ * @property string $calc_sort
+ * @property string $calc_name
  */
 class Site extends AbstractEntity
 {
@@ -44,7 +47,7 @@ class Site extends AbstractEntity
         $old_rules=parent::rules();
         
         $new_rules=[
-            [["url","comment","tooltip"],"string"]
+            [["url","comment","tooltip","calc_sort","flag_show_in_calc","calc_name"],"string"]
         ];
         
         return ArrayHelper::merge($old_rules, $new_rules);
