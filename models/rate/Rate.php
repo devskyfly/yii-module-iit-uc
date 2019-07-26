@@ -18,6 +18,9 @@ use devskyfly\php56\types\Str;
  * @property string $comment
  * @property string $tooltip
  * @property string $client_type
+ * @property string $calc_name
+ * @property string $cacl_sort
+ * @property string $flag_show_in_calc
  */
 class Rate extends AbstractEntity
 {
@@ -32,7 +35,7 @@ class Rate extends AbstractEntity
         return RateSection::class;
     }
     
-    /**l
+    /**
      * {@inheritdoc}
      * @see devskyfly\yiiModuleAdminPanel\models\contentPanel\AbstractItem::selectListRoute()
      * Здесь прописывается роут к списку выбора

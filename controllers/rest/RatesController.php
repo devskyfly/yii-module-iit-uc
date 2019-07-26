@@ -55,8 +55,9 @@ class RatesController extends AbstractRatesController
     public function actionCalc()
     {
         try {
+                $result=[];
                 $rates = Rate::find()
-                ->where(['active' => 'Y'])
+                ->where(['active' => 'Y','flag_show_in_calc' => 'Y'])
                 ->all();
                 
                 foreach ($rates as $rate) {
@@ -68,9 +69,9 @@ class RatesController extends AbstractRatesController
                         "slx_id" => $rate->slx_id,
                         "price" => Nmbr::toDoubleStrict($rate->price),
                         "stock" => $stock->stock,
-                        //"calc_name" =>,
+                        "calc_name" =>$rate->calc_name,
                         //"calc_group" =>,
-                        //"calc_show" =>,
+                        "calc_show" => true,
                         //"calc_sort" =>,
                     ];
                 }

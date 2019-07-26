@@ -6,7 +6,7 @@ use devskyfly\yiiModuleIitUc\models\power\Power;
 
 class RateToPowerBinder extends AbstractBinder
 {
-    protected function slaveCls()
+    protected static function slaveCls()
     {
         return Power::class;
     }

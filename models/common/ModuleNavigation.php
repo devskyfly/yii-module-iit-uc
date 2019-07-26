@@ -21,7 +21,9 @@ class ModuleNavigation extends AbstractModuleNavigation
             ['name'=>'Доп. услуги','route'=>'/iit-uc/services'],
             ['name'=>'Пакеты доп. услуги','route'=>'/iit-uc/services-packages'],
             ['name'=>'Полномочия','route'=>'/iit-uc/powers'],
-            ['name'=>'Пакеты полномочий','route'=>'/iit-uc/powers-packages']
+            ['name'=>'Пакеты полномочий','route'=>'/iit-uc/powers-packages'],
+            ['name'=>'Группы тарифов для калькулятора','route'=>'/iit-uc/rates-calc-group'],
+            ['name'=>'Группы сайтов для калькулятора','route'=>'/iit-uc/sites-calc-group']
         ];
     }
 
