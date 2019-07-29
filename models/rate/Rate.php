@@ -55,7 +55,16 @@ class Rate extends AbstractEntity
         $old_rules=parent::rules();
         $new_rules=[
             [["price","slx_id"],"required"],
-            [["price", "slx_id", "flag_for_license", "flag_for_crypto_pro", "flag_is_terminated", "comment", "tooltip", "client_type","calc_name","flag_show_in_calc"], "string"],
+            [["price", 
+            "slx_id", 
+            "flag_for_license", 
+            "flag_for_crypto_pro", 
+            "flag_is_terminated", 
+            "comment", 
+            "tooltip", 
+            "client_type",
+            "calc_name",
+            "flag_show_in_calc"], "string"],
             [["__id","_stock__id","calc_sort"],'number']
         ];
         return ArrayHelper::merge($old_rules, $new_rules);

@@ -20,6 +20,16 @@ use yii\base\InvalidArgumentException;
  */
 class RatesManager extends BaseObject
 {
+    public static function getBaseRate()
+    {
+        return self::getBySlxId("Y6UJ9A0000XK");
+    } 
+
+    public static function getFizRate()
+    {
+        return self::getBySlxId("Y6UJ9A0002C0");
+    }
+    
     /**
      * 
      * @param Rate $model

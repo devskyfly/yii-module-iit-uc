@@ -4,9 +4,14 @@ namespace devskyfly\yiiModuleIitUc\controllers\rest;
 use Yii;
 use yii\web\NotFoundHttpException;
 use devskyfly\yiiModuleIitUc\components\RatesManager;
-use devskyfly\yiiModuleIitUc\components\StocksManager;
 use devskyfly\yiiModuleIitUc\models\site\Site;
 use devskyfly\yiiModuleIitUc\models\siteCalcGroup\SiteCalcGroup;
+use devskyfly\php56\types\Arr;
+use devskyfly\yiiModuleIitUc\models\siteCalcGroup\SiteCalcGroupToSiteBinder;
+use devskyfly\php56\types\Vrbl;
+use devskyfly\yiiModuleIitUc\components\SitesManager;
+use devskyfly\php56\types\Nmbr;
+use devskyfly\yiiModuleIitUc\components\StocksManager;
 
 class SitesCalcGroupsController extends CommonController
 {
@@ -16,19 +21,39 @@ class SitesCalcGroupsController extends CommonController
                 $result=[];
                 $sites = Site::find()
                 ->where(['active' => 'Y','flag_show_in_calc' => 'Y'])
+                ->orderBy([
+                    
+                    'calc_sort'=>SORT_ASC, 
+                    'name'=>SORT_ASC,
+                    ])
                 ->all();
                 
-                foreach ($rates as $rate) {
+                foreach ($sites as $site) {
+                    $rate = SitesManager::getCheepRate($site);
+                    
+                    if(Vrbl::isNull($rate)){
+                        continue;
+                    }
+                   
                     $rootRate = RatesManager::getRootRate($rate);
                     $stock = StocksManager::getStockByRate($rootRate);
+                    
+                    $groupIds = SiteCalcGroupToSiteBinder::getMasterIds($site->id);
+                    
+                    if (Vrbl::isEmpty($groupIds)
+                    ||(Arr::getSize($groupIds)>1)) {
+                        continue;
+                    }
+
                     $result[] = [
-                        "id" => $rate->id,
-                        "name" => $rate->name,
-                        //"slx_id" => $rate->slx_id,
-                        //"stock" => $stock->stock,
-                        "calc_name" =>$rate->calc_name,
-                        //"calc_group" =>,
-                        "calc_show" => true,
+                        "id" => $site->id,
+                        "name" => $site->name,
+                        "slx_id" => $rate->slx_id,
+                        "stock" => $stock->stock,
+                        "calc_name" =>$site->calc_name,
+                        "calc_sort" =>$site->calc_sort,
+                        "url" =>$site->url,
+                        "calc_group" => Nmbr::toIntegerStrict($groupIds[0]),
                     ];
                 }
             

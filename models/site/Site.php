@@ -47,7 +47,18 @@ class Site extends AbstractEntity
         $old_rules=parent::rules();
         
         $new_rules=[
-            [["url","comment","tooltip","calc_sort","flag_show_in_calc","calc_name"],"string"]
+            [
+                [
+                "url",
+                "comment",
+                "tooltip",
+                "flag_show_in_calc",
+                "calc_name"
+                ],"string"],
+            [
+                [
+                    "calc_sort",
+                ],"number"]
         ];
         
         return ArrayHelper::merge($old_rules, $new_rules);

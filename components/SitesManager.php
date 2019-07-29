@@ -8,6 +8,7 @@ use yii\base\BaseObject;
 use devskyfly\yiiModuleIitUc\models\rate\RateToSiteBinder;
 use devskyfly\yiiModuleIitUc\models\site\Site;
 use yii\helpers\ArrayHelper;
+use devskyfly\yiiModuleIitUc\components\RatesManager;
 
 /**
  * Provides managing sites and them bindings to rates.
@@ -91,6 +92,47 @@ class SitesManager extends BaseObject
         
         foreach ( $query->each() as $item){
             yield $item;
+        }
+    }
+
+    public static function getCheepRate($model)
+    {
+        if (!Obj::isA($model, Site::class)) {
+            throw new \InvalidArgumentException('Param $model is not '.Site::class.' type.');
+        }
+        $rates = self::getRates($model);
+
+        if (Vrbl::isEmpty($rates)) {
+            return null;
+        }   
+
+        
+        $priceTable=[];
+        foreach($rates as $itm){
+            $cost=RatesManager::getCost($itm);
+            $priceTable[]=[
+                "cost"=>$cost,
+                "rate"=>$itm
+            ];
+        }
+
+        $sortFnc=function($a, $b){
+            if ($a["cost"] == $b["cost"]) {
+                return 0;
+            }
+            return ($a["cost"] < $b["cost"]?-1:1);
+        };
+
+        $result=usort($priceTable,$sortFnc);
+
+        if(!$result){
+            throw new \RuntimeException('usort execution crashed.');
+        }
+        
+        $rate = $priceTable[0];
+
+        if ($rate = RatesManager::getFizRate()) {
+            return RatesManager::getBaseRate();
         }
     }
 }
