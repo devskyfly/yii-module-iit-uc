@@ -52,6 +52,19 @@ class SitesManager extends BaseObject
     
     /**
      * 
+     * @param Site $model
+     * @return \devskyfly\yiiModuleIitUc\models\rate\Rate[]
+     */
+    public static function getRelatedRates($model)
+    {
+        static::checkModel($model);
+        $rates=RateToSiteBinder::getMasterItems($model->id);
+        $rates = array_unique($rates);
+        return $rates;
+    }
+
+    /**
+     * 
      * @param \devskyfly\yiiModuleIitUc\models\rate\Rate $model
      * @throws \InvalidArgumentException
      * @return number[]
@@ -100,7 +113,7 @@ class SitesManager extends BaseObject
         if (!Obj::isA($model, Site::class)) {
             throw new \InvalidArgumentException('Param $model is not '.Site::class.' type.');
         }
-        $rates = self::getRates($model);
+        $rates = self::getRelatedRates($model);
 
         if (Vrbl::isEmpty($rates)) {
             return null;
@@ -123,16 +136,18 @@ class SitesManager extends BaseObject
             return ($a["cost"] < $b["cost"]?-1:1);
         };
 
-        $result=usort($priceTable,$sortFnc);
+        $result=usort($priceTable, $sortFnc);
 
         if(!$result){
             throw new \RuntimeException('usort execution crashed.');
         }
         
-        $rate = $priceTable[0];
+        $rate = $priceTable[0]['rate'];
 
-        if ($rate = RatesManager::getFizRate()) {
+        if ($rate == RatesManager::getFizRate()) {
             return RatesManager::getBaseRate();
         }
+
+        return $rate;
     }
 }

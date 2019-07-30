@@ -171,6 +171,7 @@ class OrderBuilder extends BaseObject
             $result[]=[
                 "id"=>$rate->id,
                 "name"=>$rate->name,
+                "calc_name"=>$rate->calc_name,
                 "slx_id"=>$rate->slx_id,
                 "price"=>Nmbr::toDoubleStrict($rate->price),
                 "powers_packages"=>$powers_packages_ids,
