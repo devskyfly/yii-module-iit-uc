@@ -92,74 +92,101 @@ class CertificatesComposerController extends CommonController
                 'salesListCmp'=>$salesCmp
             ]);
 
-            $chain = $orderBuilder->build()->getRatesChain();    
+            $chain = $orderBuilder->build()->getRatesChain();
+            $result_item = $this->formResultItem($chain, $orderBuilder);
+            $rate = RatesManager::getBySlxId($slxId);
+            $this->applyServices($rate, $result_item, $result);
 
-            $slxIds = [];    
-            $price = 0;
-            $names = [];
-            
-            $i=0;
-            $lng = Arr::getSize($chain);
-            foreach ($chain as $item) {
-                $i++;
-                $slxIds[] = $item["slx_id"];
-                $price = $price + $item["price"];
-                $names[] = (!Vrbl::isEmpty($item["calc_name"]))?$item["calc_name"]:$item["name"];
-            }
-
-            $price = $price - $orderBuilder->sale;
-            $result_item = [
-                'names' => $names,
-                'price' => $price,
-                'slx_ids' => $slxIds,
-            ];
-
-            $rate = RatesManager::getBySlxId($item["slx_id"]);
-            $recomended_services = RateSManager::getRecomendedServices($rate);
-
-            
-            $services = [];
-            if (!Vrbl::isEmpty($recomended_services)) {
-                foreach ($recomended_services as $recomended_service) {
-                    $services[] = [
-                        "name" =>$recomended_service->name,
-                        "price" =>$recomended_service->price,
-                        "slx_id" =>$recomended_service->slx_id
-                    ];
-                }
-                $result_item['services'] = $services;
-            }
-
-            $result[] = $result_item;
-
-            //Add certificate for fiz by condition
+            //Add certificate for fiz by condition in sites action
             if ($emmiter == "sites") {
-                if ($stockSet['stock'] == 15) {
-                    $baseRate = RatesManager::getBaseRate();
-                    $baseRateSites = SitesManager::getByRate($baseRate);
-                    $baseRateSitesIds = [];
-                    
-                    foreach ($baseRateSites as $baseSite){
-                        $baseRateSitesIds[] = $baseSite["id"];
-                    }
-
-                    $diff_result = array_diff($stockSet['sites'], $baseRateSitesIds); 
-                    //codecept_debug("####".print_r($diff_result, true));
-                    if (empty($diff_result)) {
-                    //if (true) {
-
-                        $fizRate = RatesManager::getFizRate();
-                        $result[]=[
-                            'names' => [$fizRate->name],
-                            'price' => $fizRate->price,
-                            'slx_ids' => [$fizRate->slx_id],
-                        ];
-                    }
-                }
+                $this->applySites($stockSet, $result);
             }
         }
 
         return $result;
+    }
+
+    protected function formResultItem($chain, $orderBuilder)
+    {
+        $slxIds = [];    
+        $price = 0;
+        $names = [];
+        
+        $i=0;
+        $lng = Arr::getSize($chain);
+        foreach ($chain as $item) {
+            $i++;
+            $slxIds[] = $item["slx_id"];
+            $price = $price + $item["price"];
+            $names[] = (!Vrbl::isEmpty($item["calc_name"]))?$item["calc_name"]:$item["name"];
+        }
+
+        $price = $price - $orderBuilder->sale;
+        $result_item = [
+            'names' => $names,
+            'price' => $price,
+            'slx_ids' => $slxIds,
+        ];
+        return $result_item;
+    }
+
+    /**
+     * Undocumented function
+     *
+     * @param Rate $rate
+     * @param [] $result
+     * @return void
+     */
+    protected function applyServices($rate, &$result_item,&$result)
+    {       
+            $recomended_services = RateSManager::getRecomendedServices($rate);
+            $services = [];
+            if (!Vrbl::isEmpty($recomended_services)) {
+                foreach ($recomended_services as $recomended_service) {
+                    $services[] = $recomended_service;
+                }
+
+                $services = array_unique($services);
+                $services_items=[];
+                
+                foreach ($services as $service) {
+                    $services_items[]=[
+                        "name" =>$service->name,
+                        "price" =>$service->price,
+                        "slx_id" =>$service->slx_id
+                    ];
+                }
+
+                $result_item['services'] = $services;
+            }
+
+            $result[] = $result_item;
+    }
+
+    protected function applySites($stockSet,&$result)
+    {
+        if ($stockSet['stock'] == 15) {
+            $baseRate = RatesManager::getBaseRate();
+            $baseRateSites = SitesManager::getByRate($baseRate);
+            $baseRateSitesIds = [];
+            
+            foreach ($baseRateSites as $baseSite){
+                $baseRateSitesIds[] = $baseSite["id"];
+            }
+
+            $diff_result = array_diff($stockSet['sites'], $baseRateSitesIds); 
+            //codecept_debug("####".print_r($diff_result, true));
+            if (empty($diff_result)) {
+            //if (true) {
+
+                $fizRate = RatesManager::getFizRate();
+                $result[]=[
+                    'names' => [$fizRate->name],
+                    'price' => $fizRate->price,
+                    'slx_ids' => [$fizRate->slx_id],
+                ];
+            }
+        }
     }
 
     public function actionByRates()
