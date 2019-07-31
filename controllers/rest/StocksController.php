@@ -59,7 +59,7 @@ class StocksController extends CommonController
                     $ids[]=$service->id;
                 }
                 
-                $checked_services_ids=$ids;
+                //$checked_services_ids=$ids;
                 
                 //data
                 $data[]=[

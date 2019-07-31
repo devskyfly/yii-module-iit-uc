@@ -56,7 +56,6 @@ class CertificatesComposerController extends CommonController
         } else {
             $data = $_POST;
         }
-        //codecept_debug(print_r($data, true));
         return $data;
     }
 
@@ -97,7 +96,7 @@ class CertificatesComposerController extends CommonController
 
             $slxIds = [];    
             $price = 0;
-            $name = "";
+            $names = [];
             
             $i=0;
             $lng = Arr::getSize($chain);
@@ -105,14 +104,13 @@ class CertificatesComposerController extends CommonController
                 $i++;
                 $slxIds[] = $item["slx_id"];
                 $price = $price + $item["price"];
-                $glue = $i==$lng?"":" + ";
-                $name = $name.$item["calc_name"].$glue;
+                $names[] = (!Vrbl::isEmpty($item["calc_name"]))?$item["calc_name"]:$item["name"];
             }
 
             $price = $price - $orderBuilder->sale;
             
             $result[] =[
-                'name' => $name,
+                'names' => $names,
                 'price' => $price,
                 'slx_ids' => $slxIds,
             ];
@@ -135,7 +133,7 @@ class CertificatesComposerController extends CommonController
 
                         $fizRate = RatesManager::getFizRate();
                         $result[]=[
-                            'name' => $fizRate->name,
+                            'names' => [$fizRate->name],
                             'price' => $fizRate->price,
                             'slx_ids' => [$fizRate->slx_id],
                         ];
