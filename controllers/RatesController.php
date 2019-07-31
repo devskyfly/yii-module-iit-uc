@@ -14,7 +14,7 @@ use devskyfly\yiiModuleIitUc\models\rate\RateToSiteBinder;
 use devskyfly\yiiModuleIitUc\models\stock\Stock;
 use devskyfly\yiiModuleIitUc\widgets\SlavePowersList;
 use devskyfly\yiiModuleIitUc\widgets\SlaveSitesList;
-
+use devskyfly\yiiModuleIitUc\models\rate\RateToRecomendedServiceBinder;
 
 class RatesController extends AbstractContentPanelController
 {
@@ -58,9 +58,10 @@ class RatesController extends AbstractContentPanelController
         return function($form,$item)
         {
             $rate_to_site_binder_cls=RateToSiteBinder::class;
-            $rate_to_power_package_binder_cls=RateToPowerPackageBinder::class;
+            $rate_to_power_package_binder_cls = RateToPowerPackageBinder::class;
             //$rate_to_included_service_binder_cls=RateToIncludedService::class;
-            $rate_to_excluded_service_binder_cls=RateToExcludedServiceBinder::class;
+            $rate_to_recomended_service_binder_cls = RateToRecomendedServiceBinder::class;
+            $rate_to_excluded_service_binder_cls = RateToExcludedServiceBinder::class;
             
             return [
                 [
@@ -151,6 +152,12 @@ class RatesController extends AbstractContentPanelController
                         "master_item"=>$item,
                         "binder_cls"=>$rate_to_included_service_binder_cls
                     ]) */
+                    .Binder::widget([
+                        "label"=>"Рекомендуемые услуги",
+                        "form"=>$form,
+                        "master_item"=>$item,
+                        "binder_cls"=>$rate_to_recomended_service_binder_cls
+                    ])
                     .Binder::widget([
                         "label"=>"Исключенные услуги",
                         "form"=>$form,

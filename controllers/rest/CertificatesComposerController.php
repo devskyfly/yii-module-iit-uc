@@ -108,12 +108,29 @@ class CertificatesComposerController extends CommonController
             }
 
             $price = $price - $orderBuilder->sale;
-            
-            $result[] =[
+            $result_item = [
                 'names' => $names,
                 'price' => $price,
                 'slx_ids' => $slxIds,
             ];
+
+            $rate = RatesManager::getBySlxId($item["slx_id"]);
+            $recomended_services = RateSManager::getRecomendedServices($rate);
+
+            
+            $services = [];
+            if (!Vrbl::isEmpty($recomended_services)) {
+                foreach ($recomended_services as $recomended_service) {
+                    $services[] = [
+                        "name" =>$recomended_service->name,
+                        "price" =>$recomended_service->price,
+                        "slx_id" =>$recomended_service->slx_id
+                    ];
+                }
+                $result_item['services'] = $services;
+            }
+
+            $result[] = $result_item;
 
             //Add certificate for fiz by condition
             if ($emmiter == "sites") {

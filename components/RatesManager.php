@@ -10,7 +10,7 @@ use yii\base\BaseObject;
 use devskyfly\yiiModuleIitUc\models\rate\RateToPowerBinder;
 use yii\helpers\ArrayHelper;
 use devskyfly\yiiModuleIitUc\models\stock\Stock;
-use yii\base\InvalidArgumentException;
+use devskyfly\yiiModuleIitUc\models\rate\RateToRecomendedServiceBinder;
 
 /**
  * Provides managing rates.
@@ -20,17 +20,10 @@ use yii\base\InvalidArgumentException;
  */
 class RatesManager extends BaseObject
 {
-    public static function getBaseRate()
-    {
-        return self::getBySlxId("Y6UJ9A0000XK");
-    } 
+    //Service
 
-    public static function getFizRate()
-    {
-        return self::getBySlxId("Y6UJ9A0002C0");
-    }
-    
     /**
+     * Check whether $model param is Rate::class type and throws \InvalidArgumentException if it need.
      * 
      * @param Rate $model
      * @throws InvalidArgumentException
@@ -38,17 +31,85 @@ class RatesManager extends BaseObject
     public static function checkModel($model)
     {
         if(!Obj::isA($model, Rate::class)){
-            throw new InvalidArgumentException('Parameter $model is not '.Rate::class.' type.');
+            throw new \InvalidArgumentException('Parameter $model is not '.Rate::class.' type.');
         }
+    }
+
+   
+
+    //Getters and search
+
+    /**
+     * Return base rate
+     *
+     * @return Rate
+     */
+    public static function getBaseRate()
+    {
+        return self::getBySlxId("Y6UJ9A0000XK");
+    } 
+
+    /**
+     * Return fiz rate
+     *
+     * @return Rate
+     */
+    public static function getFizRate()
+    {
+        return self::getBySlxId("Y6UJ9A0002C0");
     }
     
     /**
+     * Return root rate for target rate.
+     * 
+     * @param Rate $model
+     * @throws InvalidArgumentException
+     * @throws RuntimeException
+     * @return Rate
+     */
+    public static function getRootRate($model)
+    {
+        if (!Obj::isA($model, Rate::class)) {
+            throw new \InvalidArgumentException('Param $model is not '.Rate::class.' type.');
+        }
+
+        $arr = self::getChain($model);
+
+        if (Vrbl::isEmpty($arr)
+            || (!Arr::isArray($arr))
+        ) {
+            throw new InvalidArgumentException('Variable $arr is not .');
+        } 
+
+        $root_rate = $arr[0];
+        return $root_rate;
+    }
+
+     /**
+     * Return target rate by its slx_id property.
+     * 
+     * @param string $slx_id
+     * @throws \InvalidArgumentException
+     * @return \devskyfly\yiiModuleIitUc\models\rate\Rate|NULL
+     */
+    public static function getBySlxId($slx_id)
+    {
+        if(!Str::isString($slx_id)){
+            throw new \InvalidArgumentException('Parameter $slx_id is not string type.');
+        }
+        return Rate::findOne(['active'=>'Y','slx_id'=>$slx_id]);
+    }
+
+    //Chains
+
+    /**
+     * Form rates chain from target rate and aply promo and bind components on it.
      * 
      * @param \devskyfly\yiiModuleIitUc\models\rate\Rate $model
      * @throws InvalidArgumentException
      * @return \devskyfly\yiiModuleIitUc\models\rate\Rate[]
      */
-    public static function getChain($model,PromoList $promoList=null, BindsList $bindsList=null)
+    public static function getChain($model, PromoList $promoList=null, BindsList $bindsList=null)
     {
         $result=[];
         self::checkModel($model);
@@ -68,6 +129,7 @@ class RatesManager extends BaseObject
     }
     
     /**
+     * Form rates chain from targets rates and aply promo and bind components on it.
      * 
      * @param \devskyfly\yiiModuleIitUc\models\rate\Rate $models
      * @throws InvalidArgumentException
@@ -100,7 +162,7 @@ class RatesManager extends BaseObject
     }
     
     /**
-     * 
+     * Return parent rate of target rate.
      * @param \devskyfly\yiiModuleIitUc\models\rate\Rate $model
      * @throws InvalidArgumentException
      * @return \devskyfly\yiiModuleIitUc\models\rate\Rate|NULL
@@ -113,6 +175,7 @@ class RatesManager extends BaseObject
     }
     
     /**
+     * Return array of child rates recursively.
      * 
      * @param Rate $model
      * @return [['item'=>...,sublist=>]]
@@ -121,10 +184,10 @@ class RatesManager extends BaseObject
     {
         $result=[];
         $parent_id=0;
-        if(!Vrbl::isNull($model)){
+        if (!Vrbl::isNull($model)) {
             self::checkModel($model);
             $parent_id=$model->__id;
-        }else{
+        } else {
             $parent_id=null;
         }
         
@@ -138,6 +201,7 @@ class RatesManager extends BaseObject
     }
     
     /**
+     * Return array of child rates.
      * 
      * @param Rate|null $model
      * @return Rate[]
@@ -156,12 +220,13 @@ class RatesManager extends BaseObject
         return $result;
     }
     
-    
+    //Binding
     
     /**
+     * Return powers array for target rate.
      * 
      * @param \devskyfly\yiiModuleIitUc\models\rate\Rate $model
-     * @throws InvalidArgumentException
+     * @throws \InvalidArgumentException
      * @return \devskyfly\yiiModuleIitUc\models\power\Power[]
      */
     public static function getPowers($model)
@@ -170,23 +235,25 @@ class RatesManager extends BaseObject
         $list=RateToPowerBinder::getSlaveItems($model->id);
         return $list;
     }
-    
-    /**
-     * 
-     * @param string $slx_id
-     * @throws \InvalidArgumentException
-     * @return \devskyfly\yiiModuleIitUc\models\rate\Rate|NULL
-     */
-    public static function getBySlxId($slx_id)
-    {
-        if(!Str::isString($slx_id)){
-            throw new \InvalidArgumentException('Parameter $slx_id is not string type.');
-        }
-        return Rate::findOne(['active'=>'Y','slx_id'=>$slx_id]);
-    }
 
     /**
+     * Return service array for target rate.
      * 
+     * @param \devskyfly\yiiModuleIitUc\models\rate\Rate $model
+     * @throws \InvalidArgumentException
+     * @return \devskyfly\yiiModuleIitUc\models\power\Power[]
+     */
+    public static function getRecomendedServices($model)
+    {
+        self::checkModel($model);
+        $list=RateToRecomendedServiceBinder::getSlaveItems($model->id);
+        return $list;
+    }
+    
+    //Price
+
+    /**
+     * Return full cost of target taking in account its parents but without appling Promo, Sales and binding.
      * @param Rate $model
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
@@ -204,30 +271,4 @@ class RatesManager extends BaseObject
         
         return $cost;
     }
-
-    /**
-     *
-     * @param Rate $model
-     * @throws InvalidArgumentException
-     * @throws RuntimeException
-     * @return Rate
-     */
-    public static function getRootRate($model)
-    {
-        if (!Obj::isA($model, Rate::class)) {
-            throw new \InvalidArgumentException('Param $model is not '.Rate::class.' type.');
-        }
-
-        $arr = self::getChain($model);
-
-        if (Vrbl::isEmpty($arr)
-            || (!Arr::isArray($arr))
-        ) {
-            throw new InvalidArgumentException('Variable $arr is not .');
-        } 
-
-        $root_rate = $arr[0];
-        return $root_rate;
-    }
- 
 }
