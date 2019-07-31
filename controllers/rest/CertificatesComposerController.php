@@ -9,11 +9,12 @@ use devskyfly\yiiModuleIitUc\components\PromoList;
 use devskyfly\yiiModuleIitUc\components\BindsList;
 use devskyfly\yiiModuleIitUc\components\SalesList;
 use devskyfly\yiiModuleIitUc\components\OrderBuilder;
-
+use devskyfly\yiiModuleIitUc\components\RatesManager;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
 use devskyfly\php56\types\Arr;
 use yii\helpers\Json;
+use devskyfly\yiiModuleIitUc\components\SitesManager;
 
 class CertificatesComposerController extends CommonController
 {
@@ -104,7 +105,6 @@ class CertificatesComposerController extends CommonController
                 $i++;
                 $slxIds[] = $item["slx_id"];
                 $price = $price + $item["price"];
-                //$name .= $item->calc_name.$i==$lng?"":" + ";
                 $glue = $i==$lng?"":" + ";
                 $name = $name.$item["calc_name"].$glue;
             }
@@ -116,6 +116,32 @@ class CertificatesComposerController extends CommonController
                 'price' => $price,
                 'slx_ids' => $slxIds,
             ];
+
+            //Add certificate for fiz by condition
+            if ($emmiter == "sites") {
+                if ($stockSet['stock'] == 15) {
+                    $baseRate = RatesManager::getBaseRate();
+                    $baseRateSites = SitesManager::getByRate($baseRate);
+                    $baseRateSitesIds = [];
+                    
+                    foreach ($baseRateSites as $baseSite){
+                        $baseRateSitesIds[] = $baseSite["id"];
+                    }
+
+                    $diff_result = array_diff($stockSet['sites'], $baseRateSitesIds); 
+                    //codecept_debug("####".print_r($diff_result, true));
+                    if (empty($diff_result)) {
+                    //if (true) {
+
+                        $fizRate = RatesManager::getFizRate();
+                        $result[]=[
+                            'name' => $fizRate->name,
+                            'price' => $fizRate->price,
+                            'slx_ids' => [$fizRate->slx_id],
+                        ];
+                    }
+                }
+            }
         }
 
         return $result;
@@ -147,9 +173,30 @@ class CertificatesComposerController extends CommonController
         }
     }
 
-    /*public function actionBySites()
+    public function actionBySites()
     {
-        
-    }*/
+        try {
+            $data = $this->getRequestData();
+            
+            if (Vrbl::isEmpty($data)) {
+                throw new \InvalidArgumentException('Param $data is epmty.');
+            }
+
+            if (!Arr::isArray($data)) {
+                throw new \InvalidArgumentException('Param $data is not array.');
+            }
+
+            $result = $this->compose($data, 'sites');
+            
+        $this->asJson($result);
+        } catch (\Exception $e) {
+            Yii::error($e, self::class);
+            if (YII_DEBUG) {
+                throw $e;
+            } else {
+                throw new NotFoundHttpException();
+            }
+        }
+    }
 
 }
