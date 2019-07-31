@@ -38,7 +38,7 @@ class RatesCalcGroupsController extends AbstractRatesController
                         "slx_id" => $rate->slx_id,
                         "price" => Nmbr::toDoubleStrict($rate->price),
                         "stock" => $stock->stock,
-                        "calc_name" =>$rate->calc_name,
+                        "calc_name" =>!Vrbl::isEmpty($rate->calc_name)?$rate->calc_name:$rate->name,
                         "calc_group" => Nmbr::toIntegerStrict($groupIds[0]),
                         "calc_sort" => $rate->calc_sort,
                     ];

@@ -151,9 +151,10 @@ class CertificatesComposerController extends CommonController
                 
                 foreach ($services as $service) {
                     $services_items[]=[
-                        "name" =>$service->name,
-                        "price" =>$service->price,
-                        "slx_id" =>$service->slx_id
+                        "name" => $service->name,
+                        "price" => $service->price,
+                        "slx_id" => $service->slx_id,
+                        "comment" => $service->comment
                     ];
                 }
 
@@ -163,7 +164,7 @@ class CertificatesComposerController extends CommonController
             $result[] = $result_item;
     }
 
-    protected function applySites($stockSet,&$result)
+    protected function applySites($stockSet, &$result)
     {
         if ($stockSet['stock'] == 15) {
             $baseRate = RatesManager::getBaseRate();
