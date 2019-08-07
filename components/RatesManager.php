@@ -147,6 +147,11 @@ class RatesManager extends BaseObject
             $chain=self::getChain($model);
             foreach ($chain as $item){
                 if(!Vrbl::isEmpty($item->_stock__id)){
+                    // Для тех случаев когда сток имеет несколько корневых тарифов
+                    if(!Vrbl::isEmpty($main)){ 
+                        $list[$item->id]=$item;
+                        continue;
+                    }
                     $main=$item;
                     continue;
                 }

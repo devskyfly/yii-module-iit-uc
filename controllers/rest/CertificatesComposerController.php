@@ -200,7 +200,7 @@ class CertificatesComposerController extends CommonController
                     "name" => $service->name,
                     "price" => Nmbr::toInteger($service->price),
                     "slx_id" => $service->slx_id,
-                    "comment" => $service->comment
+                    "comment" => Vrbl::isNull($service->comment)?"":$service->comment
                 ];
             }
 
@@ -224,7 +224,7 @@ class CertificatesComposerController extends CommonController
                 if (empty($diff_result)) {
                     $fizRate = RatesManager::getFizRate();
                     $result_item = [
-                        'names' => [$fizRate->name],
+                        'names' => [Vrbl::isEmpty($fizRate->calc_name)?$fizRate->name:$fizRate->calc_name],
                         'price' => Nmbr::toInteger($fizRate->price),
                         'slx_ids' => [$fizRate->slx_id],
                     ];
