@@ -27,9 +27,12 @@ class RatesCalcController extends AbstractRatesController
                     $stock = StocksManager::getStockByRate($rootRate);
                     $groupIds = RateCalcGroupToRateBinder::getMasterIds($rate->id);
                     
+                    array_unique($groupIds);
+
                     if (Vrbl::isEmpty($groupIds)
-                    ||(Arr::getSize($groupIds)>1)) {
-                        break;
+                    //||(Arr::getSize($groupIds)>1)
+                    ) {
+                        continue;
                     }
 
                     $result[] = [
@@ -41,6 +44,7 @@ class RatesCalcController extends AbstractRatesController
                         "calc_name" =>!Vrbl::isEmpty($rate->calc_name)?$rate->calc_name:$rate->name,
                         "calc_group" => Nmbr::toIntegerStrict($groupIds[0]),
                         "calc_sort" => $rate->calc_sort,
+                        
                     ];
                 }
             
