@@ -9,7 +9,6 @@ use devskyfly\yiiModuleIitUc\components\RatesManager;
 use devskyfly\yiiModuleIitUc\components\StocksManager;
 use devskyfly\yiiModuleIitUc\models\rateCalcGroup\RateCalcGroupToRateBinder;
 use devskyfly\php56\types\Vrbl;
-use devskyfly\php56\types\Arr;
 use devskyfly\yiiModuleIitUc\models\rateCalcGroup\RateCalcGroup;
 
 class RatesCalcController extends AbstractRatesController
@@ -43,7 +42,7 @@ class RatesCalcController extends AbstractRatesController
                         "stock" => $stock->stock,
                         "calc_name" =>!Vrbl::isEmpty($rate->calc_name)?$rate->calc_name:$rate->name,
                         "calc_group" => Nmbr::toIntegerStrict($groupIds[0]),
-                        "calc_sort" => $rate->calc_sort,
+                        "calc_sort" => Nmbr::toInteger($rate->calc_sort),
                         
                     ];
                 }
