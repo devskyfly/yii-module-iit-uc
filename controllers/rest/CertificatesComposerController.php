@@ -130,14 +130,19 @@ class CertificatesComposerController extends CommonController
             $chain = $orderBuilder->build()->getRatesChain();
             $result_item = $this->formResultItem($chain, $orderBuilder);
             $rate = RatesManager::getBySlxId($slxId);
-            $this->applyServices($rate, $result_item, $result);
-
+            
+            
             //Add certificate for fiz by condition in sites action
             if ($emmiter == "sites") {
                 $this->applySites($stockSet, $result);
             }
+            $services = $this->applyServices($rates);
+            $result_item['services'] = $services;
+            $result[] = $result_item;
         }
-
+        //$this->clearResult($result);
+        //$result = array_unique($result);
+        $result = array_map("unserialize", array_unique(array_map("serialize", $result)));
         return $result;
     }
 
@@ -172,37 +177,35 @@ class CertificatesComposerController extends CommonController
      * @param [] $result
      * @return void
      */
-    protected function applyServices($rate, &$result_item, &$result)
+    protected function applyServices($rates)
     {       
-            $recomended_services = RatesManager::getRecomendedServices($rate);
+            $result = [];
             $services = [];
-            $result_item['services'] = [];
-
-            if (!Vrbl::isEmpty($recomended_services)) {
-                foreach ($recomended_services as $recomended_service) {
-                    if ($recomended_service->active=="Y") {
-                        $services[] = $recomended_service;
-                    }
-                }
-                $services = array_unique($services);
-
-                $services_items=[];
-                
-                foreach ($services as $service) {
-                    
-                    $services_items[]=[
-                        "name" => $service->name,
-                        "price" => Nmbr::toInteger($service->price),
-                        "slx_id" => $service->slx_id,
-                        "comment" => $service->comment
-                        ];
-                    
-                }
-
-                $result_item['services'] = $services_items;
+            $recomended_services = [];
+            foreach ($rates as $rate) {
+                $recomended_services =ArrayHelper::merge($recomended_services, RatesManager::getRecomendedServices($rate));
             }
 
-            $result[] = $result_item;
+            foreach ($recomended_services as $recomended_service) {
+                if ($recomended_service
+                &&$recomended_service->active=="Y") {
+                    $services[] = $recomended_service;
+                } 
+            }
+
+            $services = array_unique($services);
+            
+            foreach ($services as $service) {
+                $result[]=[
+                    "name" => $service->name,
+                    "price" => Nmbr::toInteger($service->price),
+                    "slx_id" => $service->slx_id,
+                    "comment" => $service->comment
+                ];
+            }
+
+            
+            return $result;
     }
 
     protected function applySites($stockSet, &$result)
@@ -225,7 +228,9 @@ class CertificatesComposerController extends CommonController
                         'price' => Nmbr::toInteger($fizRate->price),
                         'slx_ids' => [$fizRate->slx_id],
                     ];
-                    $this->applyServices($fizRate, $result_item, $result);
+                    $services = $this->applyServices([$fizRate]);
+                    $result_item['services'] = $services;
+                    $result[] = $result_item;
                 }
             }
         }
