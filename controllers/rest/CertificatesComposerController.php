@@ -15,6 +15,7 @@ use yii\helpers\ArrayHelper;
 use devskyfly\php56\types\Arr;
 use yii\helpers\Json;
 use devskyfly\yiiModuleIitUc\components\SitesManager;
+use devskyfly\php56\types\Nmbr;
 
 class CertificatesComposerController extends CommonController
 {
@@ -22,20 +23,75 @@ class CertificatesComposerController extends CommonController
 
     public function behaviors()
     {
-        return ArrayHelper::merge([
+        /*return ArrayHelper::merge([
             [
                 'class' => VerbFilter::class,
                 'actions' => [
                     'calc' => ['POST']
                 ]
             ],
-        ], parent::behaviors());
+        ], parent::behaviors());*/
+
+        return parent::behaviors();
     }
 
     public function beforeAction($action)
     {
         $this->enableCsrfValidation = false;
         return parent::beforeAction($action);
+    }
+
+
+    public function actionByRates()
+    { 
+        try {
+                $data = $this->getRequestData();
+                
+                if (Vrbl::isEmpty($data)) {
+                    throw new \InvalidArgumentException('Param $data is epmty.');
+                }
+
+                if (!Arr::isArray($data)) {
+                    throw new \InvalidArgumentException('Param $data is not array.');
+                }
+
+                $result = $this->compose($data, 'rates');
+                
+            $this->asJson($result);
+        } catch (\Exception $e) {
+            Yii::error($e, self::class);
+            if (YII_DEBUG) {
+                throw $e;
+            } else {
+                throw new NotFoundHttpException();
+            }
+        }
+    }
+
+    public function actionBySites()
+    {
+        try {
+            $data = $this->getRequestData();
+            
+            if (Vrbl::isEmpty($data)) {
+                throw new \InvalidArgumentException('Param $data is epmty.');
+            }
+
+            if (!Arr::isArray($data)) {
+                throw new \InvalidArgumentException('Param $data is not array.');
+            }
+
+            $result = $this->compose($data, 'sites');
+            
+        $this->asJson($result);
+        } catch (\Exception $e) {
+            Yii::error($e, self::class);
+            if (YII_DEBUG) {
+                throw $e;
+            } else {
+                throw new NotFoundHttpException();
+            }
+        }
     }
 
     /**
@@ -124,7 +180,7 @@ class CertificatesComposerController extends CommonController
         $price = $price - $orderBuilder->sale;
         $result_item = [
             'names' => $names,
-            'price' => $price,
+            'price' => Nmbr::toInteger($price),
             'slx_ids' => $slxIds,
         ];
         return $result_item;
@@ -137,28 +193,34 @@ class CertificatesComposerController extends CommonController
      * @param [] $result
      * @return void
      */
-    protected function applyServices($rate, &$result_item,&$result)
+    protected function applyServices($rate, &$result_item, &$result)
     {       
-            $recomended_services = RateSManager::getRecomendedServices($rate);
+            $recomended_services = RatesManager::getRecomendedServices($rate);
             $services = [];
+            $result_item['services'] = [];
+
             if (!Vrbl::isEmpty($recomended_services)) {
                 foreach ($recomended_services as $recomended_service) {
-                    $services[] = $recomended_service;
+                    if ($recomended_service->active=="Y") {
+                        $services[] = $recomended_service;
+                    }
                 }
-
                 $services = array_unique($services);
+
                 $services_items=[];
                 
                 foreach ($services as $service) {
+                    
                     $services_items[]=[
                         "name" => $service->name,
-                        "price" => $service->price,
+                        "price" => Nmbr::toInteger($service->price),
                         "slx_id" => $service->slx_id,
                         "comment" => $service->comment
-                    ];
+                        ];
+                    
                 }
 
-                $result_item['services'] = $services;
+                $result_item['services'] = [$services_items];
             }
 
             $result[] = $result_item;
@@ -166,80 +228,27 @@ class CertificatesComposerController extends CommonController
 
     protected function applySites($stockSet, &$result)
     {
-        if ($stockSet['stock'] == 15) {
-            $baseRate = RatesManager::getBaseRate();
-            $baseRateSites = SitesManager::getByRate($baseRate);
-            $baseRateSitesIds = [];
-            
-            foreach ($baseRateSites as $baseSite){
-                $baseRateSitesIds[] = $baseSite["id"];
-            }
-
-            $diff_result = array_diff($stockSet['sites'], $baseRateSitesIds); 
-            //codecept_debug("####".print_r($diff_result, true));
-            if (empty($diff_result)) {
-            //if (true) {
-
-                $fizRate = RatesManager::getFizRate();
-                $result[]=[
-                    'names' => [$fizRate->name],
-                    'price' => $fizRate->price,
-                    'slx_ids' => [$fizRate->slx_id],
-                ];
-            }
-        }
-    }
-
-    public function actionByRates()
-    { 
-        try {
-                $data = $this->getRequestData();
+        if (isset($stockSet['sites'])&&(!Vrbl::isEmpty($stockSet['sites']))) {
+            if ($stockSet['stock'] == 15) {
+                $baseRate = RatesManager::getBaseRate();
+                $baseRateSites = SitesManager::getByRate($baseRate);
+                $baseRateSitesIds = [];
                 
-                if (Vrbl::isEmpty($data)) {
-                    throw new \InvalidArgumentException('Param $data is epmty.');
+                foreach ($baseRateSites as $baseSite){
+                    $baseRateSitesIds[] = $baseSite["id"];
                 }
 
-                if (!Arr::isArray($data)) {
-                    throw new \InvalidArgumentException('Param $data is not array.');
+                $diff_result = array_diff($stockSet['sites'], $baseRateSitesIds); 
+                if (empty($diff_result)) {
+                    $fizRate = RatesManager::getFizRate();
+                    $result_item = [
+                        'names' => [$fizRate->name],
+                        'price' => Nmbr::toInteger($fizRate->price),
+                        'slx_ids' => [$fizRate->slx_id],
+                    ];
+                    $this->applyServices($fizRate, $result_item, $result);
                 }
-
-                $result = $this->compose($data, 'rates');
-                
-            $this->asJson($result);
-        } catch (\Exception $e) {
-            Yii::error($e, self::class);
-            if (YII_DEBUG) {
-                throw $e;
-            } else {
-                throw new NotFoundHttpException();
             }
         }
     }
-
-    public function actionBySites()
-    {
-        try {
-            $data = $this->getRequestData();
-            
-            if (Vrbl::isEmpty($data)) {
-                throw new \InvalidArgumentException('Param $data is epmty.');
-            }
-
-            if (!Arr::isArray($data)) {
-                throw new \InvalidArgumentException('Param $data is not array.');
-            }
-
-            $result = $this->compose($data, 'sites');
-            
-        $this->asJson($result);
-        } catch (\Exception $e) {
-            Yii::error($e, self::class);
-            if (YII_DEBUG) {
-                throw $e;
-            } else {
-                throw new NotFoundHttpException();
-            }
-        }
-    }
-
 }

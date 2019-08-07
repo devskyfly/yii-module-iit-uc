@@ -14,10 +14,6 @@ abstract class CommonController extends Controller
         return ArrayHelper::merge([
             [
                 'class' => Cors::className(),
-                'cors' => [
-                    'Origin' => ['*'],
-                    'Access-Control-Request-Method' => ['*'],
-                ],
             ],
         ], parent::behaviors());
     }
