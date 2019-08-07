@@ -23,14 +23,14 @@ class CertificatesComposerController extends CommonController
 
     public function behaviors()
     {
-        /*return ArrayHelper::merge([
+        return ArrayHelper::merge([
             [
                 'class' => VerbFilter::class,
                 'actions' => [
                     'calc' => ['POST']
                 ]
             ],
-        ], parent::behaviors());*/
+        ], parent::behaviors());
 
         return parent::behaviors();
     }
@@ -39,33 +39,6 @@ class CertificatesComposerController extends CommonController
     {
         $this->enableCsrfValidation = false;
         return parent::beforeAction($action);
-    }
-
-
-    public function actionByRates()
-    { 
-        try {
-                $data = $this->getRequestData();
-                
-                if (Vrbl::isEmpty($data)) {
-                    throw new \InvalidArgumentException('Param $data is epmty.');
-                }
-
-                if (!Arr::isArray($data)) {
-                    throw new \InvalidArgumentException('Param $data is not array.');
-                }
-
-                $result = $this->compose($data, 'rates');
-                
-            $this->asJson($result);
-        } catch (\Exception $e) {
-            Yii::error($e, self::class);
-            if (YII_DEBUG) {
-                throw $e;
-            } else {
-                throw new NotFoundHttpException();
-            }
-        }
     }
 
     public function actionBySites()
@@ -82,7 +55,7 @@ class CertificatesComposerController extends CommonController
             }
 
             $result = $this->compose($data, 'sites');
-            
+            $result = $this->unique($result);
         $this->asJson($result);
         } catch (\Exception $e) {
             Yii::error($e, self::class);
@@ -92,6 +65,12 @@ class CertificatesComposerController extends CommonController
                 throw new NotFoundHttpException();
             }
         }
+    }
+
+    protected function unique(&$result)
+    {
+        return $result;
+        return array_unique($result);
     }
 
     /**
@@ -220,7 +199,7 @@ class CertificatesComposerController extends CommonController
                     
                 }
 
-                $result_item['services'] = [$services_items];
+                $result_item['services'] = $services_items;
             }
 
             $result[] = $result_item;
