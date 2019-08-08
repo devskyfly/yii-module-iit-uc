@@ -1,21 +1,35 @@
 <?php
 namespace devskyfly\yiiModuleIitUc\controllers\rest;
 
-use devskyfly\php56\types\Vrbl;
-
+use Yii;
 use devskyfly\yiiModuleIitUc\models\service\Service;
 use devskyfly\yiiModuleIitUc\models\servicePackage\ServicePackage;
 use devskyfly\yiiModuleIitUc\models\stock\Stock;
 use yii\helpers\Json;
-use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;
-use devskyfly\php56\types\Nmbr;
 use devskyfly\yiiModuleIitUc\models\stock\StockToServicePackageBinder;
-use Yii;
 use devskyfly\yiiModuleIitUc\models\stock\StockToCheckedServiceBinder;
 
+
+/**
+ * Rest api class
+ */
 class StocksController extends CommonController
 {
+    /**
+     * GET
+     * 
+     * Return json:
+     * [
+     *  [
+     *      name:string,
+     *      stock_id:number,
+     *      additional_services_packages:number[],
+     *      checked_additional_services:number[],
+     *      client_types:["UL","IP","FIZ"]
+     *  ],...
+     * ]
+     */
     public function actionIndex()
     {
         try{
@@ -77,48 +91,5 @@ class StocksController extends CommonController
             Yii::error($e,self::class);
             throw new NotFoundHttpException();
         }
-    }
-    
-    private function actionGetById($id)
-    {
-        $data=[];
-        $stocs_cls=Stock::class;
-        $packages_cls=ServicePackage::class;
-        $stock_to_service_package_binder_cls=StockToServicePackageBinder::class;
-        
-        try {
-            $id=Nmbr::toIntegerStrict($id);
-        }catch (\Throwable $e){
-            throw new BadRequestHttpException('Query param \'id\' is not integer type.');
-        }catch (\Exception $e){
-            throw new BadRequestHttpException('Query param \'id\' is not integer type.');
-        }
-        
-        $item=$stocs_cls::find()
-        ->where(['id'=>$id,'active'=>'Y'])
-        ->one();
-        
-        if(Vrbl::isNull($item)){
-            throw new NotFoundHttpException("Stock with id='{$id}' is not found.");
-        }
-        
-        $services_packages_ids=[];
-        
-        $services_packages_ids=$stock_to_service_package_binder_cls::getSlaveIds($item->id);
-        $packages=$packages_cls::find()->where(['id'=>$services_packages_ids])->all();
-        $ids=[];
-        foreach ($packages as $package){
-            $ids[]=$package->id;
-        }
-        $services_packages_ids=$ids;
-        $data[]=[
-            "name"=>$item->name,
-            "stock_id"=>$item->stock,
-            "additional_services_pakages"=>$services_packages_ids,
-            "checked_additional_services"=>[],
-            //"client_types"=>$item->client_type
-        ];
-
-        $this->asJson($data);
     }
 }

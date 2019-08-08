@@ -1,22 +1,31 @@
 <?php
 namespace devskyfly\yiiModuleIitUc\controllers\rest;
 
-use devskyfly\php56\types\Arr;
-use devskyfly\php56\types\Str;
-use devskyfly\php56\types\Vrbl;
 use devskyfly\yiiModuleIitUc\models\power\Power;
-use devskyfly\yiiModuleIitUc\models\rate\Rate;
-use yii\web\BadRequestHttpException;
-use yii\web\NotFoundHttpException;
 
+/**
+ * Rest api class
+ */
 class PowersController extends CommonController
 {
+    /**
+     * Return powers
+     * GET
+     *
+     * Return:
+     * [
+     *  [
+     *      id: number,
+     *      name: string,
+     *      oid: string
+     *  ],...
+     * ]
+     */
     public function actionIndex()
     {
         $data=[];
         $power_cls=Power::class;
         
-
         $items=$power_cls::find()
         ->where(['active'=>'Y'])
         ->orderBy(['sort'=>SORT_ASC])

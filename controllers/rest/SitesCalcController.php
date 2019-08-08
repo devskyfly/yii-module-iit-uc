@@ -13,8 +13,31 @@ use devskyfly\yiiModuleIitUc\components\SitesManager;
 use devskyfly\php56\types\Nmbr;
 use devskyfly\yiiModuleIitUc\components\StocksManager;
 
+/**
+ * Rest api class
+ */
 class SitesCalcController extends CommonController
 {
+
+    /**
+     * Return sites and add information about related rate and its stock
+     * 
+     * GET
+     * 
+     * Return:
+     * [
+     *  [
+     *      id: number,
+     *      name: string,
+     *      slx_id: string,
+     *      stock: number,
+     *      calc_name: string,
+     *      calc_sort: string,
+     *      url: string,
+     *      calc_group: number,
+     *  ],...
+     * ]
+     */
     public function actionIndex()
     {
         try {
@@ -68,6 +91,20 @@ class SitesCalcController extends CommonController
         }
     }
 
+    /**
+     * Return sites calc groups
+     * 
+     * GET
+     * 
+     * Return:
+     * [
+     *  [
+     *      id: number,
+     *      name: string,
+     *      calc_sort: string
+     *  ],...
+     * ]
+     */
     public function actionGroups()
     {
         $result = [];

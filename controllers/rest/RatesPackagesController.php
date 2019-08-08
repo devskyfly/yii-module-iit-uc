@@ -1,18 +1,31 @@
 <?php
 namespace devskyfly\yiiModuleIitUc\controllers\rest;
 
-use devskyfly\php56\types\Nmbr;
-use devskyfly\php56\types\Vrbl;
-use yii\web\NotFoundHttpException;
 use yii\web\BadRequestHttpException;
 use devskyfly\yiiModuleIitUc\models\rate\Rate;
 use devskyfly\yiiModuleIitUc\models\ratePackage\RatePackage;
 use devskyfly\yiiModuleIitUc\models\ratePackage\RatePackageToRateBinder;
-use devskyfly\yiiModuleIitUc\models\rate\RateToPowerPackageBinder;
 
 
+/**
+ * Rest api class
+ */
 class RatesPackagesController extends CommonController
 {
+    /**
+     * Return rates packages
+     * GET
+     *
+     * Return:
+     * [
+     *  [
+     *      'id': number,
+     *      'name': string,
+     *      'select_type': string['MULTI', 'MONO'],
+     *      'list': number[]
+     *  ],...
+     * ]
+     */
     public function actionIndex($mode_list='N')
     {
         if(!in_array($mode_list,$this->mode_list)){

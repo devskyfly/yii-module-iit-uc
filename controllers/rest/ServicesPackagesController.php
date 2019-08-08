@@ -14,8 +14,27 @@ use devskyfly\yiiModuleIitUc\models\servicePackage\ServicePackageToServiceBinder
 use devskyfly\yiiModuleIitUc\components\ServicesManager;
 use Yii;
 
+/**
+ * Rest api class
+ */
 class ServicesPackagesController extends CommonController
 {
+    /**
+     * Return rates packages
+     * GET
+     *
+     * Return:
+     * [
+     *  [
+     *      'id': number,
+     *      'name': string,
+     *      'select_type': string['MULTI', 'MONO'],
+     *      'list': number[]
+     *  ],...
+     * ]
+     * 
+     * @param number[] $ids
+     */
     public function actionIndex(array $ids, $mode_list='N')
     {
         try{
@@ -158,6 +177,6 @@ class ServicesPackagesController extends CommonController
             $data[]=$package_data;
         }
         
-        $this->send($data);
+        $this->asJson($data);
     }
 }

@@ -9,8 +9,17 @@ use devskyfly\yiiModuleIitUc\components\BindsList;
 use devskyfly\yiiModuleIitUc\components\SalesList;
 use devskyfly\yiiModuleIitUc\components\OrderBuilder;
 
+/**
+ * Provide only getChainMetode
+ */
 abstract class AbstractRatesController extends CommonController
 {
+    /**
+     * Return rates chain and apply promo, bind, sales to it.
+     *
+     * @param array $ids
+     * @return devskyfly\yiiModuleIitUc\Rate[]
+     */
     protected function getChain(array $ids = null)
     {
         $rates=[];

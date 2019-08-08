@@ -7,8 +7,26 @@ use devskyfly\php56\types\Nmbr;
 use devskyfly\yiiModuleIitUc\models\rate\Rate;
 use yii\web\NotFoundHttpException;
 
+/**
+ * Rest api class
+ */
 class RatesController extends AbstractRatesController
 {
+    /**
+     * Return rates
+     * GET
+     * 
+     * [
+     *  [
+     *      id: number,
+     *      name: string,
+     *      slx_id: string,
+     *      price: number
+     *  ],...
+     * ]
+     * 
+     * @param string[] $ids
+     */
     public function actionIndex(array $ids = null)
     {
         try {

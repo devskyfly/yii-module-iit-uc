@@ -17,6 +17,9 @@ use yii\helpers\Json;
 use devskyfly\yiiModuleIitUc\components\SitesManager;
 use devskyfly\php56\types\Nmbr;
 
+/**
+ * Rest api class
+ */
 class CertificatesComposerController extends CommonController
 {
     public const EMMITERS = ['rates','sites'];
@@ -41,6 +44,37 @@ class CertificatesComposerController extends CommonController
         return parent::beforeAction($action);
     }
 
+    /**
+     * Return composed certificates array on post request
+     * 
+     * POST RAW
+     * 
+     * Request:
+     * [
+     *  [
+     *      "stock":number,
+     *      "slx_ids":string[],
+     *      "sites":number[]
+     *  ],...
+     * ]
+     *
+     * Return json:
+     * [
+     *  [
+     *      names: string[],
+     *      price: number[],
+     *      slx_ids: string[],
+     *      services: [
+     *                  [
+     *                      name: string,
+     *                      price: number,
+     *                      slx_id: string,
+     *                      comment: string
+     *                  ],...
+     *      ]
+     *  ],...
+     * ]
+     */
     public function actionBySites()
     {
         try {

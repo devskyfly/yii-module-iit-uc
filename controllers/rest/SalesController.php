@@ -4,15 +4,29 @@ namespace devskyfly\yiiModuleIitUc\controllers\rest;
 use devskyfly\yiiModuleIitUc\components\RatesManager;
 use devskyfly\yiiModuleIitUc\components\SalesList;
 use Yii;
-use yii\web\NotFoundHttpException;
 use devskyfly\php56\types\Vrbl;
-use devskyfly\yiiModuleIitUc\components\RatesChainBuilder;
 use devskyfly\yiiModuleIitUc\components\PromoList;
 use devskyfly\yiiModuleIitUc\components\BindsList;
 use devskyfly\yiiModuleIitUc\components\OrderBuilder;
 
+/**
+ * Rest api class
+ */
 class SalesController extends CommonController
 {
+
+    /**
+     * Return sale on rates chain
+     * GET
+     * 
+     * Return:
+     * [
+     *      sale:number
+     * ]
+     * 
+     * @param number[] $ids
+     * @return void
+     */
     public function actionIndex(array $ids)
     {
         try {

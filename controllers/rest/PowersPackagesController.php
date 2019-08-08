@@ -11,8 +11,25 @@ use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;
 use devskyfly\yiiModuleIitUc\models\rate\RateToPowerPackageBinder;
 
+/**
+ * Rest api class
+ */
 class PowersPackagesController extends CommonController
 {
+    /**
+     * Return powers packages
+     * GET
+     *
+     * Return:
+     * [
+     *  [
+     *      'id': number,
+     *      'name': string,
+     *      'select_type': string['MULTI', 'MONO'],
+     *      'list': number[]
+     *  ],...
+     * ]
+     */
     public function actionIndex($mode_list='N')
     {
         if(!in_array($mode_list,$this->mode_list)){

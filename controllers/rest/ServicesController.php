@@ -6,8 +6,27 @@ use devskyfly\yiiModuleIitUc\models\service\Service;
 use Yii;
 use yii\web\NotFoundHttpException;
 
+/**
+ * Rest api class
+ */
 class ServicesController extends CommonController
 {
+
+    /**
+     * Return services
+     * GET
+     * 
+     * [
+     *  [
+     *      name: string,
+     *      price: number,
+     *      slx_id: string,
+     *      comment: string,
+     *      fast_release: boolean,
+     *      required_license: boolean,
+     *  ],...
+     * ]
+     */
     public function actionIndex()
     {
         try{

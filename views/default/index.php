@@ -12,8 +12,7 @@ $this->title=$title;
 ?>
 <div class="row">
     <div class="col-xs-3">
-    <?=NavigationMenu::widget(['list'=>$list])?>
-    
+        <?=NavigationMenu::widget(['list'=>$list])?>
     </div>
     <div class="col-xs-9">
     	<?=RatesTree::widget();?>

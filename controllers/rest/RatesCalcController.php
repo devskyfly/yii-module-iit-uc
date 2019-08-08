@@ -11,8 +11,30 @@ use devskyfly\yiiModuleIitUc\models\rateCalcGroup\RateCalcGroupToRateBinder;
 use devskyfly\php56\types\Vrbl;
 use devskyfly\yiiModuleIitUc\models\rateCalcGroup\RateCalcGroup;
 
+/**
+ * Rest api class
+ */
 class RatesCalcController extends AbstractRatesController
 {
+    /**
+     * Return rates
+     * 
+     * GET
+     * 
+     * Return:
+     * [
+     *  [
+     *      id: number,
+     *      name: string,
+     *      slx_id: string,
+     *      stock: number,
+     *      price: number,
+     *      calc_name: string,
+     *      calc_sort: string,
+     *      calc_group: number,
+     *  ],...
+     * ]
+     */
     public function actionIndex()
     {
         try {
@@ -58,6 +80,20 @@ class RatesCalcController extends AbstractRatesController
         }
     }
 
+    /**
+     * Return rates calc groups
+     * 
+     * GET
+     * 
+     * Return:
+     * [
+     *  [
+     *      id: number,
+     *      name: string,
+     *      calc_sort: string
+     *  ],...
+     * ]
+     */
     public function actionGroups()
     {
         $result = [];
