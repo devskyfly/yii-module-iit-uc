@@ -2,7 +2,7 @@
 
 [Докуметация Phpdoc](docs/api/namespaces/devskyfly.yiiModuleIitUc.html)
 
-Модуль позволяет управлять [сущностями](docs/api/):
+Модуль позволяет управлять [сущностями](docs/api/namespaces/devskyfly.yiiModuleIitUc.models.html):
 
 * Услуги
 * Тарифы
@@ -15,4 +15,4 @@
 * Группы тарифов для калькулятора
 * Группы сайтов для калькулятора
 
-Модуль имеет свое rest [api](docs/api/namespaces/devskyfly.yiiModuleIitUc.models.html).
+Модуль имеет свое rest [api](docs/api/namespaces/devskyfly.yiiModuleIitUc.controllers.rest.html).
