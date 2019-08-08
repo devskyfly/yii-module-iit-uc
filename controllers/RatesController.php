@@ -153,13 +153,13 @@ class RatesController extends AbstractContentPanelController
                         "binder_cls"=>$rate_to_included_service_binder_cls
                     ]) */
                     .Binder::widget([
-                        "label"=>"Рекомендуемые услуги",
+                        "label"=>"Рекомендуемые доп. услуги",
                         "form"=>$form,
                         "master_item"=>$item,
                         "binder_cls"=>$rate_to_recomended_service_binder_cls
                     ])
                     .Binder::widget([
-                        "label"=>"Исключенные услуги",
+                        "label"=>"Исключенные доп. услуги",
                         "form"=>$form,
                         "master_item"=>$item,
                         "binder_cls"=>$rate_to_excluded_service_binder_cls
