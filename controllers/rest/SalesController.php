@@ -52,7 +52,8 @@ class SalesController extends CommonController
                 'rates'=>$rates,
                 'promoListCmp'=>$promoListCmp,
                 'bindListCmp'=>$bindListCmp,
-                'salesListCmp'=>$salesCmp
+                'salesListCmp'=>$salesCmp,
+                'emmiter'=>OrderBuilder::EMMITERS[1]
             ]);
 
             $chain = $ratesChainCmp->build()->getRatesChain();
