@@ -197,8 +197,10 @@ class OrderBuilder extends BaseObject
 
     protected function excludePackagedRates()
     {
+        $this->editedRates = array_values($this->editedRates);
+        
         $ratesCnt = Arr::getSize($this->editedRates);
-        //throw new \Exception(print_r($ratesCnt,true));
+        //throw new \Exception(print_r($this->editedRates,true));
         for ($i = 0; $i < $ratesCnt; $i++) {
             //try{
             $ratePackage = RatePackageManager::getByRate($this->editedRates[$i]);
@@ -212,9 +214,8 @@ class OrderBuilder extends BaseObject
                     throw new \RuntimeException('Param $parentRate is null.');
                 }
             }
-            $this->editedRates = array_values($this->editedRates);
         }
-        
+        $this->editedRates = array_values($this->editedRates);
     }
 
     /**
