@@ -90,6 +90,7 @@ class CertificatesComposerController extends CommonController
 
             $result = $this->compose($data, 'sites');
             $result = $this->unique($result);
+            $result = Arr::getValues($result);
         $this->asJson($result);
         } catch (\Exception $e) {
             Yii::error($e, self::class);
