@@ -65,6 +65,6 @@ class Stock extends AbstractEntity
 
     public function __toString()
     {
-        return $this->id;
+        return "".$this->id;
     }
 }

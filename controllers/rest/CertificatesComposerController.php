@@ -221,7 +221,7 @@ class CertificatesComposerController extends CommonController
             }
 
             foreach ($recomended_services as $recomended_service) {
-                if ($recomended_service
+                if ((!Vrbl::isNull($recomended_service))
                 &&$recomended_service->active=="Y") {
                     $services[] = $recomended_service;
                 } 

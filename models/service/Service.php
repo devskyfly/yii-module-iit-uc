@@ -54,7 +54,7 @@ class Service extends AbstractEntity
     
     public function __toString()
     {
-        return $this->id;
+        return $this->slx_id;
     }
 
     public function getBySlxId($slxId)
