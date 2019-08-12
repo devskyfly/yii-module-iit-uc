@@ -256,7 +256,7 @@ class CertificatesComposerController extends CommonController
                 $site = Site::getById($id);
                 if (!Vrbl::isNull($site)
                 &&($site->active=="Y")) {
-                    $result[] = ["name"=>$site->name,'id'=>$site->id];
+                    $result[] = ["name"=>Vrbl::isEmpty($site->calc_name)?$site->name:$site->calc_name,'id'=>$site->id];
                 }
             }
         }
