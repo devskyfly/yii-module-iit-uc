@@ -16,6 +16,7 @@ use devskyfly\php56\types\Arr;
 use yii\helpers\Json;
 use devskyfly\yiiModuleIitUc\components\SitesManager;
 use devskyfly\php56\types\Nmbr;
+use devskyfly\yiiModuleIitUc\models\site\Site;
 
 /**
  * Rest api class
@@ -61,9 +62,16 @@ class CertificatesComposerController extends CommonController
      * Return json:
      * [
      *  [
+     *      stock: number,
      *      names: string[],
      *      price: number[],
      *      slx_ids: string[],
+     *      sites: [
+     *          [
+     *              id: number,
+     *              name: string
+     *          ],...
+     *      ]
      *      services: [
      *                  [
      *                      name: string,
@@ -88,7 +96,7 @@ class CertificatesComposerController extends CommonController
                 throw new \InvalidArgumentException('Param $data is not array.');
             }
 
-            $result = $this->compose($data, 'sites');
+            $result = $this->compose($data);
             $result = $this->unique($result);
             $result = Arr::getValues($result);
         $this->asJson($result);
@@ -130,13 +138,9 @@ class CertificatesComposerController extends CommonController
     }
 
 
-    protected function compose($data, $emmiter)
+    protected function compose($data)
     {
         $result = [];
-
-        if (!in_array($emmiter, self::EMMITERS)) {
-            throw new \OutOfBoundsException('Param $emmiter is out of the self::EMMITERS bound.');
-        }
         
         foreach ($data as $stockSet) {
             $rates = [];
@@ -165,20 +169,22 @@ class CertificatesComposerController extends CommonController
 
             $chain = $orderBuilder->build()->getRatesChain();
             $result_item = $this->formResultItem($chain, $orderBuilder);
+            $result_item['stock'] = $stockSet['stock'];
             $rate = RatesManager::getBySlxId($slxId);
             
-            
-            //Add certificate for fiz by condition in sites action
-            if ($emmiter == "sites") {
-                $this->applySites($stockSet, $result);
-            }
+            $sites = $this->applySites($stockSet, $result);
+            $result_item['sites'] = $sites;
+
             $services = $this->applyServices($rates);
             $result_item['services'] = $services;
+
             $result[] = $result_item;
         }
-        //$this->clearResult($result);
-        //$result = array_unique($result);
+        
         $result = array_map("unserialize", array_unique(array_map("serialize", $result)));
+
+        $this->editeResultIfOnlyFiz($result);
+
         return $result;
     }
 
@@ -244,31 +250,46 @@ class CertificatesComposerController extends CommonController
             return $result;
     }
 
-    protected function applySites($stockSet, &$result)
+    protected function applySites($stockSet)
     {
-        if (isset($stockSet['sites'])&&(!Vrbl::isEmpty($stockSet['sites']))) {
-            if ($stockSet['stock'] == 15) {
-                $baseRate = RatesManager::getBaseRate();
-                $baseRateSites = SitesManager::getByRate($baseRate);
-                $baseRateSitesIds = [];
-                
-                foreach ($baseRateSites as $baseSite){
-                    $baseRateSitesIds[] = $baseSite["id"];
-                }
-
-                $diff_result = array_diff($stockSet['sites'], $baseRateSitesIds); 
-                if (empty($diff_result)) {
-                    $fizRate = RatesManager::getFizRate();
-                    $result_item = [
-                        'names' => [Vrbl::isEmpty($fizRate->calc_name)?$fizRate->name:$fizRate->calc_name],
-                        'price' => Nmbr::toInteger($fizRate->price),
-                        'slx_ids' => [$fizRate->slx_id],
-                    ];
-                    $services = $this->applyServices([$fizRate]);
-                    $result_item['services'] = $services;
-                    $result[] = $result_item;
+        $result = [];
+        if (isset($stockSet['sites'])
+        &&(!Vrbl::isEmpty($stockSet['sites']))) {
+            foreach ($stockSet['sites'] as $id) {
+                $site = Site::getById($id);
+                if (!Vrbl::isNull($site)
+                &&($site->active=="Y")) {
+                    $result[] = ["name"=>$site->name,'id'=>$site->id];
                 }
             }
+        }
+        return $result;
+    }
+
+    protected function editeResultIfOnlyFiz(&$compose)
+    {
+        $neadedStocks = [15,39];
+
+        $stocks = ArrayHelper::getColumn($compose,'stock');
+        
+        $base = array_filter($compose, function($e){
+            if($e['stock']==15) {
+                return true;
+            }
+        });
+
+
+        if (Vrbl::isEmpty(array_diff($neadedStocks, $stocks))) {
+            $compose = array_filter($compose, function($itm) use ($base){
+                if(!Vrbl::isEmpty($base)){
+                    if (!Vrbl::isEmpty($base[0]['names'])) {
+                        if ($itm['stock']==39) {
+                            return false;
+                        }
+                    } 
+                } 
+                return true;
+            });
         }
     }
 }
