@@ -182,9 +182,6 @@ class CertificatesComposerController extends CommonController
         }
         
         $result = array_map("unserialize", array_unique(array_map("serialize", $result)));
-
-        $this->editeResultIfOnlyFiz($result);
-
         return $result;
     }
 
@@ -264,32 +261,5 @@ class CertificatesComposerController extends CommonController
             }
         }
         return $result;
-    }
-
-    protected function editeResultIfOnlyFiz(&$compose)
-    {
-        $neadedStocks = [15,39];
-
-        $stocks = ArrayHelper::getColumn($compose,'stock');
-        
-        $base = array_filter($compose, function($e){
-            if($e['stock']==15) {
-                return true;
-            }
-        });
-
-
-        if (Vrbl::isEmpty(array_diff($neadedStocks, $stocks))) {
-            $compose = array_filter($compose, function($itm) use ($base){
-                if(!Vrbl::isEmpty($base)){
-                    if (!Vrbl::isEmpty($base[0]['names'])) {
-                        if ($itm['stock']==39) {
-                            return false;
-                        }
-                    } 
-                } 
-                return true;
-            });
-        }
     }
 }
