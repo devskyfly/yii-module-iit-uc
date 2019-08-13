@@ -47,7 +47,11 @@ class RatesCalcController extends AbstractRatesController
                     $rootRate = RatesManager::getRootRate($rate);
                     $stock = StocksManager::getStockByRate($rootRate);
                     $groupIds = RateCalcGroupToRateBinder::getMasterIds($rate->id);
-                    
+                    $mapFn = function ($it) {
+                        return Nmbr::toInteger($it);
+                    };
+                    $groupIds = array_map($mapFn, $groupIds);
+
                     array_unique($groupIds);
 
                     if (Vrbl::isEmpty($groupIds)

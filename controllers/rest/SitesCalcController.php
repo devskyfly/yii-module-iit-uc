@@ -60,9 +60,12 @@ class SitesCalcController extends CommonController
                    
                     $rootRate = RatesManager::getRootRate($rate);
                     $stock = StocksManager::getStockByRate($rootRate);
-                    
                     $groupIds = SiteCalcGroupToSiteBinder::getMasterIds($site->id);
-                    
+                    $mapFn = function ($it) {
+                        return Nmbr::toInteger($it);
+                    };
+                    $groupIds = array_map($mapFn, $groupIds);
+
                     if (Vrbl::isEmpty($groupIds)
                     ||(Arr::getSize($groupIds)>1)) {
                         continue;
