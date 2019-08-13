@@ -23,7 +23,7 @@ use devskyfly\yiiModuleIitUc\models\site\Site;
  */
 class CertificatesComposerController extends CommonController
 {
-    public const EMMITERS = ['rates','sites'];
+    //public const EMMITERS = ['rates','sites'];
 
     public function behaviors()
     {
@@ -164,7 +164,7 @@ class CertificatesComposerController extends CommonController
                 'promoListCmp'=>$promoListCmp,
                 'bindListCmp'=>$bindListCmp,
                 'salesListCmp'=>$salesCmp,
-                'emmiter' => OrderBuilder::EMMITERS[0] //constructor
+                //'emmiter' => OrderBuilder::EMMITERS[0] //constructor
             ]);
 
             $chain = $orderBuilder->build()->getRatesChain();

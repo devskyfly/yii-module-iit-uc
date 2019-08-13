@@ -76,7 +76,7 @@ class SitesCalcController extends CommonController
                         "calc_name" =>!Vrbl::isEmpty($site->calc_name)?$site->calc_name:$site->name,
                         "calc_sort" =>Nmbr::toInteger($site->calc_sort),
                         "url" =>$site->url,
-                        "calc_group" => Nmbr::toInteger($groupIds[0]),
+                        "calc_group" => $groupIds,
                     ];
                 }
             
