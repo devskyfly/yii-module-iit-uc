@@ -4,6 +4,7 @@ namespace devskyfly\yiiModuleIitUc\controllers\rest;
 use Yii;
 use devskyfly\php56\types\Vrbl;
 use devskyfly\php56\types\Nmbr;
+use devskyfly\yiiModuleIitUc\components\OrderBuilder;
 use devskyfly\yiiModuleIitUc\models\rate\Rate;
 use yii\web\NotFoundHttpException;
 

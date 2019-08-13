@@ -43,8 +43,8 @@ abstract class AbstractRatesController extends CommonController
             'rates'=>$rates,
             'promoListCmp'=>$promoListCmp,
             'bindListCmp'=>$bindListCmp,
-            'salesListCmp'=>$salesCmp
-            //'emmiter'=>OrderBuilder::EMMITERS[0]
+            'salesListCmp'=>$salesCmp,
+            'emmiter'=> OrderBuilder::EMMITERS[1]
         ]);
 
         $result = $ratesChainCmp->build()->getRatesChain();

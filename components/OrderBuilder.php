@@ -16,7 +16,8 @@ use devskyfly\php56\types\Nmbr;
 
 class OrderBuilder extends BaseObject
 {
-    //const EMMITERS=["constructor","order"];
+    const EMMITERS=["constructor","order"];
+
     public $emmiter = "";
     /**
      * Input array of rates
@@ -80,12 +81,12 @@ class OrderBuilder extends BaseObject
     {
         parent::init();
 
-        //if (!in_array($this->emmiter,self::EMMITERS)) {
-        //    throw new \OutOfRangeException("Property emmiter is out of range.");
-        //}
+        if (!in_array($this->emmiter, self::EMMITERS)) {
+            throw new \OutOfRangeException('Property $emmiter is out of range.');
+        }
 
         foreach ($this->rates as $rate) {
-            if (!(Obj::isA($rate,Rate::class))) {
+            if (!(Obj::isA($rate, Rate::class))) {
                 throw new \InvalidArgumentException('Param  $model is not '.Rate::class.' type.');
             }
         }
@@ -112,9 +113,9 @@ class OrderBuilder extends BaseObject
         $this->sale = $this->salesListCmp->count($this->editedRates);
         //Может здесь надо снова обновить clien types
         $this->formRatesPackages();
-        //if ($this->emmiter==self::EMMITERS[1]) {
+        if ($this->emmiter==self::EMMITERS[1]) {
             $this->excludePackagedRates();
-        //}
+        }
         $this->formRatesChain();
         return $this;
     }
