@@ -79,6 +79,7 @@ class StocksController extends CommonController
                 $data[]=[
                     "name"=>$stock->name,
                     "stock_id"=>$stock->stock,
+                    "stock_bind_id"=>$stock->id,
                     "additional_services_packages"=>$services_packages_ids,
                     "checked_additional_services"=>$checked_services_ids,
                     "client_types"=>Json::decode($stock->client_type)

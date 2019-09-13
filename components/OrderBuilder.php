@@ -186,6 +186,7 @@ class OrderBuilder extends BaseObject
                 "rates_packages"=>$rates_packages_ids,
                 "required_powers"=>[],
                 "stock_id"=>Vrbl::isNull($stock)?'':$stock->stock,
+                "stock_bind_id"=>Vrbl::isNull($stock)?'':$stock->id,
                 "client_types"=>$itr==1?$this->clientTypes:[],
                 "required_license"=>$rate->flag_for_license=='Y'?true:false
             ];
