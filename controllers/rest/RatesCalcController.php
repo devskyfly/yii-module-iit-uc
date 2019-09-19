@@ -64,7 +64,7 @@ class RatesCalcController extends AbstractRatesController
                         "id" => $rate->id,
                         "name" => $rate->name,
                         "slx_id" => $rate->slx_id,
-                        "slx_bind_id" => $rate->slx_id,
+                        "stock_bind_id" => $stock->id,
                         "price" => Nmbr::toDoubleStrict($rate->price),
                         "stock" => $stock->stock,
                         "calc_name" =>!Vrbl::isEmpty($rate->calc_name)?$rate->calc_name:$rate->name,

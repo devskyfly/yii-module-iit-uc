@@ -75,7 +75,7 @@ class SitesCalcController extends CommonController
                         "id" => $site->id,
                         "name" => $site->name,
                         "slx_id" => $rate->slx_id,
-                        "slx_bind_id" => $rate->slx_id,
+                        "stock_bind_id" => $stock->id,
                         "stock" => $stock->stock,
                         "calc_name" =>!Vrbl::isEmpty($site->calc_name)?$site->calc_name:$site->name,
                         "calc_sort" =>Nmbr::toInteger($site->calc_sort),
