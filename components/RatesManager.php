@@ -100,6 +100,21 @@ class RatesManager extends BaseObject
         return Rate::findOne(['active'=>'Y','slx_id'=>$slx_id]);
     }
 
+    /**
+     * Return target rates by its slx_ids property.
+     * 
+     * @param string $slx_id
+     * @throws \InvalidArgumentException
+     * @return \devskyfly\yiiModuleIitUc\models\rate\Rate|NULL
+     */
+    public static function getBySlxIds(array $slx_ids)
+    {
+        $result = [];
+        foreach ($slx_ids as $slx_id) {
+            $result[] = static::getBySlxId($slx_id);
+        }
+    }
+
     //Chains
 
     /**
