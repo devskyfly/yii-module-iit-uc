@@ -193,6 +193,8 @@ class CertificatesComposerController extends CommonController
 
         $result_bundles_part = $this->getBundles($data);
         $result = array_merge($result, $result_bundles_part);
+
+        
         return $result;
     }
 
@@ -240,6 +242,7 @@ class CertificatesComposerController extends CommonController
                 $result_item["type"] = "bundle";
                 $result_item["names"] = $names;
                 $result_item["price"] = $price;
+                $result_item["oldprice"] = Nmbr::toDouble($bundle->price) + Nmbr::toDouble($bundle->sale);
                 $result_item["stock"] = Nmbr::toInteger($stock->stock);
                 $result_item["slx_ids"] = $slx_ids;
                 $result_item["sites"] = []; // Вопрос в реализации
@@ -247,7 +250,6 @@ class CertificatesComposerController extends CommonController
                 $result[] = $result_item;
             }
         }
-
         return $result;
     }
 
