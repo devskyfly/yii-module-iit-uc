@@ -4,7 +4,8 @@ namespace devskyfly\yiiModuleIitUc\controllers\rest;
 use Yii;
 use devskyfly\php56\types\Vrbl;
 use devskyfly\php56\types\Nmbr;
-use devskyfly\yiiModuleIitUc\components\OrderBuilder;
+use devskyfly\yiiModuleIitUc\components\RatesBundlesManager;
+use devskyfly\yiiModuleIitUc\helpers\ModelsFilter;
 use devskyfly\yiiModuleIitUc\models\rate\Rate;
 use yii\web\NotFoundHttpException;
 
@@ -33,7 +34,24 @@ class RatesController extends AbstractRatesController
         try {
             if (!Vrbl::isNull($ids)) {
                 //Chain
-                $result = $this->getChain($ids);
+                $bundle = RatesBundlesManager::findBundleBySlxIds($ids);
+                if ($bundle) {
+                    $rates = [];
+                    
+                    foreach ($ids as $id) {
+                        $rate = RatesManager::getBySlxId($id);
+                        if (!Vrbl::isNull($rate)) {
+                            $rates[] = $rate;
+                        } 
+                    }
+                    $rates = ModelsFilter::getActive($rates);
+                    
+                    $result = RatesBundlesManager::formChain($bundle, $rates);
+                    
+                } else {
+                    $result = $this->getChain($ids);
+                }
+                
             } else {
                 //All rates
                 $rates = Rate::find()

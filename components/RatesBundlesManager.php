@@ -3,6 +3,7 @@ namespace devskyfly\yiiModuleIitUc\components;
 
 use devskyfly\php56\types\Nmbr;
 use devskyfly\php56\types\Obj;
+use devskyfly\php56\types\Str;
 use devskyfly\php56\types\Vrbl;
 use devskyfly\yiiModuleIitUc\helpers\ModelsFilter;
 use devskyfly\yiiModuleIitUc\models\rateBundle\RateBundle;
@@ -28,7 +29,7 @@ class RatesBundlesManager extends BaseObject
      */
     public static function checkModel($model)
     {
-        if(!Obj::isA($model, RateBundle::class)){
+        if (!Obj::isA($model, RateBundle::class)) {
             throw new \InvalidArgumentException('Parameter $model is not '.RateBundle::class.' type.');
         }
     }
@@ -45,6 +46,27 @@ class RatesBundlesManager extends BaseObject
             throw new \InvalidArgumentException('Parameter $slx_id is not string type.');
         }
         return RateBundle::findOne(['active'=>'Y','slx_id'=>$slx_id]);
+    }
+
+    /**
+     * Find bundle in slx_ids sequence
+     *
+     * @param array $slx_ids
+     * @throws \InvalidArgumentException
+     * @return \devskyfly\yiiModuleIitUc\models\rateBundle\RateBundle|NULL
+     */
+    public function findBundleBySlxIds(array $slx_ids)
+    {
+        foreach ($slx_ids as $slx_id){
+            if (!Str::isString($slx_id)) {
+                throw new \InvalidArgumentException('Parametr $slx_id is not string type.');
+            }
+            $bundle = static::getBySlxId($slx_id);
+            if ($bundle) {
+                return $bundle;
+            }
+        }
+        return null;
     }
 
     /**
@@ -99,7 +121,7 @@ class RatesBundlesManager extends BaseObject
      * @param integer $intersect_size
      * @return \devskyfly\yiiModuleIitUc\models\rateBundle\RateBundle[]
      */
-    public function getRatesBundlesByRates(array $extended_rates, $intersect_size = 2)
+    public static function getRatesBundlesByRates(array $extended_rates, $intersect_size = 2)
     {
         if (!Nmbr::isNumeric($intersect_size)) {
             throw new \InvalidArgumentException('Param $intersect_size is not numeric type.');
@@ -128,12 +150,11 @@ class RatesBundlesManager extends BaseObject
     /**
      *
      * @param \devskyfly\yiiModuleIitUc\models\ratebundle\RateBuble $model
-     * @param \devskyfly\yiiModuleIitUc\models\rate\Rate[] $extensions
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return \devskyfly\yiiModuleIitUc\models\rate\Rate[]
      */
-    public function getRateBundlePosibleExtensions($model, $extensions)
+    public static function getRateBundlePosibleExtensions($model)
     {
         $result = [];
         static::checkModel($model);
@@ -141,6 +162,42 @@ class RatesBundlesManager extends BaseObject
        
         if (Vrbl::isNull($parent_rate)) {
             throw new \RuntimeException('Parent rate variable points to null.');
+        }
+
+        $child_rates = RatesManager::getListAllChilds($parent_rate);
+        $bundle_rates = static::getBundleRates($model);
+        
+        $child_rates = ModelsFilter::getActive($child_rates);
+        $bundle_rates = ModelsFilter::getActive($bundle_rates);
+
+        $diff = array_diff($extensions, $bundle_rates);
+        $result = $diff;
+        
+        return $result;
+    }
+
+    /**
+     *
+     * @param \devskyfly\yiiModuleIitUc\models\ratebundle\RateBuble $model
+     * @param \devskyfly\yiiModuleIitUc\models\rate\Rate[] $extensions
+     * @throws \InvalidArgumentException
+     * @throws \RuntimeException
+     * @return \devskyfly\yiiModuleIitUc\models\rate\Rate[]
+     */
+    public static function getRateBundleValideRates($model, $extensions)
+    {
+        $result = [];
+        static::checkModel($model);
+        $parent_rate = static::getParentRate($model);
+       
+        if (Vrbl::isNull($parent_rate)) {
+            throw new \RuntimeException('Parent rate variable points to null.');
+        }
+
+        foreach ($extensions as $extension) {
+            if (!Obj::isA($extension, Rate::className())) {
+                throw new \InvalidArgumentException('Parameter $extension is not '.Rate::className().' type.');
+            }
         }
 
         $child_rates = RatesManager::getListAllChilds($parent_rate);
@@ -156,34 +213,28 @@ class RatesBundlesManager extends BaseObject
         return $result;
     }
 
-    /**
-     *
-     * @param \devskyfly\yiiModuleIitUc\models\ratebundle\RateBuble $model
-     * @param \devskyfly\yiiModuleIitUc\models\rate\Rate[] $extensions
-     * @throws \InvalidArgumentException
-     * @throws \RuntimeException
-     * @return \devskyfly\yiiModuleIitUc\models\rate\Rate[]
-     */
-    public function getRateBundleValideRates($model, $extensions)
+    public static function formChain($bundle, $extesions)
     {
         $result = [];
-        static::checkModel($model);
-        $parent_rate = static::getParentRate($model);
-       
-        if (Vrbl::isNull($parent_rate)) {
-            throw new \RuntimeException('Parent rate variable points to null.');
+        static::checkModel($bundle);
+        $rates = RatesBundlesManager::getRateBundleValideRates($bundle, $extesions);
+        
+        $id = 1;
+        $result []= [
+            "id" => $id,
+            "name" => $bundle->name,
+            "slx_id"=> $bundle->slx_id,
+            "price" => $bundle->price
+        ];
+
+        foreach ($extesions as $extension) {
+            $id++;
+            $result []= [
+                "id" => $id,
+                "name" => $extension->name,
+                "slx_id"=> $extension->slx_id,
+                "price" => $extension->price
+            ];
         }
-
-        $child_rates = RatesManager::getListAllChilds($parent_rate);
-        $bundle_rates = static::getBundleRates($model);
-        
-        $child_rates = ModelsFilter::getActive($child_rates);
-        $bundle_rates = ModelsFilter::getActive($bundle_rates);
-
-        $diff = array_diff($extensions, $bundle_rates);
-        $intersect = array_intersect($diff, $child_rates);
-        $result = $intersect;
-        
-        return $result;
     }
 }
