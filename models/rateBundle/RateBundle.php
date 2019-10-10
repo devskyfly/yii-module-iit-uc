@@ -58,6 +58,7 @@ class RateBundle extends AbstractEntity
         $new_rules=[
             [["price","slx_id"],"required"],
             [["price", 
+            "sale",
             "slx_id",
             "flag_for_license", 
             "flag_for_crypto_pro", 
@@ -87,7 +88,8 @@ class RateBundle extends AbstractEntity
      */
     public function binders(){
         return [
-            'RateBundleToExtendedRatesBinder'=>RateBundleToExtendedRatesBinder::class,
+            'RateBundleToRatesBinder'=>RateBundleToRatesBinder::class,
+            'RateBundleToAdditionalRatesBinder'=>RateBundleToAdditionalRatesBinder::class,
         ];
     }
 

@@ -10,6 +10,8 @@ use devskyfly\yiiModuleIitUc\models\rateBundle\RateBundleFilter;
 use devskyfly\yiiModuleIitUc\models\rateBundle\RateBundleSection;
 use devskyfly\yiiModuleIitUc\models\rateBundle\RateBundleToExtendedRatesBinder;
 use devskyfly\yiiModuleIitUc\models\rate\Rate;
+use devskyfly\yiiModuleIitUc\models\rateBundle\RateBundleToAdditionalRatesBinder;
+use devskyfly\yiiModuleIitUc\models\rateBundle\RateBundleToRatesBinder;
 use devskyfly\yiiModuleIitUc\models\stock\Stock;
 
 class RatesBundlesController extends AbstractContentPanelController
@@ -53,8 +55,8 @@ class RatesBundlesController extends AbstractContentPanelController
     {
         return function($form,$item)
         {
-            $extended_rate__binder_cls = RateBundleToExtendedRatesBinder::class;
-
+            $rates__binder_cls = RateBundleToRatesBinder::class;
+            $additional_rates__binder_cls = RateBundleToAdditionalRatesBinder::class;
             
             return [
                 [
@@ -90,6 +92,7 @@ class RatesBundlesController extends AbstractContentPanelController
                         .'</div>'
                     .'</div>'
                     .$form->field($item,'price')
+                    .$form->field($item,'sale')
                     .$form->field($item,'slx_id')
                     .$form->field($item,'comment')->textarea(["rows"=>5])
                     .$form->field($item,'tooltip')->textarea(["rows"=>5])
@@ -122,13 +125,19 @@ class RatesBundlesController extends AbstractContentPanelController
                 ],
             
                 [
-                    "label"=>"extended rates",
+                    "label"=>"Тарифы",
                     "content"=>
                     Binder::widget([
-                        "label"=>"Тарифы",
+                        "label"=>"Видимые тарифы",
                         "form"=>$form,
                         "master_item"=>$item,
-                        "binder_cls"=>$extended_rate__binder_cls
+                        "binder_cls"=>$rates__binder_cls
+                    ])
+                    .Binder::widget([
+                        "label"=>"Дополнительные тарифы",
+                        "form"=>$form,
+                        "master_item"=>$item,
+                        "binder_cls"=>$additional_rates__binder_cls
                     ])
                     
                 ],

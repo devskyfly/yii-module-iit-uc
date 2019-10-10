@@ -4,7 +4,7 @@ namespace devskyfly\yiiModuleIitUc\models\rateBundle;
 use devskyfly\yiiModuleIitUc\models\common\AbstractBinder;
 use devskyfly\yiiModuleIitUc\models\rate\Rate;
 
-class RateBundleToExtendedRatesBinder extends AbstractBinder
+class RateBundleToRatesBinder extends AbstractBinder
 {
     protected static function slaveCls()
     {

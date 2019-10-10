@@ -17,6 +17,7 @@ class m191007_120404_create_rate_bundle_table extends EntityMigrationHelper
         $fields = ArrayHelper::merge($this->getFieldsDefinition(), [
             "_parent_rate__id"=>$this->integer(11),
             "price"=>$this->string(11),
+            "sale"=>$this->string(11),
             "_stock__id"=>$this->integer(11),
             "slx_id"=>$this->string(20),
             "calc_name"=> $this->string(255),
@@ -29,15 +30,6 @@ class m191007_120404_create_rate_bundle_table extends EntityMigrationHelper
         ]);
         
         $this->createTable($this->table, $fields);
-
-        //$sql="ALTER TABLE {$this->table} ADD COLUMN client_type TEXT;";
-        //$sql.="ALTER TABLE {$this->table} ADD COLUMN comment TEXT;";
-        //$sql.="ALTER TABLE {$this->table} ADD COLUMN tooltip TEXT;";
-        /*$sql.="ALTER TABLE {$this->table} ADD COLUMN flag_for_license ENUM('Y','N') DEFAULT 'N' NOT NULL;";
-        $sql.="ALTER TABLE {$this->table} ADD COLUMN flag_for_crypto_pro ENUM('Y','N') DEFAULT 'N' NOT NULL;";
-        $sql.="ALTER TABLE {$this->table} ADD COLUMN flag_is_terminated ENUM('Y','N') DEFAULT 'N' NOT NULL;";
-        
-        $this->execute($sql);*/
     }
 
     /**

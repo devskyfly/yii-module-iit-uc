@@ -234,7 +234,6 @@ class RatesManager extends BaseObject
 
         $node = static::getAllChilds($model);
         $generator = static::goThroughChilds($node);
-        
         foreach ($generator as $item) {
             $result[] = $item;
         }
@@ -246,8 +245,11 @@ class RatesManager extends BaseObject
     {
         foreach ($node as $node_item) {
             yield $node_item['item'];
-            if (isset($node_item['sublist'])) {
-                static::goThroughChilds($node_item['sublist']);
+            if (isset($node_item['sublist'])&&(!empty($node_item['sublist']))) {
+                 $generator = static::goThroughChilds($node_item['sublist']);
+                 foreach ($generator as $item) {
+                     yield $item;
+                 }
             }
         }
     }

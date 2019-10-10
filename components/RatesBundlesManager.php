@@ -7,7 +7,8 @@ use devskyfly\php56\types\Vrbl;
 use devskyfly\yiiModuleIitUc\helpers\ModelsFilter;
 use devskyfly\yiiModuleIitUc\models\rateBundle\RateBundle;
 use devskyfly\yiiModuleIitUc\models\rate\Rate;
-use devskyfly\yiiModuleIitUc\models\rateBundle\RateBundleToExtendedRatesBinder;
+use devskyfly\yiiModuleIitUc\models\rateBundle\RateBundleToAdditionalRatesBinder;
+use devskyfly\yiiModuleIitUc\models\rateBundle\RateBundleToRatesBinder;
 use devskyfly\yiiModuleIitUc\models\stock\Stock;
 use yii\base\BaseObject;
 
@@ -78,22 +79,27 @@ class RatesBundlesManager extends BaseObject
      * @throws \InvalidArgumentException
      * @return \devskyfly\yiiModuleIitUc\models\rate\Rate[]
      */
-    public static function getBundleExtendedRates($model)
+    public static function getBundleRates($model)
     {
+        $items = [];
         static::checkModel($model);
-        $items = RateBundleToExtendedRatesBinder::getSlaveItems($model->id);
-        $items = ModelsFilter::getActive($items);
+        $rates = RateBundleToRatesBinder::getSlaveItems($model->id);
+        $rates = ModelsFilter::getActive($rates);
+        $additional_rates = RateBundleToAdditionalRatesBinder::getSlaveItems($model->id);
+        $additional_rates = ModelsFilter::getActive($additional_rates);
+
+        $items = array_merge($rates, $additional_rates);
         return $items;
     }
 
     /**
-     * Undocumented function
+     * Return bundles by rates
      *
      * @param \devskyfly\yiiModuleIitUc\models\rate\Rate $extended_rates
      * @param integer $intersect_size
      * @return \devskyfly\yiiModuleIitUc\models\rateBundle\RateBundle[]
      */
-    public function getRatesBundlesByExtendedRates(array $extended_rates, $intersect_size =2)
+    public function getRatesBundlesByRates(array $extended_rates, $intersect_size = 2)
     {
         if (!Nmbr::isNumeric($intersect_size)) {
             throw new \InvalidArgumentException('Param $intersect_size is not numeric type.');
@@ -109,7 +115,7 @@ class RatesBundlesManager extends BaseObject
         $bundles = RateBundle::find()->where(['active'=>'Y'])->all();
 
         foreach ($bundles as $bundle) {
-            $rates = static::getBundleExtendedRates($bundle);
+            $rates = static::getBundleRates($bundle);
             $intersect = array_intersect($extended_rates, $rates);
             if (count($intersect)>=$intersect_size) {
                 $diff = array_diff($extended_rates, $intersect);
@@ -129,38 +135,25 @@ class RatesBundlesManager extends BaseObject
      */
     public function getRateBundlePosibleExtensions($model, $extensions)
     {
-        /*$result = [];
+        $result = [];
         static::checkModel($model);
         $parent_rate = static::getParentRate($model);
-
+       
         if (Vrbl::isNull($parent_rate)) {
             throw new \RuntimeException('Parent rate variable points to null.');
         }
 
         $child_rates = RatesManager::getListAllChilds($parent_rate);
-        $bundle_rates = static::getBundleExtendedRates($model);
+        $bundle_rates = static::getBundleRates($model);
         
-        $callback = function ($item) {
-            if (Vrbl::isNull($item)) {
-                return false;
-            }
+        $child_rates = ModelsFilter::getActive($child_rates);
+        $bundle_rates = ModelsFilter::getActive($bundle_rates);
 
-            if ($item->active == 'Y') {
-                return true;
-            } else {
-                return false;
-            }
-        };
+        $diff = array_diff($extensions, $bundle_rates);
+        $intersect = array_intersect($diff, $child_rates);
+        $result = $intersect;
         
-        $child_rates = array_filter($child_rates, $callback);
-        $bundle_rates = array_filter($bundle_rates, $callback);
-
-        $child_rates_without_bundle_rates = array_diff($child_rates, $bundle_rates);
-        $clear_extensions = array_diff($extensions, $bundle_rates);
-
-        //$result = array_intersect($clear_extensions, $child_rates_without_bundle_rates);
-        $result = array_unique($clear_extensions);
-        return $result;*/
+        return $result;
     }
 
     /**
@@ -171,7 +164,7 @@ class RatesBundlesManager extends BaseObject
      * @throws \RuntimeException
      * @return \devskyfly\yiiModuleIitUc\models\rate\Rate[]
      */
-    public function getRateBundleAdditionalRates($model, $extensions)
+    public function getRateBundleValideRates($model, $extensions)
     {
         $result = [];
         static::checkModel($model);
@@ -182,15 +175,15 @@ class RatesBundlesManager extends BaseObject
         }
 
         $child_rates = RatesManager::getListAllChilds($parent_rate);
-        $bundle_rates = static::getBundleExtendedRates($model);
+        $bundle_rates = static::getBundleRates($model);
         
         $child_rates = ModelsFilter::getActive($child_rates);
         $bundle_rates = ModelsFilter::getActive($bundle_rates);
 
         $diff = array_diff($extensions, $bundle_rates);
-        $result = $diff;
-        /*$intersect = array_intersect($diff, $child_rates);
-        $result = $intersect;*/
+        $intersect = array_intersect($diff, $child_rates);
+        $result = $intersect;
+        
         return $result;
     }
 }

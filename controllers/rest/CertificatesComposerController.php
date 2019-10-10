@@ -173,6 +173,8 @@ class CertificatesComposerController extends CommonController
             $chain = $orderBuilder->build()->getRatesChain();
             $result_item = $this->formResultItem($chain, $orderBuilder);
             $result_item['stock'] = Nmbr::toInteger($stockSet['stock']);
+            $result_item['type'] = "rate";
+            
             $rate = RatesManager::getBySlxId($slxId);
             
             $sites = $this->applySites($stockSet, $result);
@@ -208,13 +210,16 @@ class CertificatesComposerController extends CommonController
                 $rates[] = $rate;
             }
 
-            $bundles = RatesBundlesManager::getRatesBundlesByExtendedRates($rates);
+            $bundles = RatesBundlesManager::getRatesBundlesByRates($rates);
 
             foreach ($bundles as $bundle) {
                 $result_item = [];
                 
                 $stock = RatesBundlesManager::getStock($bundle);
-                $diffs = RatesBundlesManager::getRateBundleAdditionalRates($bundle, $rates);
+                $bundle_rates = RatesBundlesManager::getBundleRates($bundle);
+                $diffs = RatesBundlesManager::getRateBundleValideRates($bundle, $rates);
+                $all_rates = array_merge($bundle_rates, $diffs);
+                $all_rates = array_unique($all_rates);
 
                 $names = [];
                 $names[] = (Vrbl::isEmpty($bundle->calc_name))?$bundle->name:$bundle->calc_name;
@@ -232,12 +237,13 @@ class CertificatesComposerController extends CommonController
                     $price += Nmbr::toDouble($diff->price);
                 }
 
+                $result_item["type"] = "bundle";
                 $result_item["names"] = $names;
                 $result_item["price"] = $price;
                 $result_item["stock"] = Nmbr::toInteger($stock->stock);
                 $result_item["slx_ids"] = $slx_ids;
-                $result_item["sites"] = [];
-                $result_item["services"] = [];
+                $result_item["sites"] = []; // Вопрос в реализации
+                $result_item["services"] = $this->applyServices($all_rates);
                 $result[] = $result_item;
             }
         }
