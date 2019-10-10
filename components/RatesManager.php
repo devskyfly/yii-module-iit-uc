@@ -175,8 +175,10 @@ class RatesManager extends BaseObject
         }
         $result[]=$main;
         $result=ArrayHelper::merge($result, $list);
-        if($promoList)$result=$promoList->apply($result);
         if($bindsList)$result=$bindsList->apply($result);
+        $result = array_unique($result);
+        if($promoList)$result=$promoList->apply($result);
+        $result = array_unique($result);
         
         return $result;
     }
@@ -218,6 +220,36 @@ class RatesManager extends BaseObject
         }
         
         return $result;
+    }
+
+    /**
+     * Return list of child rates.
+     * 
+     * @param Rate $model
+     * @return Rate[]
+     */
+    public static function getListAllChilds($model=null)
+    {
+        $result = [];
+
+        $node = static::getAllChilds($model);
+        $generator = static::goThroughChilds($node);
+        
+        foreach ($generator as $item) {
+            $result[] = $item;
+        }
+        
+        return $result;
+    }
+
+    protected static function goThroughChilds($node)
+    {
+        foreach ($node as $node_item) {
+            yield $node_item['item'];
+            if (isset($node_item['sublist'])) {
+                static::goThroughChilds($node_item['sublist']);
+            }
+        }
     }
     
     /**

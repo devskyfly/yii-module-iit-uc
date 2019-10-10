@@ -16,6 +16,8 @@ use devskyfly\php56\types\Arr;
 use yii\helpers\Json;
 use devskyfly\yiiModuleIitUc\components\SitesManager;
 use devskyfly\php56\types\Nmbr;
+use devskyfly\php56\types\Str;
+use devskyfly\yiiModuleIitUc\components\RatesBundlesManager;
 use devskyfly\yiiModuleIitUc\models\site\Site;
 
 /**
@@ -97,7 +99,9 @@ class CertificatesComposerController extends CommonController
             $result = $this->compose($data);
             $result = $this->unique($result);
             $result = Arr::getValues($result);
-        $this->asJson($result);
+
+            \codecept_debug($result);
+            $this->asJson($result);
         } catch (\Exception $e) {
             Yii::error($e, self::class);
             if (YII_DEBUG) {
@@ -140,6 +144,7 @@ class CertificatesComposerController extends CommonController
     {
         $result = [];
         
+        //Rates
         foreach ($data as $stockSet) {
             $rates = [];
 
@@ -167,7 +172,7 @@ class CertificatesComposerController extends CommonController
 
             $chain = $orderBuilder->build()->getRatesChain();
             $result_item = $this->formResultItem($chain, $orderBuilder);
-            $result_item['stock'] = $stockSet['stock'];
+            $result_item['stock'] = Nmbr::toInteger($stockSet['stock']);
             $rate = RatesManager::getBySlxId($slxId);
             
             $sites = $this->applySites($stockSet, $result);
@@ -178,9 +183,65 @@ class CertificatesComposerController extends CommonController
 
             $result[] = $result_item;
         }
+
+        //Post works
         
         $result = array_map("unserialize", array_unique(array_map("serialize", $result)));
         $this->editeResultIfOnlyFiz($result);
+
+        $result_bundles_part = $this->getBundles($data);
+        $result = array_merge($result, $result_bundles_part);
+        return $result;
+    }
+
+    protected function getBundles($data) 
+    {
+        $result = [];
+        foreach ($data as $stockSet) {
+            $rates = [];
+
+            foreach ($stockSet['slx_ids'] as $slxId) {
+                $rate = Rate::getBySlxId($slxId);
+                if (Vrbl::isNull($rate)) {
+                    throw new \InvalidArgumentException('Varible $rate is null');
+                }
+                $rates[] = $rate;
+            }
+
+            $bundles = RatesBundlesManager::getRatesBundlesByExtendedRates($rates);
+
+            foreach ($bundles as $bundle) {
+                $result_item = [];
+                
+                $stock = RatesBundlesManager::getStock($bundle);
+                $diffs = RatesBundlesManager::getRateBundleAdditionalRates($bundle, $rates);
+
+                $names = [];
+                $names[] = (Vrbl::isEmpty($bundle->calc_name))?$bundle->name:$bundle->calc_name;
+
+                $price = 0;
+                $price = Nmbr::toDouble($bundle->price);
+
+                $slx_ids = [];
+
+                $slx_ids[] = $bundle->slx_id;
+
+                foreach ($diffs as $diff) {
+                    $names[] = (Vrbl::isEmpty($diff->calc_name))?$diff->name:$diff->calc_name;
+                    $slx_ids[] = $diff->slx_id;
+                    $price += Nmbr::toDouble($diff->price);
+                }
+
+                $result_item["names"] = $names;
+                $result_item["price"] = $price;
+                $result_item["stock"] = Nmbr::toInteger($stock->stock);
+                $result_item["slx_ids"] = $slx_ids;
+                $result_item["sites"] = [];
+                $result_item["services"] = [];
+                $result[] = $result_item;
+            }
+        }
+
         return $result;
     }
 
