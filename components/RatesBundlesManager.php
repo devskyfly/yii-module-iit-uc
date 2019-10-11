@@ -51,11 +51,11 @@ class RatesBundlesManager extends BaseObject
     /**
      * Find bundle in slx_ids sequence
      *
-     * @param array $slx_ids
+     * @param array $slx_ids[]
      * @throws \InvalidArgumentException
      * @return \devskyfly\yiiModuleIitUc\models\rateBundle\RateBundle|NULL
      */
-    public function findBundleBySlxIds(array $slx_ids)
+    public function findBundleBySlxIds($slx_ids)
     {
         foreach ($slx_ids as $slx_id){
             if (!Str::isString($slx_id)) {
@@ -66,6 +66,7 @@ class RatesBundlesManager extends BaseObject
                 return $bundle;
             }
         }
+
         return null;
     }
 
@@ -219,6 +220,7 @@ class RatesBundlesManager extends BaseObject
         static::checkModel($bundle);
         $rates = RatesBundlesManager::getRateBundleValideRates($bundle, $extesions);
         
+        
         $id = 1;
         $result []= [
             "id" => $id,
@@ -227,14 +229,16 @@ class RatesBundlesManager extends BaseObject
             "price" => $bundle->price
         ];
 
-        foreach ($extesions as $extension) {
+        foreach ($rates as $rate) {
             $id++;
             $result []= [
                 "id" => $id,
-                "name" => $extension->name,
-                "slx_id"=> $extension->slx_id,
-                "price" => $extension->price
+                "name" => $rate->name,
+                "slx_id"=> $rate->slx_id,
+                "price" => $rate->price
             ];
         }
+
+        return $result;
     }
 }

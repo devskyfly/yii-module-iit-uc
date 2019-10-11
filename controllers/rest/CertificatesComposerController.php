@@ -220,6 +220,7 @@ class CertificatesComposerController extends CommonController
                 $stock = RatesBundlesManager::getStock($bundle);
                 $bundle_rates = RatesBundlesManager::getBundleRates($bundle);
                 $diffs = RatesBundlesManager::getRateBundleValideRates($bundle, $rates);
+                
                 $all_rates = array_merge($bundle_rates, $diffs);
                 $all_rates = array_unique($all_rates);
 

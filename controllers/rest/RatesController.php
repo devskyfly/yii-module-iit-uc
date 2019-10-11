@@ -5,6 +5,7 @@ use Yii;
 use devskyfly\php56\types\Vrbl;
 use devskyfly\php56\types\Nmbr;
 use devskyfly\yiiModuleIitUc\components\RatesBundlesManager;
+use devskyfly\yiiModuleIitUc\components\RatesManager;
 use devskyfly\yiiModuleIitUc\helpers\ModelsFilter;
 use devskyfly\yiiModuleIitUc\models\rate\Rate;
 use yii\web\NotFoundHttpException;
@@ -15,7 +16,7 @@ use yii\web\NotFoundHttpException;
 class RatesController extends AbstractRatesController
 {
     /**
-     * Return rates
+     * Return all rates
      * GET
      * 
      * [
@@ -27,14 +28,37 @@ class RatesController extends AbstractRatesController
      *  ],...
      * ]
      * 
+     * Or return rates chain
+     * 
+     * GET 
+     * [
+     *  [
+     *      calc_nane: string,
+     *      client_tipes: string[],
+     *      id: number,
+     *      name: string,
+     *      powers_packages: number[],
+     *      price: number,
+     *      rates_packages: number[],
+     *      required_licence: false,
+     *      required_powers: number[],
+     *      slx_id: string,
+     *      stock_bind_id: number,
+     *      stock_id: number
+     *  ]
+     * ]
+     * 
      * @param string[] $ids
      */
     public function actionIndex(array $ids = null)
     {
+        $result = [];
         try {
             if (!Vrbl::isNull($ids)) {
                 //Chain
+                
                 $bundle = RatesBundlesManager::findBundleBySlxIds($ids);
+                
                 if ($bundle) {
                     $rates = [];
                     
@@ -44,8 +68,8 @@ class RatesController extends AbstractRatesController
                             $rates[] = $rate;
                         } 
                     }
-                    $rates = ModelsFilter::getActive($rates);
                     
+                    $rates = ModelsFilter::getActive($rates);
                     $result = RatesBundlesManager::formChain($bundle, $rates);
                     
                 } else {
@@ -67,6 +91,7 @@ class RatesController extends AbstractRatesController
                         "price" => Nmbr::toDoubleStrict($rate->price),
                     ];
                 }
+                
             }
             $this->asJson($result);
         } catch (\Exception $e) {
