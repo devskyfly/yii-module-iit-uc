@@ -4,6 +4,7 @@ namespace devskyfly\yiiModuleIitUc\controllers\rest;
 use Yii;
 use devskyfly\php56\types\Vrbl;
 use devskyfly\php56\types\Nmbr;
+use devskyfly\yiiModuleIitUc\components\ChainHelper;
 use devskyfly\yiiModuleIitUc\components\RatesBundlesManager;
 use devskyfly\yiiModuleIitUc\components\RatesManager;
 use devskyfly\yiiModuleIitUc\helpers\ModelsFilter;
@@ -70,8 +71,8 @@ class RatesController extends AbstractRatesController
                     }
                     
                     $rates = ModelsFilter::getActive($rates);
-                    $result = RatesBundlesManager::formChain($bundle, $rates);
-                    
+                    $chain = RatesBundlesManager::formChain($bundle, $rates);
+                    $result = ChainHelper::formChainToApiFormat($chain);
                 } else {
                     $result = $this->getChain($ids);
                 }

@@ -128,13 +128,14 @@ class OrderBuilder extends BaseObject
     //#
     public function getClientTypes()
     {
-        $client_types_arr = [];
+        /*$client_types_arr = [];
 
         foreach ($this->editedRates as $item) {
             $client_types_arr = array_merge($client_types_arr, [Json::decode($item->client_type)]);
         }
 
-        return Intersect::getIntersectOfArrayItems($client_types_arr);
+        return Intersect::getIntersectOfArrayItems($client_types_arr);*/
+        return ChainHelper::getClientTypes($this->editedRates);
     }
 
     //#
@@ -174,7 +175,6 @@ class OrderBuilder extends BaseObject
                     $powers_packages_ids[] = $powerPackage->id;
                 }
             }
-
 
             $result[]=[
                 "id"=>$rate->id,

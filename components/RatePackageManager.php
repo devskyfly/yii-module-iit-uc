@@ -12,6 +12,7 @@ class RatePackageManager extends BaseObject
     public static function getByRate($model)
     {
         $result=null;
+
         if(!Obj::isA($model,Rate::class)){
             throw new \InvalidArgumentException('Parameter $model is not '.Rate::class.' type.');
         }
@@ -22,7 +23,7 @@ class RatePackageManager extends BaseObject
             $ratesIds=RatePackageToRateBinder::getSlaveIds($rate_package->id);
             
             foreach ($ratesIds as $rateId){
-                if($model->id==$rateId){
+                if($model->id == $rateId){
                     return $rate_package;
                 }
             }

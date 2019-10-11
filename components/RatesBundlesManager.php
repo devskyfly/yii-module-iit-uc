@@ -220,23 +220,10 @@ class RatesBundlesManager extends BaseObject
         static::checkModel($bundle);
         $rates = RatesBundlesManager::getRateBundleValideRates($bundle, $extesions);
         
-        
-        $id = 1;
-        $result []= [
-            "id" => $id,
-            "name" => $bundle->name,
-            "slx_id"=> $bundle->slx_id,
-            "price" => $bundle->price
-        ];
+        $result [] = $bundle;
 
         foreach ($rates as $rate) {
-            $id++;
-            $result []= [
-                "id" => $id,
-                "name" => $rate->name,
-                "slx_id"=> $rate->slx_id,
-                "price" => $rate->price
-            ];
+            $result [] = $rate;
         }
 
         return $result;
