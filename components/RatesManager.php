@@ -5,6 +5,7 @@ use devskyfly\php56\types\Arr;
 use devskyfly\php56\types\Obj;
 use devskyfly\php56\types\Str;
 use devskyfly\php56\types\Vrbl;
+use devskyfly\yiiModuleIitUc\helpers\ModelsFilter;
 use devskyfly\yiiModuleIitUc\models\rate\Rate;
 use yii\base\BaseObject;
 use devskyfly\yiiModuleIitUc\models\rate\RateToPowerBinder;
@@ -300,7 +301,8 @@ class RatesManager extends BaseObject
     public static function getRecomendedServices($model)
     {
         self::checkModel($model);
-        $list=RateToRecomendedServiceBinder::getSlaveItems($model->id);
+        $list = RateToRecomendedServiceBinder::getSlaveItems($model->id);
+        $list = ModelsFilter::getActive($list);
         return $list;
     }
     

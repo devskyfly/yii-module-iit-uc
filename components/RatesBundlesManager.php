@@ -172,6 +172,8 @@ class RatesBundlesManager extends BaseObject
         $bundle_rates = ModelsFilter::getActive($bundle_rates);
 
         $diff = array_diff($extensions, $bundle_rates);
+        $excludedRatesFromBundleList = new ExcludedRatesFromBundleList();
+        $diff = $excludedRatesFromBundleList->apply($diff);
         $result = $diff;
         
         return $result;

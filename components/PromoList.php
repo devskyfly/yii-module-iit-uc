@@ -36,26 +36,26 @@ class PromoList extends AbstractRatesAsset
         $binds=[];
         $changes=[];
         
-        foreach ($models as $model){
-            if(!Obj::isA($model, Rate::class)){
+        foreach ($models as $model) {
+            if (!Obj::isA($model, Rate::class)) {
                 throw \InvalidArgumentException('Item $models is not '.Rate::class.' type.');
             }
         }
         
-        foreach ($this->list as $item){
-            $intersect=array_intersect($item['asset'],$models);
-            $diff=array_diff($item['asset'],$intersect);
-            if(Vrbl::isEmpty($diff)){
+        foreach ($this->list as $item) {
+            $intersect = array_intersect($item['asset'], $models);
+            $diff = array_diff($item['asset'], $intersect);
+            if (Vrbl::isEmpty($diff)) {
                 foreach ($models as $key => $rate){
-                    if(in_array($rate, $item['asset'])){
+                    if (in_array($rate, $item['asset'])) {
                         unset($models[$key]);
                     }
                 }
                 $changes=ArrayHelper::merge($changes, $item['change']);
             }
         }
-        $binds=ArrayHelper::merge($models,$changes);
-        $binds=array_unique($binds);
+        $binds = ArrayHelper::merge($models, $changes);
+        $binds = array_unique($binds);
         
         return $binds;
     }

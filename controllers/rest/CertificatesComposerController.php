@@ -172,6 +172,7 @@ class CertificatesComposerController extends CommonController
 
             $chain = $orderBuilder->build()->getRatesChain();
             $result_item = $this->formResultItem($chain, $orderBuilder);
+            
             $result_item['stock'] = Nmbr::toInteger($stockSet['stock']);
             $result_item['type'] = "rate";
             
@@ -325,7 +326,7 @@ class CertificatesComposerController extends CommonController
                 $site = Site::getById($id);
                 if (!Vrbl::isNull($site)
                 &&($site->active=="Y")) {
-                    $result[] = ["name"=>Vrbl::isEmpty($site->calc_name)?$site->name:$site->calc_name,'id'=>$site->id];
+                    $result[] = ["name"=>Vrbl::isEmpty($site->calc_name)?$site->name:$site->calc_name, 'id'=>$site->id];
                 }
             }
         }
