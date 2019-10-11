@@ -36,3 +36,4 @@
 ### Применение миграций
 
 ./yii migrate --migrationPath=@app/vendor/devskyfly/yii-module-iit-uc/migrations
+
