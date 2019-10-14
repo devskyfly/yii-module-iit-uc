@@ -1,18 +1,19 @@
 <?php
 namespace devskyfly\yiiModuleIitUc\controllers\rest;
 
+use Yii;
 use yii\web\BadRequestHttpException;
+use yii\web\NotFoundHttpException;
 use devskyfly\php56\types\Nmbr;
 use devskyfly\php56\types\Vrbl;
 use devskyfly\yiiModuleIitUc\components\RatesManager;
 use devskyfly\yiiModuleIitUc\models\service\Service;
 use devskyfly\yiiModuleIitUc\models\servicePackage\ServicePackage;
 use devskyfly\yiiModuleIitUc\models\stock\Stock;
-use yii\web\NotFoundHttpException;
 use devskyfly\yiiModuleIitUc\models\stock\StockToServicePackageBinder;
 use devskyfly\yiiModuleIitUc\models\servicePackage\ServicePackageToServiceBinder;
 use devskyfly\yiiModuleIitUc\components\ServicesManager;
-use Yii;
+use devskyfly\yiiModuleIitUc\helpers\ModelsFilter;
 
 /**
  * Rest api class
@@ -42,17 +43,27 @@ class ServicesPackagesController extends CommonController
                 throw new BadRequestHttpException('Query param \'mode_list\' aout of range.');
             }
             
+            $excluded_services_ids = [];
             $rates=[];
-            foreach ($ids as $id){
-                $rates[]=RatesManager::getBySlxId($id);
+            foreach ($ids as $id) {
+                $rate = RatesManager::getBySlxId($id);
+                if (!Vrbl::isNull($rate)) {
+                    $rates[] = $rate;
+                }
             }
+
+            $rates = ModelsFilter::getActive($rates);
+            $rates = array_unique($rates);
             
-            $rates_chain=RatesManager::getMultiChain($rates);
-            $excluded_services=ServicesManager::getExcludedByRateChain($rates_chain);
-            $excluded_services_ids=[];
-            
-            foreach ($excluded_services as $excluded_service){
-                $excluded_services_ids[]=$excluded_service->id;
+            if (!Vrbl::isEmpty($rates)) {
+                $rates_chain = RatesManager::getMultiChain($rates);
+                $excluded_services = ServicesManager::getExcludedByRateChain($rates_chain);
+                $excluded_services = ModelsFilter::getActive($excluded_services);
+                $excluded_services_ids = [];
+                
+                foreach ($excluded_services as $excluded_service){
+                    $excluded_services_ids[] = $excluded_service->id;
+                }
             }
             
             $data=[];
@@ -104,8 +115,12 @@ class ServicesPackagesController extends CommonController
             $this->asJson($data);
         }catch(\Exception $e)
         {
-            Yii::error($e,self::class);
-            throw new NotFoundHttpException();
+            Yii::error($e, self::class);
+            if (YII_DEBUG) {
+                throw $e;
+            } else {
+                throw new NotFoundHttpException();
+            }
         }
     }
     

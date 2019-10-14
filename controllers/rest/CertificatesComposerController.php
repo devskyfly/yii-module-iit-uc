@@ -100,7 +100,6 @@ class CertificatesComposerController extends CommonController
             $result = $this->unique($result);
             $result = Arr::getValues($result);
 
-            \codecept_debug($result);
             $this->asJson($result);
         } catch (\Exception $e) {
             Yii::error($e, self::class);
@@ -244,7 +243,7 @@ class CertificatesComposerController extends CommonController
                 $result_item["type"] = "bundle";
                 $result_item["names"] = $names;
                 $result_item["price"] = $price;
-                $result_item["oldprice"] = Nmbr::toDouble($bundle->price) + Nmbr::toDouble($bundle->sale);
+                $result_item["oldprice"] = $price + Nmbr::toDouble($bundle->sale);
                 $result_item["stock"] = Nmbr::toInteger($stock->stock);
                 $result_item["slx_ids"] = $slx_ids;
                 $result_item["sites"] = []; // Вопрос в реализации

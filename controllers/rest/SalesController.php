@@ -1,13 +1,15 @@
 <?php
 namespace devskyfly\yiiModuleIitUc\controllers\rest;
 
+use Yii;
+use yii\web\NotFoundHttpException;
 use devskyfly\yiiModuleIitUc\components\RatesManager;
 use devskyfly\yiiModuleIitUc\components\SalesList;
-use Yii;
 use devskyfly\php56\types\Vrbl;
 use devskyfly\yiiModuleIitUc\components\PromoList;
 use devskyfly\yiiModuleIitUc\components\BindsList;
 use devskyfly\yiiModuleIitUc\components\OrderBuilder;
+use devskyfly\yiiModuleIitUc\helpers\ModelsFilter;
 
 /**
  * Rest api class
@@ -30,6 +32,7 @@ class SalesController extends CommonController
     public function actionIndex(array $ids)
     {
         try {
+            $rates = [];
             $chain = [];
             
             //Models definition
@@ -37,35 +40,44 @@ class SalesController extends CommonController
                 $rate = RatesManager::getBySlxId($id);
                 if (!Vrbl::isNull($rate)) {
                     $rates[] = $rate;
-                } else {
-                    throw NotFoundHttpException('Model with id=\'' . $id . '\' does not exist.');
-                }
+                } 
             }
 
+            $rates = ModelsFilter::getActive($rates);
             array_unique($rates);
-            $promoListCmp = new PromoList();
-            $bindListCmp = new BindsList();
-            $salesCmp =new SalesList();
-            //throw new \Exception(print_r($bindListCmp,true));
-            //throw new \Exception($promoListCmp::class);
-            $ratesChainCmp = new OrderBuilder([
-                'rates'=>$rates,
-                'promoListCmp'=>$promoListCmp,
-                'bindListCmp'=>$bindListCmp,
-                'salesListCmp'=>$salesCmp,
-                'emmiter'=>OrderBuilder::EMMITERS[1]
-            ]);
-
-            $chain = $ratesChainCmp->build()->getRatesChain();
-
             
-            $this->asJson([
-                'sale' => $ratesChainCmp->sale
-            ]);
+            if(!Vrbl::isEmpty($rates)){
+                $promoListCmp = new PromoList();
+                $bindListCmp = new BindsList();
+                $salesCmp =new SalesList();
+                
+                $ratesChainCmp = new OrderBuilder([
+                    'rates'=>$rates,
+                    'promoListCmp'=>$promoListCmp,
+                    'bindListCmp'=>$bindListCmp,
+                    'salesListCmp'=>$salesCmp,
+                    'emmiter'=>OrderBuilder::EMMITERS[1]
+                ]);
+
+                $chain = $ratesChainCmp->build()->getRatesChain();
+                
+                $this->asJson([
+                    'sale' => $ratesChainCmp->sale
+                ]);
+            } else {
+                $this->asJson([
+                    'sale' => 0
+                ]);
+            }
+            
+            
         } catch (\Exception $e) {
             Yii::error($e, self::class);
-            throw $e;
-            //throw new NotFoundHttpException();
+            if (YII_DEBUG) {
+                throw $e;
+            } else {
+                throw new NotFoundHttpException();
+            }
         }
     }    
 }
