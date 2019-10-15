@@ -24,6 +24,16 @@ class CertificatesComposer extends BaseObject
         return array_unique($result);
     }
 
+    protected function sort()
+    {
+        return function($a, $b) {
+            if ($a['price'] == $b['price']) {
+                return 0;
+            }
+            return ($a['price'] < $b['price']) ? -1 : 1;
+        };
+    }
+
     public function compose($data)
     {
         $result = [];
@@ -32,7 +42,10 @@ class CertificatesComposer extends BaseObject
         //Post executions
         $result_rates_part = array_map("unserialize", array_unique(array_map("serialize", $result_rates_part)));
         $this->editeResultIfOnlyFiz($result_rates_part);
+        usort($result_rates_part, $this->sort());
         $result_bundles_part = $this->formBundles($data);
+        usort($result_bundles_part, $this->sort());
+        
         $result = array_merge($result_rates_part, $result_bundles_part);
         return $result;
     }

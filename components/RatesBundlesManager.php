@@ -141,7 +141,7 @@ class RatesBundlesManager extends BaseObject
             $rates = static::getBundleRates($bundle);
             $intersect = array_intersect($extended_rates, $rates);
             if (count($intersect)>=$intersect_size) {
-                $diff = array_diff($extended_rates, $intersect);
+                //$diff = array_diff($extended_rates, $intersect);
                 $result[] =  $bundle;
             }
         }
