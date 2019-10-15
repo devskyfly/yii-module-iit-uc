@@ -121,6 +121,14 @@ class CertificatesComposer extends BaseObject
                 $bundle_rates = RatesBundlesManager::getBundleRates($bundle);
                 $diffs = RatesBundlesManager::getRateBundleValideRates($bundle, $rates);
                 
+                $bundle_extensions = [];
+
+                foreach ($bundle_rates as $bundle_rate) {
+                    $bundle_extensions[] = (Vrbl::isEmpty($bundle_rate->calc_name))?$bundle_rate->name:$bundle_rate->calc_name;
+                }
+
+                sort($bundle_extensions);
+
                 $all_rates = array_merge($bundle_rates, $diffs);
                 $all_rates = array_unique($all_rates);
 
@@ -148,6 +156,7 @@ class CertificatesComposer extends BaseObject
                 $result_item["slx_ids"] = $slx_ids;
                 $result_item["sites"] = []; // Вопрос в реализации
                 $result_item["services"] = $this->applyServices($all_rates);
+                $result_item["bundle_extensions"] = $bundle_extensions;
                 $result[] = $result_item;
             }
         }
