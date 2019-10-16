@@ -2,6 +2,7 @@
 namespace devskyfly\yiiModuleIitUc\models\servicePackage;
 
 use devskyfly\yiiModuleAdminPanel\models\contentPanel\AbstractEntity;
+use devskyfly\yiiModuleIitUc\traits\DbTrait;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -11,6 +12,8 @@ use yii\helpers\ArrayHelper;
  */
 class ServicePackage extends AbstractEntity
 {
+    use DbTrait;
+    
     /**
      *
      * {@inheritDoc}

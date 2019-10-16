@@ -2,9 +2,13 @@
 namespace devskyfly\yiiModuleIitUc\models\rateCalcGroup;
 
 use devskyfly\yiiModuleAdminPanel\models\contentPanel\AbstractEntity;
+use devskyfly\yiiModuleIitUc\traits\DbTrait;
 
 class RateCalcGroup extends AbstractEntity
 {
+
+    use DbTrait;
+
     public static function sectionCls()
     {
         return null;

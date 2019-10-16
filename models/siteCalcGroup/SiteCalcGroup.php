@@ -2,9 +2,12 @@
 namespace devskyfly\yiiModuleIitUc\models\siteCalcGroup;
 
 use devskyfly\yiiModuleAdminPanel\models\contentPanel\AbstractEntity;
+use devskyfly\yiiModuleIitUc\traits\DbTrait;
 
 class SiteCalcGroup extends AbstractEntity
 {
+    use DbTrait;
+    
     public static function sectionCls()
     {
     	 

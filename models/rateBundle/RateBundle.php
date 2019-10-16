@@ -5,6 +5,7 @@ use devskyfly\yiiModuleAdminPanel\models\contentPanel\AbstractEntity;
 use yii\helpers\ArrayHelper;
 use devskyfly\php56\types\Str;
 use devskyfly\yiiModuleIitUc\components\RatesManager;
+use devskyfly\yiiModuleIitUc\traits\DbTrait;
 use LogicException;
 
 /**
@@ -26,6 +27,8 @@ use LogicException;
  */
 class RateBundle extends AbstractEntity
 {
+    use DbTrait;
+    
     /**
      *
      * {@inheritDoc}

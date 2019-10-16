@@ -4,6 +4,7 @@ namespace devskyfly\yiiModuleIitUc\models\service;
 use devskyfly\yiiModuleAdminPanel\models\contentPanel\AbstractEntity;
 use yii\helpers\ArrayHelper;
 use devskyfly\php56\types\Str;
+use devskyfly\yiiModuleIitUc\traits\DbTrait;
 
 /**
  * 
@@ -15,6 +16,8 @@ use devskyfly\php56\types\Str;
  */
 class Service extends AbstractEntity
 {
+    use DbTrait;
+    
     /**
      *
      * {@inheritDoc}

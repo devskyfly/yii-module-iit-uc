@@ -4,6 +4,7 @@ namespace devskyfly\yiiModuleIitUc\models\rate;
 use devskyfly\yiiModuleAdminPanel\models\contentPanel\AbstractEntity;
 use yii\helpers\ArrayHelper;
 use devskyfly\php56\types\Str;
+use devskyfly\yiiModuleIitUc\traits\DbTrait;
 
 /**
  * 
@@ -24,6 +25,8 @@ use devskyfly\php56\types\Str;
  */
 class Rate extends AbstractEntity
 {
+    use DbTrait;
+    
     /**
      *
      * {@inheritDoc}

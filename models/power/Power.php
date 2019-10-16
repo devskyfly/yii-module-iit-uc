@@ -2,6 +2,7 @@
 namespace devskyfly\yiiModuleIitUc\models\power;
 
 use devskyfly\yiiModuleAdminPanel\models\contentPanel\AbstractEntity;
+use devskyfly\yiiModuleIitUc\traits\DbTrait;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -12,6 +13,8 @@ use yii\helpers\ArrayHelper;
  */
 class Power extends AbstractEntity
 {
+    use DbTrait;
+    
     /**
      *
      * {@inheritDoc}
