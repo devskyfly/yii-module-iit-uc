@@ -2,6 +2,8 @@
 namespace devskyfly\yiiModuleIitUc\components;
 
 use devskyfly\php56\types\Arr;
+use devskyfly\php56\types\Vrbl;
+use Yii;
 
 class ExcludedRatesFromBundleList extends AbstractRatesAsset
 {
@@ -25,7 +27,7 @@ class ExcludedRatesFromBundleList extends AbstractRatesAsset
        $models = array_values($models);
        $size = Arr::getSize($models);
        
-       for ($i; $i<$size; $i++) {
+       for ($i = 0; $i<$size; $i++) {
             if (in_array($models[$i]->slx_id, $this->idsList)) {
                 unset($models[$i]);
             }
