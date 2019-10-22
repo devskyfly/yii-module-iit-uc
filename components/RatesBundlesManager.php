@@ -9,6 +9,7 @@ use devskyfly\yiiModuleIitUc\helpers\ModelsFilter;
 use devskyfly\yiiModuleIitUc\models\rateBundle\RateBundle;
 use devskyfly\yiiModuleIitUc\models\rate\Rate;
 use devskyfly\yiiModuleIitUc\models\rateBundle\RateBundleToAdditionalRatesBinder;
+use devskyfly\yiiModuleIitUc\models\rateBundle\RateBundleToOptionalRatesBinder;
 use devskyfly\yiiModuleIitUc\models\rateBundle\RateBundleToRatesBinder;
 use devskyfly\yiiModuleIitUc\models\stock\Stock;
 use yii\base\BaseObject;
@@ -116,6 +117,25 @@ class RatesBundlesManager extends BaseObject
     }
 
     /**
+     *
+     * @param \devskyfly\yiiModuleIitUc\models\rateBundle\RateBundle $model
+     * @throws \InvalidArgumentException
+     * @return \devskyfly\yiiModuleIitUc\models\rate\Rate[]
+     */
+    public static function getRateBundleOptionalRates($model)
+    {
+        $items = [];
+        static::checkModel($model);
+        $rates = RateBundleToOptionalRatesBinder::getSlaveItems($model->id);
+        $rates = ModelsFilter::getActive($rates);
+    
+        $items = $rates;
+        return $items;
+
+        
+    }
+
+    /**
      * Return bundles by rates
      *
      * @param \devskyfly\yiiModuleIitUc\models\rate\Rate $extended_rates
@@ -147,6 +167,8 @@ class RatesBundlesManager extends BaseObject
         }
         return $result;
     }
+
+    
 
     /**
      *

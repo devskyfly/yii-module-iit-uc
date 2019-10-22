@@ -93,6 +93,7 @@ class RateBundle extends AbstractEntity
         return [
             'RateBundleToRatesBinder'=>RateBundleToRatesBinder::class,
             'RateBundleToAdditionalRatesBinder'=>RateBundleToAdditionalRatesBinder::class,
+            'RateBundleToOptionalRatesBinder'=>RateBundleToOptionalRatesBinder::class,
         ];
     }
 

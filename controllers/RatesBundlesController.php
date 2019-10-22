@@ -11,6 +11,7 @@ use devskyfly\yiiModuleIitUc\models\rateBundle\RateBundleSection;
 use devskyfly\yiiModuleIitUc\models\rateBundle\RateBundleToExtendedRatesBinder;
 use devskyfly\yiiModuleIitUc\models\rate\Rate;
 use devskyfly\yiiModuleIitUc\models\rateBundle\RateBundleToAdditionalRatesBinder;
+use devskyfly\yiiModuleIitUc\models\rateBundle\RateBundleToOptionalRatesBinder;
 use devskyfly\yiiModuleIitUc\models\rateBundle\RateBundleToRatesBinder;
 use devskyfly\yiiModuleIitUc\models\stock\Stock;
 
@@ -57,6 +58,7 @@ class RatesBundlesController extends AbstractContentPanelController
         {
             $rates__binder_cls = RateBundleToRatesBinder::class;
             $additional_rates__binder_cls = RateBundleToAdditionalRatesBinder::class;
+            $optional_rates__binder_cls = RateBundleToOptionalRatesBinder::class;
             
             return [
                 [
@@ -128,7 +130,7 @@ class RatesBundlesController extends AbstractContentPanelController
                     "label"=>"Тарифы",
                     "content"=>
                     Binder::widget([
-                        "label"=>"Видимые тарифы",
+                        "label"=>"Тарифы",
                         "form"=>$form,
                         "master_item"=>$item,
                         "binder_cls"=>$rates__binder_cls
@@ -138,6 +140,12 @@ class RatesBundlesController extends AbstractContentPanelController
                         "form"=>$form,
                         "master_item"=>$item,
                         "binder_cls"=>$additional_rates__binder_cls
+                    ])
+                    .Binder::widget([
+                        "label"=>"Опциональные тарифы",
+                        "form"=>$form,
+                        "master_item"=>$item,
+                        "binder_cls"=>$optional_rates__binder_cls
                     ])
                     
                 ],
