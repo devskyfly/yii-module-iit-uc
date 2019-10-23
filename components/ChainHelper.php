@@ -7,9 +7,11 @@ use devskyfly\php56\libs\arr\Intersect;
 use devskyfly\php56\types\Nmbr;
 use devskyfly\php56\types\Obj;
 use devskyfly\php56\types\Vrbl;
+use devskyfly\yiiModuleIitUc\helpers\ModelsFilter;
 use devskyfly\yiiModuleIitUc\models\rate\RateToPowerPackageBinder;
 use devskyfly\yiiModuleIitUc\models\rateBundle\RateBundle;
 use devskyfly\yiiModuleIitUc\models\stock\Stock;
+use yii\helpers\ArrayHelper;
 
 class ChainHelper  extends BaseObject
 {
@@ -51,7 +53,7 @@ class ChainHelper  extends BaseObject
             $powers_packages_ids = [];
             $rates_packages_ids = [];
 
-            $powersPackages = RateToPowerPackageBinder::getSlaveItems($rate->id);
+            
             
             $ratePackage = null;
             
@@ -63,12 +65,31 @@ class ChainHelper  extends BaseObject
                 $rates_packages_ids[]=$ratePackage->id;
             }
 
+
+            $powersPackages = RateToPowerPackageBinder::getSlaveItems($rate->id);
+
             //Powers packages definition
             foreach ($powersPackages as $powerPackage) {
                 if ($powerPackage->active == 'Y') {
                     $powers_packages_ids[] = $powerPackage->id;
                 }
             }
+
+            if (Obj::isA($rate, RateBundle::class)) {
+                $extensions = RatesBundlesManager::getBundleRates($rate);
+                $bundle_powers_packages_ids = [];
+                foreach ($extensions as $extension) {
+                    $powersPackages = PowersManager::getPackages($extension);
+                    $powersPackages = ModelsFilter::getActive($powersPackages);
+                    foreach ($powersPackages as $powerPackage) {
+                        $bundle_powers_packages_ids[] = $powerPackage->id;
+                    }
+                }
+
+                $powers_packages_ids = ArrayHelper::merge($powers_packages_ids, $bundle_powers_packages_ids);
+            }
+
+            $powers_packages_ids = array_unique($powers_packages_ids);
 
             $result[]=[
                 "id"=>(Obj::isA($rate, RateBundle::class))?(1000+$rate->id):$rate->id,
