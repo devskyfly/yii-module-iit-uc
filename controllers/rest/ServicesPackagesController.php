@@ -36,11 +36,16 @@ class ServicesPackagesController extends CommonController
      * 
      * @param number[] $ids
      */
-    public function actionIndex(array $ids, $mode_list='N')
+    public function actionIndex(array $ids = null, $mode_list='N')
     {
         try{
+            
+            if (Vrbl::isEmpty($ids)) {
+                throw new BadRequestHttpException('Query param \'ids\'is empty.');
+            }
+
             if(!in_array($mode_list,$this->mode_list)){
-                throw new BadRequestHttpException('Query param \'mode_list\' aout of range.');
+                throw new BadRequestHttpException('Query param \'mode_list\' out of the range.');
             }
             
             $excluded_services_ids = [];
