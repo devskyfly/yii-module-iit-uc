@@ -9,6 +9,7 @@ use devskyfly\yiiModuleIitUc\models\rate\RateToSiteBinder;
 use devskyfly\yiiModuleIitUc\models\site\Site;
 use yii\helpers\ArrayHelper;
 use devskyfly\yiiModuleIitUc\components\RatesManager;
+use devskyfly\yiiModuleIitUc\helpers\ModelsFilter;
 
 /**
  * Provides managing sites and them bindings to rates.
@@ -119,6 +120,7 @@ class SitesManager extends BaseObject
             return null;
         }   
 
+        $rates = ModelsFilter::getActive($rates);
         
         $priceTable=[];
         foreach($rates as $itm){
