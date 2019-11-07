@@ -4,7 +4,9 @@ namespace devskyfly\yiiModuleIitUc\controllers\rest;
 use Yii;
 use devskyfly\php56\types\Vrbl;
 use devskyfly\php56\types\Nmbr;
+use devskyfly\yiiModuleIitUc\components\BindsList;
 use devskyfly\yiiModuleIitUc\components\ChainHelper;
+use devskyfly\yiiModuleIitUc\components\PromoList;
 use devskyfly\yiiModuleIitUc\components\RatesBundlesManager;
 use devskyfly\yiiModuleIitUc\components\RatesManager;
 use devskyfly\yiiModuleIitUc\helpers\ModelsFilter;
@@ -71,7 +73,9 @@ class RatesController extends AbstractRatesController
                     }
                     
                     $rates = ModelsFilter::getActive($rates);
-                    $chain = RatesBundlesManager::formChain($bundle, $rates);
+                    $promoListCmp = new PromoList();
+                    $bindListCmp = new BindsList();
+                    $chain = RatesBundlesManager::formChain($bundle, $rates, $promoListCmp, $bindListCmp);
                     $result = ChainHelper::formChainToApiFormat($chain);
                 } else {
                     $result = $this->getChain($ids);

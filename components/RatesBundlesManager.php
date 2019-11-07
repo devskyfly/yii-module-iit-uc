@@ -238,17 +238,27 @@ class RatesBundlesManager extends BaseObject
         return $result;
     }
 
-    public static function formChain($bundle, $extesions)
+    public static function formChain($bundle, $extesions, $promoListCmp = null, $bindListCmp = null)
     {
         $result = [];
         static::checkModel($bundle);
         $rates = RatesBundlesManager::getRateBundleValideRates($bundle, $extesions);
         
+        if ($promoListCmp) {
+            $rates = $promoListCmp->apply($rates);
+        }
+
+        if ($bindListCmp) {
+            $rates = $bindListCmp->apply($rates);
+        }
+
         $result [] = $bundle;
 
         foreach ($rates as $rate) {
             $result [] = $rate;
         }
+
+        $result = \array_unique($result);
 
         return $result;
     }
