@@ -53,8 +53,6 @@ class ChainHelper  extends BaseObject
             $powers_packages_ids = [];
             $rates_packages_ids = [];
 
-            
-            
             $ratePackage = null;
             
             if (Obj::isA($rate, Rate::class)) {
@@ -65,10 +63,13 @@ class ChainHelper  extends BaseObject
                 $rates_packages_ids[]=$ratePackage->id;
             }
 
-
-            $powersPackages = RateToPowerPackageBinder::getSlaveItems($rate->id);
+            /*$ratePackage = $this->getRatePackage($rate);
+            if ($ratePackage) {
+                $rates_packages_ids[]=$ratePackage->id;
+            }*/
 
             //Powers packages definition
+            $powersPackages = RateToPowerPackageBinder::getSlaveItems($rate->id);
             foreach ($powersPackages as $powerPackage) {
                 if ($powerPackage->active == 'Y') {
                     $powers_packages_ids[] = $powerPackage->id;
@@ -108,5 +109,29 @@ class ChainHelper  extends BaseObject
         }
 
         return $result;
+    }
+
+    public static function excludePackagedRates($raits)
+    {
+        $raits = array_values($raits);
+        
+        $ratesCnt = Arr::getSize($raits);
+        //throw new \Exception(print_r($this->editedRates,true));
+        for ($i = 0; $i < $ratesCnt; $i++) {
+            //try{
+            $ratePackage = RatePackageManager::getByRate($raits[$i]);
+            //}catch(\Exception $e){
+            //    throw new \Exception(print_r($i,true));
+            //}
+            if (!Vrbl::isNull($ratePackage)) {
+                unset($raits[$i]);
+                $parentRate = Rate::getById($ratePackage->_parent_rate__id);
+                if (Vrbl::isNull($parentRate)) {
+                    throw new \RuntimeException('Param $parentRate is null.');
+                }
+            }
+        }
+        $raits = array_values($raits);
+        return $rates;
     }
 }

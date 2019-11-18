@@ -9,6 +9,7 @@ use devskyfly\yiiModuleIitUc\components\ChainHelper;
 use devskyfly\yiiModuleIitUc\components\PromoList;
 use devskyfly\yiiModuleIitUc\components\RatesBundlesManager;
 use devskyfly\yiiModuleIitUc\components\RatesManager;
+use devskyfly\yiiModuleIitUc\components\SalesList;
 use devskyfly\yiiModuleIitUc\helpers\ModelsFilter;
 use devskyfly\yiiModuleIitUc\models\rate\Rate;
 use yii\web\NotFoundHttpException;
@@ -16,7 +17,7 @@ use yii\web\NotFoundHttpException;
 /**
  * Rest api class
  */
-class RatesController extends AbstractRatesController
+class RatesController extends CommonController
 {
     /**
      * Return all rates
@@ -57,6 +58,10 @@ class RatesController extends AbstractRatesController
     {
         $result = [];
         try {
+            $promoListCmp = new PromoList();
+            $bindListCmp = new BindsList();
+            $salesCmp = new SalesList();
+
             if (!Vrbl::isNull($ids)) {
                 //Chain
                 
@@ -69,16 +74,36 @@ class RatesController extends AbstractRatesController
                         $rate = RatesManager::getBySlxId($id);
                         if (!Vrbl::isNull($rate)) {
                             $rates[] = $rate;
-                        } 
+                        }
                     }
                     
                     $rates = ModelsFilter::getActive($rates);
-                    $promoListCmp = new PromoList();
-                    $bindListCmp = new BindsList();
+                    
                     $chain = RatesBundlesManager::formChain($bundle, $rates, $promoListCmp, $bindListCmp);
                     $result = ChainHelper::formChainToApiFormat($chain);
                 } else {
-                    $result = $this->getChain($ids);
+                    $rates=[];
+
+                    //Models definition
+                    foreach ($ids as $id) {
+                        $rate = RatesManager::getBySlxId($id);
+                        if (!Vrbl::isNull($rate)) {
+                            $rates[] = $rate;
+                        } else {
+                            throw NotFoundHttpException('Model with id=\'' . $id . '\' does not exist.');
+                        }
+                    }
+
+                    //This is by using OrderBuilder
+                    $ratesChainCmp = new RateOrderBuilder([
+                        'rates'=>$rates,
+                        'promoListCmp'=>$promoListCmp,
+                        'bindListCmp'=>$bindListCmp,
+                        'salesListCmp'=>$salesCmp,
+                        'emmiter'=> OrderBuilder::EMMITERS[1]
+                    ]);
+            
+                    $result = $ratesChainCmp->build()->getRatesChain();
                 }
                 
             } else {

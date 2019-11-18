@@ -1,24 +1,24 @@
 <?php
-namespace devskyfly\yiiModuleIitUc\components;
+namespace devskyfly\yiiModuleIitUc\components\order;
 
 use yii\base\BaseObject;
-use yii\helpers\Json;
 use devskyfly\yiiModuleIitUc\models\rate\Rate;
 use devskyfly\yiiModuleIitUc\components\PromoList;
 use devskyfly\yiiModuleIitUc\components\BindsList;
-use devskyfly\php56\libs\arr\Intersect;
 use devskyfly\php56\types\Obj;
 use devskyfly\php56\types\Vrbl;
 use devskyfly\php56\types\Arr;
 use devskyfly\yiiModuleIitUc\models\stock\Stock;
 use devskyfly\yiiModuleIitUc\models\rate\RateToPowerPackageBinder;
 use devskyfly\php56\types\Nmbr;
+use devskyfly\yiiModuleIitUc\components\ChainHelper;
 
-class OrderBuilder extends BaseObject
+abstract class AbstractOrderBuilder extends BaseObject
 {
-    const EMMITERS=["constructor","order"];
+    const EMMITERS = ["constructor", "order"];
 
     public $emmiter = "";
+    
     /**
      * Input array of rates
      *
@@ -53,13 +53,6 @@ class OrderBuilder extends BaseObject
      * @var SaleList
      */
     public $salesListCmp = null;
-
-    /**
-     * Array or $rates after promoList, bindList use and so on.
-     *
-     * @var array
-     */
-    protected $editedRates=[];
     
     /**
      * Array for output
@@ -75,6 +68,10 @@ class OrderBuilder extends BaseObject
      */
     protected $clientTypes=[];
 
+    /**
+     * 
+     * @var []
+     */
     protected $ratesPackages=[];
 
     public function init()
@@ -90,8 +87,7 @@ class OrderBuilder extends BaseObject
                 throw new \InvalidArgumentException('Param  $model is not '.Rate::class.' type.');
             }
         }
-        $this->rates=RatesManager::getMultiChain(\array_unique($this->rates));
-        $this->editedRates=$this->rates;
+        $this->rates = RatesManager::getMultiChain(\array_unique($this->rates));
 
         if (!(Obj::isA($this->promoListCmp, PromoList::class))){
             throw new \InvalidArgumentException('Param $promoList is not '.PromoList::class.' type.');
@@ -109,8 +105,8 @@ class OrderBuilder extends BaseObject
     public function build()
     {
         $this->clientTypes=$this->getClientTypes();
-        $this->editedRates = RatesManager::getMultiChain($this->rates, $this->promoListCmp, $this->bindListCmp);
-        $this->sale = $this->salesListCmp->count($this->editedRates);
+        $this->rates = RatesManager::getMultiChain($this->rates, $this->promoListCmp, $this->bindListCmp);
+        $this->sale = $this->salesListCmp->count($this->rates);
         //Может здесь надо снова обновить clien types
         $this->formRatesPackages();
         if ($this->emmiter==self::EMMITERS[1]) {
@@ -128,21 +124,14 @@ class OrderBuilder extends BaseObject
     //#
     public function getClientTypes()
     {
-        /*$client_types_arr = [];
-
-        foreach ($this->editedRates as $item) {
-            $client_types_arr = array_merge($client_types_arr, [Json::decode($item->client_type)]);
-        }
-
-        return Intersect::getIntersectOfArrayItems($client_types_arr);*/
-        return ChainHelper::getClientTypes($this->editedRates);
+        return ChainHelper::getClientTypes($this->rates);
     }
 
     //#
     protected function formRatesChain()
     {
         $itr = 0;
-        foreach ($this->editedRates as $rate) {
+        foreach ($this->rates as $rate) {
             $itr++;
 
             //Stock
@@ -163,13 +152,15 @@ class OrderBuilder extends BaseObject
             $powers_packages_ids = [];
             $rates_packages_ids = [];
 
-            $powersPackages = RateToPowerPackageBinder::getSlaveItems($rate->id);
-            $ratePackage=$this->getRatePackage($rate);
-            if($ratePackage){
-                $rates_packages_ids[]=$ratePackage->id;
+            $ratePackage = $this->getRatePackage($rate);
+            if ($ratePackage) {
+                $rates_packages_ids[] = $ratePackage->id;
             }
 
+            
+            
             //Powers packages definition
+            $powersPackages = RateToPowerPackageBinder::getSlaveItems($rate->id);
             foreach ($powersPackages as $powerPackage) {
                 if ($powerPackage->active == 'Y') {
                     $powers_packages_ids[] = $powerPackage->id;
@@ -199,25 +190,7 @@ class OrderBuilder extends BaseObject
 
     protected function excludePackagedRates()
     {
-        $this->editedRates = array_values($this->editedRates);
-        
-        $ratesCnt = Arr::getSize($this->editedRates);
-        //throw new \Exception(print_r($this->editedRates,true));
-        for ($i = 0; $i < $ratesCnt; $i++) {
-            //try{
-            $ratePackage = RatePackageManager::getByRate($this->editedRates[$i]);
-            //}catch(\Exception $e){
-            //    throw new \Exception(print_r($i,true));
-            //}
-            if (!Vrbl::isNull($ratePackage)) {
-                unset($this->editedRates[$i]);
-                $parentRate = Rate::getById($ratePackage->_parent_rate__id);
-                if (Vrbl::isNull($parentRate)) {
-                    throw new \RuntimeException('Param $parentRate is null.');
-                }
-            }
-        }
-        $this->editedRates = array_values($this->editedRates);
+        $this->rates = ChainHelper::excludePackagedRates($this->rates);
     }
 
     /**
@@ -227,7 +200,7 @@ class OrderBuilder extends BaseObject
     protected function formRatesPackages()
     {
         $result=[];
-        foreach($this->editedRates as $rate){
+        foreach($this->rates as $rate){
             $ratePackage = RatePackageManager::getByRate($rate);
             if (!Vrbl::isNull($ratePackage)) {
                 $parentRate = Rate::getById($ratePackage->_parent_rate__id);
