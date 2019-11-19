@@ -14,7 +14,7 @@ use devskyfly\yiiModuleIitUc\models\rateCalcGroup\RateCalcGroup;
 /**
  * Rest api class
  */
-class RatesCalcController extends AbstractRatesController
+class RatesCalcController extends CommonController
 {
     /**
      * Return rates
