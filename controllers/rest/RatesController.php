@@ -6,6 +6,8 @@ use devskyfly\php56\types\Vrbl;
 use devskyfly\php56\types\Nmbr;
 use devskyfly\yiiModuleIitUc\components\BindsList;
 use devskyfly\yiiModuleIitUc\components\ChainHelper;
+use devskyfly\yiiModuleIitUc\components\order\BundleOrderBuilder;
+use devskyfly\yiiModuleIitUc\components\order\RateOrderBuilder;
 use devskyfly\yiiModuleIitUc\components\PromoList;
 use devskyfly\yiiModuleIitUc\components\RatesBundlesManager;
 use devskyfly\yiiModuleIitUc\components\RatesManager;
@@ -79,8 +81,17 @@ class RatesController extends CommonController
                     
                     $rates = ModelsFilter::getActive($rates);
                     
-                    $chain = RatesBundlesManager::formChain($bundle, $rates, $promoListCmp, $bindListCmp);
-                    $result = ChainHelper::formChainToApiFormat($chain);
+                    $ratesChainCmp = new BundleOrderBuilder([
+                        'bundle' => $bundle,
+                        'rates'=>$rates,
+                        'promoListCmp'=>$promoListCmp,
+                        'bindListCmp'=>$bindListCmp,
+                        'salesListCmp'=>$salesCmp,
+                        'emmiter'=> RateOrderBuilder::EMMITERS[1]
+                    ]);
+                    $result = $ratesChainCmp->build()->getRatesChain();
+                    /*$chain = RatesBundlesManager::formChain($bundle, $rates, $promoListCmp, $bindListCmp);
+                    $result = ChainHelper::formChainToApiFormat($chain);*/
                 } else {
                     $rates=[];
 
@@ -100,7 +111,7 @@ class RatesController extends CommonController
                         'promoListCmp'=>$promoListCmp,
                         'bindListCmp'=>$bindListCmp,
                         'salesListCmp'=>$salesCmp,
-                        'emmiter'=> OrderBuilder::EMMITERS[1]
+                        'emmiter'=> RateOrderBuilder::EMMITERS[1]
                     ]);
             
                     $result = $ratesChainCmp->build()->getRatesChain();

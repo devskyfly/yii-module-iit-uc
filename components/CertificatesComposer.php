@@ -8,11 +8,11 @@ use devskyfly\yiiModuleIitUc\models\rate\Rate;
 use devskyfly\yiiModuleIitUc\components\PromoList;
 use devskyfly\yiiModuleIitUc\components\BindsList;
 use devskyfly\yiiModuleIitUc\components\SalesList;
-use devskyfly\yiiModuleIitUc\components\OrderBuilder;
 use devskyfly\yiiModuleIitUc\components\RatesManager;
 use yii\helpers\ArrayHelper;
 use devskyfly\php56\types\Arr;
 use devskyfly\php56\types\Nmbr;
+use devskyfly\yiiModuleIitUc\components\order\RateOrderBuilder;
 use devskyfly\yiiModuleIitUc\components\RatesBundlesManager;
 use devskyfly\yiiModuleIitUc\models\site\Site;
 
@@ -70,12 +70,12 @@ class CertificatesComposer extends BaseObject
             $bindListCmp = new BindsList();
             $salesCmp =new SalesList();
 
-            $orderBuilder = new OrderBuilder([
+            $orderBuilder = new RateOrderBuilder([
                 'rates'=>$rates,
                 'promoListCmp'=>$promoListCmp,
                 'bindListCmp'=>$bindListCmp,
                 'salesListCmp'=>$salesCmp,
-                'emmiter' => OrderBuilder::EMMITERS[0] //constructor
+                'emmiter' => RateOrderBuilder::EMMITERS[0] //constructor
             ]);
 
             $chain = $orderBuilder->build()->getRatesChain();

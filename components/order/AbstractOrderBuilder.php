@@ -1,6 +1,7 @@
 <?php
 namespace devskyfly\yiiModuleIitUc\components\order;
 
+use devskyfly\php56\libs\arr\Intersect;
 use yii\base\BaseObject;
 use devskyfly\yiiModuleIitUc\models\rate\Rate;
 use devskyfly\yiiModuleIitUc\components\PromoList;
@@ -8,10 +9,8 @@ use devskyfly\yiiModuleIitUc\components\BindsList;
 use devskyfly\php56\types\Obj;
 use devskyfly\php56\types\Vrbl;
 use devskyfly\php56\types\Arr;
-use devskyfly\yiiModuleIitUc\models\stock\Stock;
-use devskyfly\yiiModuleIitUc\models\rate\RateToPowerPackageBinder;
-use devskyfly\php56\types\Nmbr;
-use devskyfly\yiiModuleIitUc\components\ChainHelper;
+use devskyfly\yiiModuleIitUc\components\RatePackageManager;
+use yii\helpers\Json;
 
 abstract class AbstractOrderBuilder extends BaseObject
 {
@@ -87,34 +86,21 @@ abstract class AbstractOrderBuilder extends BaseObject
                 throw new \InvalidArgumentException('Param  $model is not '.Rate::class.' type.');
             }
         }
-        $this->rates = RatesManager::getMultiChain(\array_unique($this->rates));
 
-        if (!(Obj::isA($this->promoListCmp, PromoList::class))){
+        if (Vrbl::isNull($this->promoListCmp) && !(Obj::isA($this->promoListCmp, PromoList::class))){
             throw new \InvalidArgumentException('Param $promoList is not '.PromoList::class.' type.');
         }
 
-        if (!(Obj::isA($this->bindListCmp, BindsList::class))){
+        if (Vrbl::isNull($this->promoListCmp) && !(Obj::isA($this->bindListCmp, BindsList::class))){
             throw new \InvalidArgumentException('Param $bindListCmp is not '.BindsList::class.' type.');
         }
 
-        if (!(Obj::isA($this->salesListCmp, SalesList::class))){
+        if (Vrbl::isNull($this->promoListCmp) && !(Obj::isA($this->salesListCmp, SalesList::class))){
             throw new \InvalidArgumentException('Param $salesListCmp is not '.SalesList::class.' type.');
         }
     }
 
-    public function build()
-    {
-        $this->clientTypes=$this->getClientTypes();
-        $this->rates = RatesManager::getMultiChain($this->rates, $this->promoListCmp, $this->bindListCmp);
-        $this->sale = $this->salesListCmp->count($this->rates);
-        //Может здесь надо снова обновить clien types
-        $this->formRatesPackages();
-        if ($this->emmiter==self::EMMITERS[1]) {
-            $this->excludePackagedRates();
-        }
-        $this->formRatesChain();
-        return $this;
-    }
+    abstract public function build();
 
     public function getRatesChain()
     {
@@ -124,73 +110,37 @@ abstract class AbstractOrderBuilder extends BaseObject
     //#
     public function getClientTypes()
     {
-        return ChainHelper::getClientTypes($this->rates);
-    }
+        $client_types_arr = [];
 
-    //#
-    protected function formRatesChain()
-    {
-        $itr = 0;
-        foreach ($this->rates as $rate) {
-            $itr++;
-
-            //Stock
-            $stock = null;
-            if (!Vrbl::isEmpty($rate->_stock__id)) {
-                $stock = Stock::find()
-                    ->where([
-                        'active' => Stock::ACTIVE,
-                        'id' => $rate->_stock__id
-                    ])
-                    ->one();
-
-                if (Vrbl::isEmpty($stock)) {
-                    throw new \RuntimeException('Parameter $stock is empty.');
-                }
-            }
-
-            $powers_packages_ids = [];
-            $rates_packages_ids = [];
-
-            $ratePackage = $this->getRatePackage($rate);
-            if ($ratePackage) {
-                $rates_packages_ids[] = $ratePackage->id;
-            }
-
-            
-            
-            //Powers packages definition
-            $powersPackages = RateToPowerPackageBinder::getSlaveItems($rate->id);
-            foreach ($powersPackages as $powerPackage) {
-                if ($powerPackage->active == 'Y') {
-                    $powers_packages_ids[] = $powerPackage->id;
-                }
-            }
-
-            $result[]=[
-                "id"=>$rate->id,
-                "name"=>$rate->name,
-                "calc_name"=>$rate->calc_name,
-                "slx_id"=>$rate->slx_id,
-                "price"=>Nmbr::toDoubleStrict($rate->price),
-                "powers_packages"=>$powers_packages_ids,
-                "rates_packages"=>$rates_packages_ids,
-                "required_powers"=>[],
-                "stock_id"=>Vrbl::isNull($stock)?'':$stock->stock,
-                "stock_bind_id"=>Vrbl::isNull($stock)?'':$stock->id,
-                "client_types"=>$itr==1?$this->clientTypes:[],
-                "required_license"=>$rate->flag_for_license=='Y'?true:false
-            ];
+        foreach ($this->rates as $item) {
+            $client_types_arr = array_merge($client_types_arr, [Json::decode($item->client_type)]);
         }
 
-        $this->ratesChain=$result;
+        return Intersect::getIntersectOfArrayItems($client_types_arr);
     }
-
-   
 
     protected function excludePackagedRates()
     {
-        $this->rates = ChainHelper::excludePackagedRates($this->rates);
+        $rates = $this->rates;
+        $rates = array_values($rates);
+        
+        $ratesCnt = Arr::getSize($rates);
+        //throw new \Exception(print_r($this->editedRates,true));
+        for ($i = 0; $i < $ratesCnt; $i++) {
+            //try{
+            $ratePackage = RatePackageManager::getByRate($rates[$i]);
+            //}catch(\Exception $e){
+            //    throw new \Exception(print_r($i,true));
+            //}
+            if (!Vrbl::isNull($ratePackage)) {
+                unset($rates[$i]);
+                $parentRate = Rate::getById($ratePackage->_parent_rate__id);
+                if (Vrbl::isNull($parentRate)) {
+                    throw new \RuntimeException('Param $parentRate is null.');
+                }
+            }
+        }
+        $this->rates = array_values($rates);
     }
 
     /**

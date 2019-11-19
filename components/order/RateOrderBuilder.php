@@ -1,110 +1,18 @@
 <?php
 namespace devskyfly\yiiModuleIitUc\components\order;
 
-use yii\base\BaseObject;
-use devskyfly\yiiModuleIitUc\models\rate\Rate;
-use devskyfly\yiiModuleIitUc\components\PromoList;
-use devskyfly\yiiModuleIitUc\components\BindsList;
-use devskyfly\php56\types\Obj;
-use devskyfly\php56\types\Vrbl;
-use devskyfly\php56\types\Arr;
-use devskyfly\yiiModuleIitUc\models\stock\Stock;
-use devskyfly\yiiModuleIitUc\models\rate\RateToPowerPackageBinder;
 use devskyfly\php56\types\Nmbr;
-use devskyfly\yiiModuleIitUc\components\ChainHelper;
+use devskyfly\php56\types\Vrbl;
+use devskyfly\yiiModuleIitUc\components\RatesManager;
+use devskyfly\yiiModuleIitUc\models\rate\RateToPowerPackageBinder;
+use devskyfly\yiiModuleIitUc\models\stock\Stock;
 
-class RateOrderBuilder extends BaseObject
+class RateOrderBuilder extends AbstractOrderBuilder
 {
-    const EMMITERS = ["constructor", "order"];
-
-    public $emmiter = "";
-    /**
-     * Input array of rates
-     *
-     * @var Rates[]
-     */
-    public $rates = [];
-
-    /**
-     * PromoList cmp
-     *
-     * @var PromoList
-     */
-    public $promoListCmp = null;
-
-    /**
-     * BindList cmp
-     *
-     * @var BindList
-     */
-    public $bindListCmp = null;
-
-    /**
-     * Sale value
-     *
-     * @var integer
-     */
-    public $sale = 0;
-
-    /**
-     * SalesList cmp
-     *
-     * @var SaleList
-     */
-    public $salesListCmp = null;
-    
-    /**
-     * Array for output
-     *
-     * @var array
-     */
-    protected $ratesChain=[];
-    
-    /**
-     * 
-     *
-     * @var string[]
-     */
-    protected $clientTypes=[];
-
-    /**
-     * 
-     * @var []
-     */
-    protected $ratesPackages=[];
-
-    public function init()
-    {
-        parent::init();
-
-        if (!in_array($this->emmiter, self::EMMITERS)) {
-            throw new \OutOfRangeException('Property $emmiter is out of range.');
-        }
-
-        foreach ($this->rates as $rate) {
-            if (!(Obj::isA($rate, Rate::class))) {
-                throw new \InvalidArgumentException('Param  $model is not '.Rate::class.' type.');
-            }
-        }
-        $this->rates = RatesManager::getMultiChain(\array_unique($this->rates));
-
-        if (!(Obj::isA($this->promoListCmp, PromoList::class))){
-            throw new \InvalidArgumentException('Param $promoList is not '.PromoList::class.' type.');
-        }
-
-        if (!(Obj::isA($this->bindListCmp, BindsList::class))){
-            throw new \InvalidArgumentException('Param $bindListCmp is not '.BindsList::class.' type.');
-        }
-
-        if (!(Obj::isA($this->salesListCmp, SalesList::class))){
-            throw new \InvalidArgumentException('Param $salesListCmp is not '.SalesList::class.' type.');
-        }
-    }
-
     public function build()
     {
-        $this->clientTypes=$this->getClientTypes();
         $this->rates = RatesManager::getMultiChain($this->rates, $this->promoListCmp, $this->bindListCmp);
+        $this->clientTypes=$this->getClientTypes();
         $this->sale = $this->salesListCmp->count($this->rates);
         //Может здесь надо снова обновить clien types
         $this->formRatesPackages();
@@ -113,17 +21,6 @@ class RateOrderBuilder extends BaseObject
         }
         $this->formRatesChain();
         return $this;
-    }
-
-    public function getRatesChain()
-    {
-        return $this->ratesChain;
-    }
-
-    //#
-    public function getClientTypes()
-    {
-        return ChainHelper::getClientTypes($this->rates);
     }
 
     //#
@@ -156,8 +53,6 @@ class RateOrderBuilder extends BaseObject
                 $rates_packages_ids[] = $ratePackage->id;
             }
 
-            
-            
             //Powers packages definition
             $powersPackages = RateToPowerPackageBinder::getSlaveItems($rate->id);
             foreach ($powersPackages as $powerPackage) {
@@ -167,61 +62,21 @@ class RateOrderBuilder extends BaseObject
             }
 
             $result[]=[
-                "id"=>$rate->id,
-                "name"=>$rate->name,
-                "calc_name"=>$rate->calc_name,
-                "slx_id"=>$rate->slx_id,
-                "price"=>Nmbr::toDoubleStrict($rate->price),
-                "powers_packages"=>$powers_packages_ids,
-                "rates_packages"=>$rates_packages_ids,
-                "required_powers"=>[],
-                "stock_id"=>Vrbl::isNull($stock)?'':$stock->stock,
-                "stock_bind_id"=>Vrbl::isNull($stock)?'':$stock->id,
-                "client_types"=>$itr==1?$this->clientTypes:[],
-                "required_license"=>$rate->flag_for_license=='Y'?true:false
+                "id" => $rate->id,
+                "name" => $rate->name,
+                "calc_name" => $rate->calc_name,
+                "slx_id" => $rate->slx_id,
+                "price" => Nmbr::toDoubleStrict($rate->price),
+                "powers_packages" => $powers_packages_ids,
+                "rates_packages" => $rates_packages_ids,
+                "required_powers" => [],
+                "stock_id" => Vrbl::isNull($stock)?'':$stock->stock,
+                "stock_bind_id" => Vrbl::isNull($stock)?'':$stock->id,
+                "client_types" => $itr==1?$this->clientTypes:[],
+                "required_license" => $rate->flag_for_license=='Y'?true:false
             ];
         }
 
         $this->ratesChain=$result;
-    }
-
-   
-
-    protected function excludePackagedRates()
-    {
-        $this->rates = ChainHelper::excludePackagedRates($this->rates);
-    }
-
-    /**
-     *
-     * @return [["parentRate"=>Rate,"pacakge"=>RatePackage],...]]
-     */
-    protected function formRatesPackages()
-    {
-        $result=[];
-        foreach($this->rates as $rate){
-            $ratePackage = RatePackageManager::getByRate($rate);
-            if (!Vrbl::isNull($ratePackage)) {
-                $parentRate = Rate::getById($ratePackage->_parent_rate__id);
-                if (Vrbl::isNull($parentRate)) {
-                    throw new \RuntimeException('Parameter $parentRate is null.');
-                }
-
-                $result[] = ["parentRate"=>$parentRate,'package'=>$ratePackage];
-            }
-        }
-        $this->ratesPackages=$result;
-    }
-
-    protected function getRatePackage($rate){
-        if(!(Obj::isA($rate,Rate::class))){
-            throw new \InvalidArgumentException('Param $rate is not '.Rate::class.' type.');
-        }
-        foreach($this->ratesPackages as $item){
-            if($item['parentRate']['id']==$rate->id){
-                return $item['package'];
-            }
-        }
-        return null;
     }
 }

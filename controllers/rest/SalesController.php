@@ -8,7 +8,7 @@ use devskyfly\yiiModuleIitUc\components\SalesList;
 use devskyfly\php56\types\Vrbl;
 use devskyfly\yiiModuleIitUc\components\PromoList;
 use devskyfly\yiiModuleIitUc\components\BindsList;
-use devskyfly\yiiModuleIitUc\components\OrderBuilder;
+use devskyfly\yiiModuleIitUc\components\order\RateOrderBuilder;
 use devskyfly\yiiModuleIitUc\helpers\ModelsFilter;
 
 /**
@@ -51,12 +51,12 @@ class SalesController extends CommonController
                 $bindListCmp = new BindsList();
                 $salesCmp =new SalesList();
                 
-                $ratesChainCmp = new OrderBuilder([
+                $ratesChainCmp = new RateOrderBuilder([
                     'rates'=>$rates,
                     'promoListCmp'=>$promoListCmp,
                     'bindListCmp'=>$bindListCmp,
                     'salesListCmp'=>$salesCmp,
-                    'emmiter'=>OrderBuilder::EMMITERS[1]
+                    'emmiter'=>RateOrderBuilder::EMMITERS[1]
                 ]);
 
                 $chain = $ratesChainCmp->build()->getRatesChain();
