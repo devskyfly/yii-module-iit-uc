@@ -7,12 +7,10 @@
 			"email" : "devskyfly@gmail.com"
 		}
 	],
-	"minimum-stability" : "dev",
-	"prefer-stable" : true,
 	"require" : {
 		"php" : ">=5.6.0",
 		"phpoffice/phpspreadsheet" : "^1.6",
-		"devskyfly/yii-module-admin-panel":"dev-dev"
+		"devskyfly/yii-module-admin-panel":"<2.0.0"
 	},
 	"autoload" : {
 		"psr-4" : {
@@ -20,7 +18,5 @@
 		}
 	},
 	"require-dev": {
-		"doctrine/annotations": "^1.6",
-		"phpdocumentor/phpdocumentor": "v2.8.5"
 	}
 }
