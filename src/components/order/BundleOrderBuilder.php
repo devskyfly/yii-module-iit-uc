@@ -102,7 +102,7 @@ class BundleOrderBuilder extends AbstractOrderBuilder
             $powers_packages_ids = array_unique($powers_packages_ids);
             
             
-            $result[]=[
+           $item = [
                 "id" => (Obj::isA($rate, RateBundle::class))?(1000+$rate->id):$rate->id,
                 "name" => $rate->name,
                 "calc_name" => $rate->calc_name,
@@ -116,6 +116,13 @@ class BundleOrderBuilder extends AbstractOrderBuilder
                 "client_types" => $itr==1?$client_types:[],
                 "required_license" => $rate->flag_for_license=='Y'?true:false
             ];
+
+            if (Obj::isA($rate, RateBundle::class) {
+                $item["is_bundle"] = true;
+                $item["for_iit_offices"] = $rate['flag_for_iit_offices']=='Y'?true:false;
+            }
+
+            $result[] = $item;
         }
 
         $this->ratesChain = $result;
