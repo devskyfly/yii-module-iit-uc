@@ -117,7 +117,7 @@ class BundleOrderBuilder extends AbstractOrderBuilder
                 "required_license" => $rate->flag_for_license=='Y'?true:false
             ];
 
-            if (Obj::isA($rate, RateBundle::class) {
+            if (Obj::isA($rate, RateBundle::class)) {
                 $item["is_bundle"] = true;
                 $item["for_iit_offices"] = $rate['flag_for_iit_offices']=='Y'?true:false;
             }

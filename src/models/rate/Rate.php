@@ -22,6 +22,7 @@ use devskyfly\yiiModuleIitUc\traits\DbTrait;
  * @property string $calc_name
  * @property string $cacl_sort
  * @property string $flag_show_in_calc
+ * @property string $flag_for_iit_offices 
  */
 class Rate extends AbstractEntity
 {
@@ -67,7 +68,8 @@ class Rate extends AbstractEntity
             "tooltip", 
             "client_type",
             "calc_name",
-            "flag_show_in_calc"], "string"],
+            "flag_show_in_calc", 
+            "flag_for_iit_offices"], "string"],
             [["__id","_stock__id","calc_sort"],'number']
         ];
         return ArrayHelper::merge($old_rules, $new_rules);
