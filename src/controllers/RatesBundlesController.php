@@ -82,15 +82,19 @@ class RatesBundlesController extends AbstractContentPanelController
                         .'</div>'
                         .'<div class="col-xs-2">'
                         .$form->field($item,'flag_for_license')
-                        ->checkbox(['value'=>'Y','uncheck'=>'N','checked'=>$item->active=='Y'?true:false])
+                        ->checkbox(['value'=>'Y','uncheck'=>'N','checked'=>$item->flag_for_license=='Y'?true:false])
                         .'</div>'
                         .'<div class="col-xs-2">'
                         .$form->field($item,'flag_for_crypto_pro')
-                        ->checkbox(['value'=>'Y','uncheck'=>'N','checked'=>$item->active=='Y'?true:false])
+                        ->checkbox(['value'=>'Y','uncheck'=>'N','checked'=>$item->flag_for_crypto_pro=='Y'?true:false])
                         .'</div>'
                         .'<div class="col-xs-2">'
                         .$form->field($item,'flag_is_terminated')
-                        ->checkbox(['value'=>'Y','uncheck'=>'N','checked'=>$item->active=='Y'?true:false])
+                        ->checkbox(['value'=>'Y','uncheck'=>'N','checked'=>$item->flag_is_terminated=='Y'?true:false])
+                        .'</div>'
+                        .'<div class="col-xs-2">'
+                        .$form->field($item,'flag_for_iit_offices')
+                        ->checkbox(['value'=>'Y','uncheck'=>'N','checked'=>$item->flag_for_iit_offices=='Y'?true:false])
                         .'</div>'
                     .'</div>'
                     .$form->field($item,'price')

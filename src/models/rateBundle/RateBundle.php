@@ -24,6 +24,7 @@ use LogicException;
  * @property string $calc_name
  * @property string $cacl_sort
  * @property string $flag_show_in_calc
+ * @property string $flag_for_iit_offices
  */
 class RateBundle extends AbstractEntity
 {
@@ -70,7 +71,8 @@ class RateBundle extends AbstractEntity
             "tooltip", 
             "client_type",
             "calc_name",
-        ], "string"],
+            "flag_for_iit_offices"
+            ], "string"],
             [["_parent_rate__id","_stock__id"],'number']
         ];
         return ArrayHelper::merge($old_rules, $new_rules);

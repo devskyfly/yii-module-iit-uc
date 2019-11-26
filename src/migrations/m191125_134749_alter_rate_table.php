@@ -1,6 +1,6 @@
 <?php
 
-use devskyfly\yiiModuleIitUc\models\rate\Rate;
+use devskyfly\yiiModuleIitUc\models\rateBundle\RateBundle;
 use yii\db\Migration;
 
 /**
@@ -13,7 +13,7 @@ class m191125_134749_alter_rate_table extends Migration
      */
     public function safeUp()
     {
-        $sql = "ALTER TABLE ".Rate::tableName()." ADD COLUMN flag_for_iit_offices ENUM('Y','N') DEFAULT 'N';";
+        $sql = "ALTER TABLE ".RateBundle::tableName()." ADD COLUMN flag_for_iit_offices ENUM('Y','N') DEFAULT 'N';";
         $this->execute($sql);
     }
 
@@ -22,9 +22,7 @@ class m191125_134749_alter_rate_table extends Migration
      */
     public function safeDown()
     {
-        echo "m191125_134749_alter_rate_table cannot be reverted.\n";
-
-        return false;
+        $this->dropColumn(RateBundle::tableName(), "flag_for_iit_offices");
     }
 
     /*

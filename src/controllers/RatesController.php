@@ -95,10 +95,6 @@ class RatesController extends AbstractContentPanelController
                         .$form->field($item,'flag_is_terminated')
                         ->checkbox(['value'=>'Y','uncheck'=>'N','checked'=>$item->flag_is_terminated=='Y'?true:false])
                         .'</div>'
-                        .'<div class="col-xs-2">'
-                        .$form->field($item,'flag_for_iit_offices')
-                        ->checkbox(['value'=>'Y','uncheck'=>'N','checked'=>$item->flag_for_iit_offices=='Y'?true:false])
-                        .'</div>'
                     .'</div>'
                     .$form->field($item,'price')
                     .$form->field($item,'slx_id')
