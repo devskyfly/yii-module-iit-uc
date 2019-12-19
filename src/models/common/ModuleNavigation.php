@@ -19,6 +19,7 @@ class ModuleNavigation extends AbstractModuleNavigation
             ['name'=>'Бандлы тарифов','route'=>'/iit-uc/rates-bundles'],
             ['name'=>'Пакеты тарифов','route'=>'/iit-uc/rates-packages'],
             ['name'=>'Площадки','route'=>'/iit-uc/sites'],
+            ['name'=>'Группы площадок','route'=>'/iit-uc/sites-group'],
             ['name'=>'Доп. услуги','route'=>'/iit-uc/services'],
             ['name'=>'Пакеты доп. услуги','route'=>'/iit-uc/services-packages'],
             ['name'=>'Полномочия','route'=>'/iit-uc/powers'],
