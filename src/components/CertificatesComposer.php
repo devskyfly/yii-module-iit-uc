@@ -112,7 +112,7 @@ class CertificatesComposer extends BaseObject
                 $rates[] = $rate;
             }
 
-            $bundles = RatesBundlesManager::getRatesBundlesByRates($rates);
+            $bundles = RatesBundlesManager::getRatesBundlesByRates($rates, 1);
 
             foreach ($bundles as $bundle) {
                 $result_item = [];
