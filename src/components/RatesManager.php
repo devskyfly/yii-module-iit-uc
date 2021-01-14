@@ -47,7 +47,7 @@ class RatesManager extends BaseObject
      */
     public static function getBaseRate()
     {
-        return self::getBySlxId("Y6UJ9A0000XK");
+        return self::getBySlxId("Y6UJ9A00042L");
     } 
 
     /**
@@ -57,7 +57,7 @@ class RatesManager extends BaseObject
      */
     public static function getFizRate()
     {
-        return self::getBySlxId("Y6UJ9A0002C0");
+        return self::getBySlxId("Y6UJ9A00046L");
     }
     
     /**

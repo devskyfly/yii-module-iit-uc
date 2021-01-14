@@ -56,7 +56,7 @@ class RatesBundlesManager extends BaseObject
      * @throws \InvalidArgumentException
      * @return \devskyfly\yiiModuleIitUc\models\rateBundle\RateBundle|NULL
      */
-    public function findBundleBySlxIds($slx_ids)
+    public static function findBundleBySlxIds($slx_ids)
     {
         foreach ($slx_ids as $slx_id){
             if (!Str::isString($slx_id)) {
