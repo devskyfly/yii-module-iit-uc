@@ -101,7 +101,7 @@ class Rate extends AbstractEntity
         return $this->slx_id;
     }
 
-    public function getBySlxId($slxId)
+    public static function getBySlxId($slxId)
     {
         if(!Str::isString($slxId)){
             throw new \InvalidArgumentException('Param $slxId is not string type.');
