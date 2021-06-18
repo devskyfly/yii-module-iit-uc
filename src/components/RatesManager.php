@@ -1,6 +1,7 @@
 <?php
 namespace devskyfly\yiiModuleIitUc\components;
 
+use Yii;
 use devskyfly\php56\types\Arr;
 use devskyfly\php56\types\Obj;
 use devskyfly\php56\types\Str;
@@ -47,7 +48,8 @@ class RatesManager extends BaseObject
      */
     public static function getBaseRate()
     {
-        return self::getBySlxId("Y6UJ9A00042L");
+        $slxid = Yii::$app->params['iit-uc']['rates-slxids-in-sourse']['Base'];
+        return self::getBySlxId($slxid);
     } 
 
     /**
@@ -57,7 +59,8 @@ class RatesManager extends BaseObject
      */
     public static function getFizRate()
     {
-        return self::getBySlxId("Y6UJ9A00046L");
+        $slxid = Yii::$app->params['iit-uc']['rates-slxids-in-sourse']['Fiz'];
+        return self::getBySlxId($slxid);
     }
     
     /**
