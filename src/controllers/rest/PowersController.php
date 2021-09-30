@@ -2,6 +2,7 @@
 namespace devskyfly\yiiModuleIitUc\controllers\rest;
 
 use devskyfly\yiiModuleIitUc\models\power\Power;
+use yii\helpers\Json;
 
 /**
  * Rest api class
@@ -36,7 +37,7 @@ class PowersController extends CommonController
                 "id"=>$item->id,
                 "name"=>empty($item->detail_text)?$item->name:$item->detail_text,
                 "oid"=>$item->oid,
-                "client_type"=>$item->client_type
+                "clients_type"=>Json::decode($item->client_type)
             ];
         }
         

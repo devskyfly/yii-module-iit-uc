@@ -14,6 +14,7 @@ use devskyfly\yiiModuleIitUc\components\RatesManager;
 use devskyfly\yiiModuleIitUc\components\SalesList;
 use devskyfly\yiiModuleIitUc\helpers\ModelsFilter;
 use devskyfly\yiiModuleIitUc\models\rate\Rate;
+use yii\helpers\Json;
 use yii\web\NotFoundHttpException;
 
 /**
@@ -129,7 +130,7 @@ class RatesController extends CommonController
                         "id" => $rate->id,
                         "name" => $rate->name,
                         "slx_id" => $rate->slx_id,
-                        "client_type" => $rate->client_type,
+                        "client_types" => Json::decode($rate->client_type),
                         "price" => Nmbr::toDoubleStrict($rate->price),
                     ];
                 }
