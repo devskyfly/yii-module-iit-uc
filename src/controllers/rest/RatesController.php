@@ -129,6 +129,7 @@ class RatesController extends CommonController
                         "id" => $rate->id,
                         "name" => $rate->name,
                         "slx_id" => $rate->slx_id,
+                        "client_type" => $rate->client_type,
                         "price" => Nmbr::toDoubleStrict($rate->price),
                     ];
                 }

@@ -10,6 +10,7 @@ use yii\helpers\ArrayHelper;
  * @author devskyfly
  * @property string oid
  * @property string detail_text
+ * @property  string client_type
  */
 class Power extends AbstractEntity
 {
@@ -47,7 +48,7 @@ class Power extends AbstractEntity
         
         $new_rules=[
             //[[],"required"],
-            [['oid','detail_text'],"string"]
+            [['oid','detail_text', "client_type"],"string"]
         ];
         
         return ArrayHelper::merge($old_rules, $new_rules);
